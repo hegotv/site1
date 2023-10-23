@@ -1,27 +1,27 @@
-# NGINX Example
+# HegoApp
 
-This example is deploys a site using [NGINX](https://www.nginx.com/)
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.4.
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/o3MbZe)
+## Development server
 
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## ✨ Features
+## Code scaffolding
 
-- NGINX
-- Static Site
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## 💁‍♀️ How to use
+## Build
 
-- Open the `site/index.html` in the browser
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## 📝 Notes
+## Running unit tests
 
-By default the `site/` directory gets deployed as a static site. This can be modified by changing the `Dockerfile`.
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-The site is deployed using the default NGINX configuration. This can be overridden with a custom conf file by adding
+## Running end-to-end tests
 
-```
-COPY nginx.conf /etc/nginx/nginx.conf
-```
+Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-to the end of the Dockerfile. For more information, [read the docs](https://hub.docker.com/_/nginx).
+## Further help
+
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
