@@ -1,0 +1,47 @@
+<div class="main-container">
+  <div class="slider-container">
+    <div class="slider" id="slider" >
+      <div class="slide" #slide *ngFor="let item of items; let i = index" draggable="false" (click)="goToVideo(item['id'])">
+        <div class="image_container">
+          <img [src]="item['thumbnail']">
+          <div id="overlay" class="overlay"></div>
+        </div>
+        <div id="content" class="content">
+          <div class="slide_title_cont">
+            <p class="slide_title">
+              {{item['title']}}
+            </p>
+            <p style="color: #909090; font-size: 12px">
+              {{item['duration'].split(':')[0] + ' min' + ' ' + item['duration'].split(':')[1] + ' sec'}}
+            </p>
+          </div>
+
+              <p class="slide_desc">
+              {{item['description']}}
+            </p>
+
+          <div class="lv-cont">
+            <p>{{item['saveds']}}</p>
+            <mat-icon>favorite</mat-icon>
+            <p>{{item['visuals']}}</p>
+            <mat-icon>play_arrow</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button mat-icon-button (click)="backScroll()" class="next-btn">
+    <mat-icon>
+      <span class="material-symbols-outlined">
+        chevron_left
+      </span>
+    </mat-icon>
+  </button>
+  <button mat-icon-button (click)="nextScroll()" class="back-btn">
+    <mat-icon>
+      <span class="material-symbols-outlined">
+        chevron_right
+      </span>
+    </mat-icon>
+  </button>
+</div>

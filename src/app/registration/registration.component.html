@@ -1,0 +1,26 @@
+<div class="main-container">
+  <div class="login-container">
+    <h2>Registrazione</h2>
+    <form [formGroup]="registrationForm">
+      <div class="form-group">
+        <input type="text" id="username" name="username" formControlName="username" required placeholder="Username">
+      </div>
+      <div class="form-group">
+        <input type="text" id="email" name="email" formControlName="email" required placeholder="Email">
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" name="password" formControlName="password" required placeholder="Password">
+      </div>
+      <div class="btn_box">
+        <button (click)="onSubmit()" [disabled]="!registrationForm.valid" mat-flat-button [ngClass]="{active_btn : registrationForm.valid, disabled_btn : !registrationForm.valid}">Registrati</button>
+      </div>
+    </form>
+    <div *ngIf="registrationError" class="error-message" style="color: red;">
+      Errore durante il login. Controlla le credenziali e riprova.
+    </div>
+    <div class="register_link_box">
+      <p>Hai giá un account?</p>
+      <button mat-flat-button routerLink="/login">ACCEDI</button>
+    </div>
+  </div>
+</div>
