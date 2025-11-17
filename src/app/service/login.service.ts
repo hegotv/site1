@@ -72,10 +72,19 @@ export class LoginService {
     return this.http
       .post<LoginResponse>(
         `${this.apiUrl}/login/`,
-        { email, password },
-        { withCredentials: true }
+        // --- CORREZIONE CHIAVE ---
+        // Ora inviamo la chiave che il backend si aspetta.
+        {
+          login_identifier: email,
+          password: password,
+        },
+        // -------------------------
+        {
+          withCredentials: true,
+        }
       )
       .pipe(
+        // La gestione della risposta qui è già corretta, non va toccata
         tap((response) => this.handleSuccessfulLogin(response.user)),
         map((response) => response.user)
       );
