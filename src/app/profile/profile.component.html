@@ -1,21 +1,16 @@
-<!-- Usa un contenitore ng-container per evitare elementi extra nel DOM -->
+<!-- in src/app/profile.component.html -->
+
+<!-- L'ng-container è il modo corretto per mostrare il contenuto condizionalmente. -->
 <ng-container *ngIf="userProfile">
   <main>
     <div class="column">
       <!-- 
-        SUGGERIMENTO 5: Gestione dinamica dell'immagine.
-        Usa la foto profilo se esiste, altrimenti usa quella di default.
-        onError gestisce il caso in cui l'URL della foto sia rotto.
+        Usa direttamente mat-icon come placeholder visivo.
+        Non è più un'immagine, quindi non servono [src] o (error).
       -->
-      <img
-        [src]="defaultPhotoUrl"
-        (error)="onImageError($event)"
-        alt="Foto profilo di {{ userProfile.first_name }} {{
-          userProfile.last_name
-        }}"
-        class="profile-photo"
-      />
+      <mat-icon class="profile-icon-placeholder">account_circle</mat-icon>
 
+      <!-- La visualizzazione dei dati dell'utente -->
       <h1>
         {{ userProfile.first_name || "Utente" }}
         {{ userProfile.last_name || "" }}
@@ -23,21 +18,11 @@
       <h2>{{ userProfile.email }}</h2>
 
       <div class="button-group">
-        <button class="btn settings-btn" (click)="openSettings()">
-          <mat-icon>settings</mat-icon> IMPOSTAZIONI
-        </button>
+        <!-- Rimosso il pulsante "Impostazioni" -->
         <button class="btn logout-btn" (click)="Logout()">
           <mat-icon>logout</mat-icon> LOG OUT
         </button>
       </div>
-    </div>
-
-    <!-- 
-      SUGGERIMENTO 6 (UX): Mostra le impostazioni come un overlay 
-      per un'esperienza più fluida.
-    -->
-    <div class="settings-overlay" *ngIf="showSettings">
-      <app-settings (closeSettings)="showSettings = false"></app-settings>
     </div>
   </main>
 </ng-container>

@@ -1,27 +1,13 @@
+<!-- in src/app/settings/settings.component.html -->
+
 <div class="settings-modal">
   <button class="close-btn" (click)="close()">×</button>
 
-  <!-- Sezione Foto Profilo con input file nascosto -->
-  <div class="profile-section">
-    <div class="profile-photo" (click)="fileInput.click()">
-      <img [src]="profilePictureUrl" alt="User Photo" />
-      <div class="photo-overlay">
-        <span>Clicca per<br />cambiare foto</span>
-      </div>
-    </div>
-    <input
-      type="file"
-      #fileInput
-      (change)="onFileSelected($event)"
-      style="display: none"
-      accept="image/*"
-    />
-  </div>
+  <!-- La sezione della foto è stata rimossa -->
 
   <div>
     <h2>Impostazioni</h2>
 
-    <!-- Associa il form al FormGroup -->
     <form
       class="settings-form"
       [formGroup]="settingsForm"
@@ -30,11 +16,12 @@
       <div class="form-group double">
         <div class="input-block">
           <label for="nome">Nome</label>
+          <!-- Usa i formControlName corretti: 'name' e 'surname' -->
           <input
             type="text"
             id="nome"
             placeholder="Nome*"
-            formControlName="first_name"
+            formControlName="name"
           />
         </div>
         <div class="input-block">
@@ -43,7 +30,7 @@
             type="text"
             id="cognome"
             placeholder="Cognome*"
-            formControlName="last_name"
+            formControlName="surname"
           />
         </div>
       </div>
@@ -72,11 +59,15 @@
         </div>
       </div>
 
-      <button type="submit" class="save-btn" [disabled]="settingsForm.invalid">
+      <button
+        type="submit"
+        class="save-btn"
+        [disabled]="!settingsForm.valid || settingsForm.pristine"
+      >
         SALVA
       </button>
 
-      <!-- Messaggi di successo/errore -->
+      <!-- I messaggi di successo/errore rimangono invariati -->
       <div *ngIf="updateSuccess" class="success-message">
         Profilo aggiornato con successo!
       </div>
