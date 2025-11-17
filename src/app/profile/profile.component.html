@@ -1,24 +1,17 @@
 <!-- in src/app/profile.component.html -->
 
-<!-- L'ng-container è il modo corretto per mostrare il contenuto condizionalmente. -->
 <ng-container *ngIf="userProfile">
   <main>
     <div class="column">
-      <!-- 
-        Usa direttamente mat-icon come placeholder visivo.
-        Non è più un'immagine, quindi non servono [src] o (error).
-      -->
       <mat-icon class="profile-icon-placeholder">account_circle</mat-icon>
-
-      <!-- La visualizzazione dei dati dell'utente -->
-      <h1>
-        {{ userProfile.first_name || "Utente" }}
-        {{ userProfile.last_name || "" }}
-      </h1>
+      <h1>{{ userProfile.first_name }} {{ userProfile.last_name }}</h1>
       <h2>{{ userProfile.email }}</h2>
 
       <div class="button-group">
-        <!-- Rimosso il pulsante "Impostazioni" -->
+        <!-- Pulsante per aprire il modale -->
+        <button class="btn settings-btn" (click)="openSettings()">
+          <mat-icon>settings</mat-icon> IMPOSTAZIONI
+        </button>
         <button class="btn logout-btn" (click)="Logout()">
           <mat-icon>logout</mat-icon> LOG OUT
         </button>
@@ -26,3 +19,13 @@
     </div>
   </main>
 </ng-container>
+
+<!-- 
+  Modale delle impostazioni: viene mostrato solo quando showSettings è true.
+  Non gli passiamo più nessun input [form].
+  Ascoltiamo il suo evento di output (closeSettings).
+-->
+<app-settings
+  *ngIf="showSettings"
+  (closeSettings)="closeSettingsModal()"
+></app-settings>
