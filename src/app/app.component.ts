@@ -41,8 +41,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.isBrowser) {
-      // Punto di avvio centralizzato e sicuro per tutte le chiamate iniziali
-      this.loginService.checkSessionOnLoad();
       this.homeDataService.loadInitialData(); // <-- Avvia il caricamento dei dati della home
 
       // La tua logica esistente per lo scroll
