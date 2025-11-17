@@ -73,12 +73,12 @@ export class VideoService {
   getContinueWatchingVideos(): Observable<Video[]> {
     return this.http
       .get<ApiListResponse<Video>>(`${this.apiUrl}/continue_watching/`, {
-        // --- CORREZIONE: Autenticazione tramite cookie ---
+        // --- CORREZIONE CHIAVE: Aggiungi questa opzione ---
         withCredentials: true,
       })
       .pipe(
         map((response) => response.list || []),
-        catchError(() => of([])) // In caso di errore (es. non loggato), ritorna un array vuoto.
+        catchError(() => of([]))
       );
   }
 

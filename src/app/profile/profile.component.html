@@ -8,14 +8,17 @@
         onError gestisce il caso in cui l'URL della foto sia rotto.
       -->
       <img
-        [src]="userProfile.photo || defaultPhotoUrl"
+        [src]="defaultPhotoUrl"
         (error)="onImageError($event)"
-        alt="Foto profilo di {{ userProfile.name }} {{ userProfile.surname }}"
+        alt="Foto profilo di {{ userProfile.first_name }} {{
+          userProfile.last_name
+        }}"
         class="profile-photo"
       />
 
       <h1>
-        {{ userProfile.name || "Utente" }} {{ userProfile.surname || "" }}
+        {{ userProfile.first_name || "Utente" }}
+        {{ userProfile.last_name || "" }}
       </h1>
       <h2>{{ userProfile.email }}</h2>
 
