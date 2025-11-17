@@ -17,6 +17,7 @@ import { HeaderComponent } from './header/header.component';
 
 // --- PASSO 1: Importa il LoginService ---
 import { LoginService } from './service/login.service';
+import { HomeDataService } from './service/home-data.service';
 
 @Component({
   selector: 'app-root',
@@ -32,28 +33,24 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
-
-    // --- PASSO 2: Inietta il LoginService ---
-    private loginService: LoginService
+    private loginService: LoginService,
+    private homeDataService: HomeDataService // <-- Inietta HomeDataService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngOnInit(): void {
-    // La logica esistente viene eseguita solo nel browser, il che è corretto.
     if (this.isBrowser) {
-      // --- PASSO 3: Chiama checkSessionOnLoad() qui ---
-      // Questo viene eseguito DOPO che l'APP_INITIALIZER ha finito,
-      // garantendo che il cookie CSRF esista prima di questa chiamata.
+      // Punto di avvio centralizzato e sicuro per tutte le chiamate iniziali
       this.loginService.checkSessionOnLoad();
+      this.homeDataService.loadInitialData(); // <-- Avvia il caricamento dei dati della home
 
-      // La tua logica esistente per lo scroll rimane invariata.
+      // La tua logica esistente per lo scroll
       const routerSub = this.router.events
         .pipe(filter((event) => event instanceof NavigationEnd))
         .subscribe(() => {
           window.scrollTo(0, 0);
         });
-
       this.subscriptions.add(routerSub);
     }
   }

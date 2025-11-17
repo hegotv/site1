@@ -1,15 +1,12 @@
-// src/app/services/home-data.service.ts
+// in src/app/services/home-data.service.ts
 
 import { Injectable } from '@angular/core';
-import { Observable, forkJoin, of } from 'rxjs';
-import { map, shareReplay, catchError } from 'rxjs/operators';
+import { Observable, forkJoin, of, BehaviorSubject } from 'rxjs'; // <-- Aggiungi BehaviorSubject
+import { map, catchError, tap } from 'rxjs/operators'; // <-- Aggiungi tap
 import { VideoService } from './video.service';
 import { CategoryService } from './category.service';
-import { ApiDataResponse, Macro } from '../shared/interfaces'; // Assicurati che Macro sia esportata da un file condiviso
+import { ApiDataResponse, Macro } from '../shared/interfaces';
 
-/**
- * Interfaccia che definisce la forma dei dati combinati per la pagina principale.
- */
 export interface HomePageData {
   homeData: ApiDataResponse | null;
   macros: Macro[] | null;
@@ -19,70 +16,55 @@ export interface HomePageData {
   providedIn: 'root',
 })
 export class HomeDataService {
-  private readonly homePageData$: Observable<HomePageData>;
+  // 1. Sostituiamo l'Observable con un BehaviorSubject per gestire lo stato
+  private homePageDataSubject = new BehaviorSubject<HomePageData>({
+    homeData: null,
+    macros: null,
+  });
+  public homePageData$ = this.homePageDataSubject.asObservable();
 
+  // 2. Il costruttore ora è pulito, fa solo dependency injection
   constructor(
     private videoService: VideoService,
     private categoryService: CategoryService
-  ) {
-    this.homePageData$ = this.fetchAndCombineData().pipe(
-      shareReplay({
-        bufferSize: 1, // Mantiene in cache l'ultimo valore
-        refCount: true, // Esegue la chiamata solo se ci sono subscriber attivi
-        windowTime: 20 * 60 * 1000, // La cache scade dopo 20 minuti
-      })
-    );
+  ) {}
+
+  // 3. Creiamo un metodo pubblico per avviare il caricamento dei dati
+  public loadInitialData(): void {
+    // Eseguiamo la chiamata solo una volta se i dati sono già stati caricati
+    if (this.homePageDataSubject.getValue().homeData) {
+      return;
+    }
+
+    this.fetchAndCombineData().subscribe((data) => {
+      this.homePageDataSubject.next(data);
+    });
   }
 
-  /**
-   * Esegue le chiamate parallele ai servizi e combina i loro risultati.
-   */
   private fetchAndCombineData(): Observable<HomePageData> {
     return forkJoin({
-      homeResponse: this.videoService.getHomeData().pipe(
-        // --- MIGLIORAMENTO: Gestione dell'errore a livello di singolo stream ---
-        // Se questa chiamata fallisce, forkJoin non si romperà, ma riceverà `null`.
-        catchError(() => of(null))
-      ),
-      macrosResponse: this.categoryService.getMacros().pipe(
-        // --- MIGLIORAMENTO: Il codice è più pulito ---
-        // Non c'è più bisogno di trasformare i dati qui.
-        // `CategoryService.getMacros()` è ora responsabile di restituire i dati nel formato corretto.
-        catchError(() => of(null)) // Se fallisce, restituisce null.
-      ),
+      homeResponse: this.videoService
+        .getHomeData()
+        .pipe(catchError(() => of(null))),
+      macrosResponse: this.categoryService
+        .getMacros()
+        .pipe(catchError(() => of(null))),
     }).pipe(
       map(({ homeResponse, macrosResponse }) => {
-        // La mappatura è ora più semplice e diretta.
         return {
           homeData: homeResponse,
           macros: macrosResponse,
         };
       }),
-      catchError((error) => {
-        // Questo catch agisce come un fallback finale se forkJoin avesse un problema imprevisto.
-        console.error(
-          'Errore irrecuperabile durante il caricamento dei dati per la home:',
-          error
-        );
-        return of({ homeData: null, macros: null });
-      })
+      catchError(() => of({ homeData: null, macros: null }))
     );
   }
 
-  // --- MIGLIORAMENTO: Rimossa la funzione `processImageUrl`. ---
-  // Questa logica ora appartiene a `CategoryService`, rendendo questo servizio più focalizzato.
-
-  /**
-   * Espone l'Observable contenente i dati principali della home page.
-   * I componenti si iscrivono a questo per ottenere i dati in modo reattivo.
-   */
+  // 4. I metodi getter ora leggono dal BehaviorSubject
   getHomeData(): Observable<ApiDataResponse | null> {
     return this.homePageData$.pipe(map((data) => data.homeData));
   }
 
-  /**
-   * Espone l'Observable contenente la lista delle macro.
-   */
   getMacros(): Observable<Macro[] | null> {
     return this.homePageData$.pipe(map((data) => data.macros));
   }
