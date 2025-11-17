@@ -34,13 +34,12 @@ export class LoginService {
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
-    this.checkSessionOnLoad();
   }
 
   /**
    * Verifica la sessione utente al caricamento dell'app usando l'endpoint personalizzato.
    */
-  private checkSessionOnLoad(): void {
+  public checkSessionOnLoad(): void {
     if (!this.isBrowser) {
       return;
     }
