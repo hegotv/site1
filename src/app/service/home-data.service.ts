@@ -2,9 +2,8 @@
 
 import { Injectable } from '@angular/core';
 import { Observable, forkJoin, of, BehaviorSubject } from 'rxjs';
-// --- PASSO 1: Importa gli operatori RxJS necessari e il CsrfService ---
-import { map, catchError, filter, switchMap, take } from 'rxjs/operators';
-import { CsrfService } from './csrf.service';
+import { map, catchError } from 'rxjs/operators';
+// --- N.B: CsrfService e gli operatori extra (filter, switchMap, take) non sono più necessari qui ---
 
 import { VideoService } from './video.service';
 import { CategoryService } from './category.service';
@@ -25,11 +24,10 @@ export class HomeDataService {
   });
   public homePageData$ = this.homePageDataSubject.asObservable();
 
+  // --- SEMPLIFICAZIONE: Il costruttore non ha più bisogno del CsrfService ---
   constructor(
     private videoService: VideoService,
-    private categoryService: CategoryService,
-    // --- PASSO 2: Inietta il CsrfService ---
-    private csrfService: CsrfService
+    private categoryService: CategoryService
   ) {}
 
   public loadInitialData(): void {
@@ -37,21 +35,16 @@ export class HomeDataService {
       return;
     }
 
-    // --- PASSO 3: Implementa il pattern "semaforo" ---
-    // La logica ora attende che CsrfService sia pronto prima di procedere.
-    this.csrfService.isReady$
-      .pipe(
-        filter((ready) => ready), // Prosegui solo quando 'isReady' è true
-        take(1), // Esegui questa logica solo una volta
-        switchMap(() => this.fetchAndCombineData()) // Quando è pronto, esegui la vera chiamata
-      )
-      .subscribe((data) => {
-        this.homePageDataSubject.next(data);
-      });
+    // --- SEMPLIFICAZIONE: Rimuoviamo il pattern "semaforo". ---
+    // La chiamata ora è diretta, perché l'APP_INITIALIZER garantisce
+    // che questa funzione venga eseguita solo al momento giusto.
+    this.fetchAndCombineData().subscribe((data) => {
+      this.homePageDataSubject.next(data);
+    });
   }
 
   private fetchAndCombineData(): Observable<HomePageData> {
-    // Questa logica interna per combinare le chiamate è già corretta e non cambia.
+    // Questa logica interna è corretta e non cambia.
     return forkJoin({
       homeResponse: this.videoService
         .getHomeData()

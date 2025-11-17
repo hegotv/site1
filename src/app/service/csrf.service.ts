@@ -1,8 +1,14 @@
 // in src/app/service/csrf.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom, BehaviorSubject } from 'rxjs'; // <-- Importa BehaviorSubject
+import { firstValueFrom } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../enviroments/enviroment';
+
+// Interfaccia per la risposta
+interface CsrfTokenResponse {
+  csrfToken: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -10,27 +16,30 @@ import { environment } from '../../enviroments/enviroment';
 export class CsrfService {
   private csrfTokenUrl = `${environment.apiUrl}/auth/csrf/`;
 
-  // 1. Creiamo un "semaforo" (BehaviorSubject) che parte da 'false'
-  private isReady = new BehaviorSubject<boolean>(false);
-  // 2. Esponiamo il semaforo come un Observable pubblico
-  public isReady$ = this.isReady.asObservable();
+  // 1. Una variabile per conservare il token in memoria.
+  private token: string | null = null;
 
   constructor(private http: HttpClient) {}
 
-  // 3. Questo metodo verrà chiamato dall'APP_INITIALIZER
+  // 2. Il metodo init() ora cattura e salva il token dalla risposta JSON.
   public init(): Promise<any> {
     return firstValueFrom(
-      this.http.get(this.csrfTokenUrl, { withCredentials: true })
-    )
-      .then(() => {
-        // 4. Quando la chiamata ha successo, diamo il via libera!
-        this.isReady.next(true);
-      })
-      .catch((err) => {
-        console.error('Impossibile ottenere il token CSRF iniziale.', err);
-        // Anche in caso di errore, diamo il via libera per non bloccare l'app,
-        // ma le successive chiamate POST falliranno (il che è corretto).
-        this.isReady.next(true);
-      });
+      this.http
+        .get<CsrfTokenResponse>(this.csrfTokenUrl, { withCredentials: true })
+        .pipe(
+          tap((response) => {
+            console.log(
+              '[CsrfService] Token ricevuto dal backend:',
+              response.csrfToken
+            );
+            this.token = response.csrfToken;
+          })
+        )
+    );
+  }
+
+  // 3. Un metodo pubblico per permettere all'interceptor di recuperare il token.
+  public getToken(): string | null {
+    return this.token;
   }
 }

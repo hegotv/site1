@@ -4,14 +4,13 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-// --- PASSO 1: Importa gli operatori necessari e il CsrfService ---
-import { tap, catchError, map, filter, switchMap, take } from 'rxjs/operators';
-import { CsrfService } from './csrf.service';
+import { tap, catchError, map } from 'rxjs/operators';
+// --- N.B: CsrfService e gli operatori extra (filter, switchMap, take) non sono più necessari ---
 
 import { SocialUser } from '@abacritt/angularx-social-login';
 import { UserProfile } from '../shared/interfaces';
 
-// Interfacce (nessuna modifica qui)
+// Interfacce (nessuna modifica)
 interface LoginResponse {
   key: string;
   user: UserProfile;
@@ -31,11 +30,10 @@ export class LoginService {
   public readonly isLoggedIn$ = new BehaviorSubject<boolean>(false);
   public readonly currentUser$ = new BehaviorSubject<UserProfile | null>(null);
 
+  // --- SEMPLIFICAZIONE: Il costruttore non ha più bisogno del CsrfService ---
   constructor(
     private http: HttpClient,
-    @Inject(PLATFORM_ID) platformId: Object,
-    // --- PASSO 2: Inietta il CsrfService ---
-    private csrfService: CsrfService
+    @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -45,26 +43,19 @@ export class LoginService {
       return;
     }
 
-    // --- PASSO 3: Applica il pattern "semaforo" ---
-    this.csrfService.isReady$
+    // --- SEMPLIFICAZIONE: La chiamata ora è diretta ---
+    // Non c'è più bisogno di aspettare, l'APP_INITIALIZER ha già fatto il suo lavoro.
+    this.http
+      .post<UserProfile>(
+        `${this.apiUrl}/getProfile/`,
+        {},
+        { withCredentials: true }
+      )
       .pipe(
-        filter((ready) => ready), // Attendi che CsrfService sia pronto
-        take(1), // Esegui solo una volta
-        switchMap(() =>
-          // Quando è pronto, esegui la chiamata originale
-          this.http
-            .post<UserProfile>(
-              `${this.apiUrl}/getProfile/`,
-              {},
-              { withCredentials: true }
-            )
-            .pipe(
-              catchError(() => {
-                this.clearSessionData();
-                return of(null);
-              })
-            )
-        )
+        catchError(() => {
+          this.clearSessionData();
+          return of(null);
+        })
       )
       .subscribe((userProfile) => {
         if (userProfile) {
@@ -74,39 +65,33 @@ export class LoginService {
   }
 
   // ===================================================================
-  // METODI PUBBLICI PRINCIPALI (aggiornati con il pattern)
+  // METODI PUBBLICI PRINCIPALI (semplificati)
   // ===================================================================
 
   login(email: string, password: string): Observable<UserProfile> {
-    return this.csrfService.isReady$.pipe(
-      filter((ready) => ready),
-      take(1),
-      switchMap(() =>
-        this.http.post<LoginResponse>(
-          `${this.apiUrl}/login/`,
-          { email, password },
-          { withCredentials: true }
-        )
-      ),
-      tap((response) => this.handleSuccessfulLogin(response.user)),
-      map((response) => response.user)
-    );
+    return this.http
+      .post<LoginResponse>(
+        `${this.apiUrl}/login/`,
+        { email, password },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap((response) => this.handleSuccessfulLogin(response.user)),
+        map((response) => response.user)
+      );
   }
 
   loginWithGoogle(user: SocialUser): Observable<UserProfile> {
-    return this.csrfService.isReady$.pipe(
-      filter((ready) => ready),
-      take(1),
-      switchMap(() =>
-        this.http.post<LoginResponse>(
-          `${this.apiUrl}/google/`,
-          { access_token: user.idToken },
-          { withCredentials: true }
-        )
-      ),
-      tap((response) => this.handleSuccessfulLogin(response.user)),
-      map((response) => response.user)
-    );
+    return this.http
+      .post<LoginResponse>(
+        `${this.apiUrl}/google/`,
+        { access_token: user.idToken },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap((response) => this.handleSuccessfulLogin(response.user)),
+        map((response) => response.user)
+      );
   }
 
   signUp(
@@ -116,51 +101,37 @@ export class LoginService {
     name?: string,
     surname?: string
   ): Observable<SignUpResponse> {
-    return this.csrfService.isReady$.pipe(
-      filter((ready) => ready),
-      take(1),
-      switchMap(() =>
-        this.http.post<SignUpResponse>(
-          `${this.apiUrl}/register/`,
-          {
-            email,
-            password,
-            username,
-            first_name: name ?? '',
-            last_name: surname ?? '',
-          },
-          { withCredentials: true }
-        )
-      )
+    return this.http.post<SignUpResponse>(
+      `${this.apiUrl}/register/`,
+      {
+        email,
+        password,
+        username,
+        first_name: name ?? '',
+        last_name: surname ?? '',
+      },
+      { withCredentials: true }
     );
   }
 
   logout(): Observable<any> {
-    return this.csrfService.isReady$.pipe(
-      filter((ready) => ready),
-      take(1),
-      switchMap(() =>
-        this.http.post(`${this.apiUrl}/logout/`, {}, { withCredentials: true })
-      ),
-      tap(() => this.clearSessionData()),
-      catchError(() => {
-        this.clearSessionData();
-        return of({ message: 'Logged out locally after API error.' });
-      })
-    );
+    return this.http
+      .post(`${this.apiUrl}/logout/`, {}, { withCredentials: true })
+      .pipe(
+        tap(() => this.clearSessionData()),
+        catchError(() => {
+          this.clearSessionData();
+          return of({ message: 'Logged out locally after API error.' });
+        })
+      );
   }
 
   updateProfile(formData: FormData): Observable<UserProfile> {
-    return this.csrfService.isReady$.pipe(
-      filter((ready) => ready),
-      take(1),
-      switchMap(() =>
-        this.http.put<UserProfile>(`${this.apiUrl}/update/`, formData, {
-          withCredentials: true,
-        })
-      ),
-      tap((updatedProfile) => this.updateAuthState(updatedProfile))
-    );
+    return this.http
+      .put<UserProfile>(`${this.apiUrl}/update/`, formData, {
+        withCredentials: true,
+      })
+      .pipe(tap((updatedProfile) => this.updateAuthState(updatedProfile)));
   }
   // ===================================================================
   // GESTIONE DELLO STATO INTERNO
