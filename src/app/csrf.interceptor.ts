@@ -4,23 +4,23 @@ import {
   HttpRequest,
   HttpHandlerFn,
 } from '@angular/common/http';
+import { PLATFORM_ID, inject } from '@angular/core'; // <-- Importa PLATFORM_ID e inject
+import { isPlatformBrowser } from '@angular/common'; // <-- Importa il check della piattaforma
 
 /**
- * Funzione helper per leggere un cookie specifico dal browser.
- * @param name Il nome del cookie da leggere (es. 'csrftoken').
- * @returns Il valore del cookie o null se non trovato.
+ * Funzione helper per leggere un cookie.
+ * IMPORTANTE: Questa funzione deve essere chiamata solo dopo aver verificato
+ * di essere in un ambiente browser.
  */
 function getCookie(name: string): string | null {
   let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      // Controlla se la stringa del cookie inizia con il nome che cerchiamo
-      if (cookie.substring(0, name.length + 1) === name + '=') {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
+  // Non è più necessario un check qui, perché lo facciamo a monte.
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+    if (cookie.substring(0, name.length + 1) === name + '=') {
+      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      break;
     }
   }
   return cookieValue;
@@ -30,23 +30,31 @@ export const csrfInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ) => {
-  // Ottieni il token CSRF dai cookie del browser
-  const csrfToken = getCookie('csrftoken');
+  // 1. Inietta il PLATFORM_ID per capire in quale ambiente siamo.
+  const platformId = inject(PLATFORM_ID);
 
-  // Applica l'header solo per le richieste che non sono GET, HEAD, OPTIONS, TRACE
-  // e se il token CSRF è stato trovato.
-  if (csrfToken && !['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(req.method)) {
-    // Clona la richiesta per aggiungere il nuovo header, poiché le richieste sono immutabili.
-    const clonedReq = req.clone({
-      setHeaders: {
-        'X-CSRFToken': csrfToken, // Nome dell'header che Django si aspetta di default
-      },
-    });
-    console.log('CSRF Interceptor: Aggiunto header X-CSRFToken.');
-    // Inoltra la richiesta clonata con l'header aggiunto
-    return next(clonedReq);
+  // 2. Esegui la logica CSRF solo se il codice sta girando in un browser.
+  if (isPlatformBrowser(platformId)) {
+    // Essendo nel browser, l'oggetto 'document' è disponibile e sicuro da usare.
+    if (document.cookie) {
+      const csrfToken = getCookie('csrftoken');
+
+      // Aggiungi l'header solo alle richieste che modificano lo stato (non GET, etc.)
+      if (
+        csrfToken &&
+        !['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(req.method)
+      ) {
+        const clonedReq = req.clone({
+          setHeaders: {
+            'X-CSRFToken': csrfToken,
+          },
+        });
+        return next(clonedReq);
+      }
+    }
   }
 
-  // Per le richieste GET o se il token non è presente, inoltra la richiesta originale.
+  // 3. Se siamo sul server (durante la build/prerendering), inoltra la richiesta
+  //    senza tentare di leggere i cookie.
   return next(req);
 };
