@@ -1,8 +1,11 @@
 // in src/app/services/home-data.service.ts
 
 import { Injectable } from '@angular/core';
-import { Observable, forkJoin, of, BehaviorSubject } from 'rxjs'; // <-- Aggiungi BehaviorSubject
-import { map, catchError, tap } from 'rxjs/operators'; // <-- Aggiungi tap
+import { Observable, forkJoin, of, BehaviorSubject } from 'rxjs';
+// --- PASSO 1: Importa gli operatori RxJS necessari e il CsrfService ---
+import { map, catchError, filter, switchMap, take } from 'rxjs/operators';
+import { CsrfService } from './csrf.service';
+
 import { VideoService } from './video.service';
 import { CategoryService } from './category.service';
 import { ApiDataResponse, Macro } from '../shared/interfaces';
@@ -16,32 +19,39 @@ export interface HomePageData {
   providedIn: 'root',
 })
 export class HomeDataService {
-  // 1. Sostituiamo l'Observable con un BehaviorSubject per gestire lo stato
   private homePageDataSubject = new BehaviorSubject<HomePageData>({
     homeData: null,
     macros: null,
   });
   public homePageData$ = this.homePageDataSubject.asObservable();
 
-  // 2. Il costruttore ora è pulito, fa solo dependency injection
   constructor(
     private videoService: VideoService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    // --- PASSO 2: Inietta il CsrfService ---
+    private csrfService: CsrfService
   ) {}
 
-  // 3. Creiamo un metodo pubblico per avviare il caricamento dei dati
   public loadInitialData(): void {
-    // Eseguiamo la chiamata solo una volta se i dati sono già stati caricati
     if (this.homePageDataSubject.getValue().homeData) {
       return;
     }
 
-    this.fetchAndCombineData().subscribe((data) => {
-      this.homePageDataSubject.next(data);
-    });
+    // --- PASSO 3: Implementa il pattern "semaforo" ---
+    // La logica ora attende che CsrfService sia pronto prima di procedere.
+    this.csrfService.isReady$
+      .pipe(
+        filter((ready) => ready), // Prosegui solo quando 'isReady' è true
+        take(1), // Esegui questa logica solo una volta
+        switchMap(() => this.fetchAndCombineData()) // Quando è pronto, esegui la vera chiamata
+      )
+      .subscribe((data) => {
+        this.homePageDataSubject.next(data);
+      });
   }
 
   private fetchAndCombineData(): Observable<HomePageData> {
+    // Questa logica interna per combinare le chiamate è già corretta e non cambia.
     return forkJoin({
       homeResponse: this.videoService
         .getHomeData()
@@ -60,7 +70,7 @@ export class HomeDataService {
     );
   }
 
-  // 4. I metodi getter ora leggono dal BehaviorSubject
+  // I metodi getter rimangono invariati.
   getHomeData(): Observable<ApiDataResponse | null> {
     return this.homePageData$.pipe(map((data) => data.homeData));
   }

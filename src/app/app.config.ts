@@ -1,6 +1,6 @@
 // in src/app/app.config.ts
-import { ApplicationConfig, APP_INITIALIZER, PLATFORM_ID } from '@angular/core'; // <-- Importa PLATFORM_ID
-import { isPlatformBrowser } from '@angular/common'; // <-- Importa il check
+import { ApplicationConfig, APP_INITIALIZER, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -15,19 +15,23 @@ import { csrfInterceptor } from './csrf.interceptor';
 import { CsrfService } from './service/csrf.service';
 
 /**
- * --- CORREZIONE CHIAVE ---
- * La factory ora riceve il platformId per capire se è in un browser o sul server.
+ * --- VERSIONE FINALE E CORRETTA ---
+ * Questa factory si assicura che il semaforo del CsrfService venga attivato
+ * solo quando l'applicazione è in esecuzione nel browser.
  */
 export function initializeCsrfFactory(
   csrfService: CsrfService,
   platformId: object
 ): () => Promise<any> {
-  // Esegui la chiamata per ottenere il cookie SOLO se siamo in un browser.
   if (isPlatformBrowser(platformId)) {
-    return () => csrfService.ensureCsrfCookie();
+    // --- MODIFICA CHIAVE: Chiama il nuovo metodo init() ---
+    // Questo metodo non solo fa la chiamata, ma gestisce anche lo stato 'isReady'.
+    return () => csrfService.init();
   }
-  // Se siamo sul server (durante la build), ritorna una funzione che non fa nulla
-  // e si risolve immediatamente, per non bloccare la build.
+
+  // Sul server, la funzione non fa nulla e si risolve subito.
+  // In questo modo, il semaforo 'isReady' non diventerà mai 'true' sul server,
+  // impedendo qualsiasi chiamata API durante la build.
   return () => Promise.resolve();
 }
 
@@ -41,7 +45,6 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeCsrfFactory,
-      // --- CORREZIONE: Aggiungi PLATFORM_ID alle dipendenze ---
       deps: [CsrfService, PLATFORM_ID],
       multi: true,
     },
