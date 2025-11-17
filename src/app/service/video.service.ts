@@ -1,27 +1,22 @@
-// src/app/services/video.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Video, ApiDataResponse } from '../shared/interfaces';
 
-// --- MIGLIORAMENTO: Interfacce per risposte API specifiche ---
+// --- Interfacce per risposte API specifiche (invariate) ---
 
-/** Interfaccia per la risposta completa di un singolo video. */
 export interface DetailedVideo extends Video {
-  isSaved: boolean | null; // Booleano è più pulito di un numero
+  isSaved: boolean | null;
   last_position_seconds?: number;
   is_completed?: boolean;
 }
 
-/** Interfaccia generica per le risposte API che contengono un payload in un campo 'data'. */
 interface ApiResponse<T> {
   response: string;
   data: T;
 }
 
-/** Interfaccia per risposte che contengono un payload in un campo 'list'. */
 interface ApiListResponse<T> {
   response: string;
   list: T[];
@@ -31,10 +26,8 @@ interface ApiListResponse<T> {
   providedIn: 'root',
 })
 export class VideoService {
-  // --- MIGLIORAMENTO: URL base centralizzato e readonly ---
   private readonly apiUrl = 'https://hegobck-production.up.railway.app/video';
 
-  // --- MIGLIORAMENTO: Rimosso LoginService, non più necessario ---
   constructor(private http: HttpClient) {}
 
   // ===================================================================
@@ -43,39 +36,33 @@ export class VideoService {
 
   /**
    * Recupera i dati aggregati per la home page.
+   * Questa chiamata è pubblica e non necessita di autenticazione.
    */
   getHomeData(): Observable<ApiDataResponse> {
-    // Questa chiamata è pubblica e non necessita di credenziali.
     return this.http
       .get<ApiResponse<ApiDataResponse>>(`${this.apiUrl}/getVideos/`)
       .pipe(map((response) => response.data));
   }
 
   /**
-   * Recupera i dettagli di un singolo video, includendo lo stato dell'utente (salvato, progresso).
+   * Recupera i dettagli di un singolo video.
+   * L'autenticazione è gestita dall'interceptor.
    */
   getVideo(id: string): Observable<DetailedVideo> {
+    // --- CORREZIONE: Rimosso { withCredentials: true } ---
     return this.http
-      .post<ApiResponse<DetailedVideo>>(
-        `${this.apiUrl}/getVideo/`,
-        { id },
-        {
-          // --- CORREZIONE: Usa withCredentials per inviare il cookie di sessione ---
-          withCredentials: true,
-        }
-      )
+      .post<ApiResponse<DetailedVideo>>(`${this.apiUrl}/getVideo/`, { id })
       .pipe(map((response) => response.data));
   }
 
   /**
-   * Recupera la lista dei video da "Continua a guardare" per l'utente loggato.
+   * Recupera la lista dei video da "Continua a guardare".
+   * L'autenticazione è gestita dall'interceptor.
    */
   getContinueWatchingVideos(): Observable<Video[]> {
+    // --- CORREZIONE: Rimosso { withCredentials: true } ---
     return this.http
-      .get<ApiListResponse<Video>>(`${this.apiUrl}/continue_watching/`, {
-        // --- CORREZIONE CHIAVE: Aggiungi questa opzione ---
-        withCredentials: true,
-      })
+      .get<ApiListResponse<Video>>(`${this.apiUrl}/continue_watching/`)
       .pipe(
         map((response) => response.list || []),
         catchError(() => of([]))
@@ -83,14 +70,13 @@ export class VideoService {
   }
 
   /**
-   * Recupera la lista dei video preferiti dell'utente loggato.
+   * Recupera la lista dei video preferiti dell'utente.
+   * L'autenticazione è gestita dall'interceptor.
    */
   getFavoriteVideos(): Observable<Video[]> {
+    // --- CORREZIONE: Rimosso { withCredentials: true } ---
     return this.http
-      .get<ApiListResponse<Video>>(`${this.apiUrl}/getSavedVideos/`, {
-        // --- CORREZIONE: Autenticazione tramite cookie ---
-        withCredentials: true,
-      })
+      .get<ApiListResponse<Video>>(`${this.apiUrl}/getSavedVideos/`)
       .pipe(
         map((response) => response.list || []),
         catchError(() => of([]))
@@ -103,55 +89,45 @@ export class VideoService {
 
   /**
    * Registra una visualizzazione per un video.
-   * Anche se pubblica, necessita di `withCredentials` per la protezione CSRF.
+   * L'autenticazione è gestita dall'interceptor.
    */
   addView(id: string): Observable<unknown> {
-    return this.http.post(
-      `${this.apiUrl}/setVisual/`,
-      { id },
-      {
-        withCredentials: true,
-      }
-    );
+    // --- CORREZIONE: Rimosso { withCredentials: true } ---
+    return this.http.post(`${this.apiUrl}/setVisual/`, { id });
   }
 
   /**
    * Salva un video nei preferiti dell'utente.
+   * L'autenticazione è gestita dall'interceptor.
    */
   saveVideo(id: string): Observable<unknown> {
-    return this.http.post(
-      `${this.apiUrl}/saveVideo/`,
-      { id },
-      {
-        withCredentials: true,
-      }
-    );
+    // --- CORREZIONE: Rimosso { withCredentials: true } ---
+    return this.http.post(`${this.apiUrl}/saveVideo/`, { id });
   }
 
   /**
    * Rimuove un video dai preferiti dell'utente.
+   * L'autenticazione è gestita dall'interceptor.
    */
   removeVideo(id: string): Observable<unknown> {
-    return this.http.post(
-      `${this.apiUrl}/deleteSavedVideo/`,
-      { id },
-      {
-        withCredentials: true,
-      }
-    );
+    // --- CORREZIONE: Rimosso { withCredentials: true } ---
+    return this.http.post(`${this.apiUrl}/deleteSavedVideo/`, { id });
   }
 
   /**
-   * --- MIGLIORAMENTO & CORREZIONE: Salva il progresso del video usando navigator.sendBeacon. ---
-   * Questo metodo è progettato per essere chiamato quando la pagina si chiude.
-   * Non invia più il token manualmente (rischio di sicurezza).
-   * Il browser invierà automaticamente il cookie di sessione.
+   * --- NOTA IMPORTANTE SU QUESTO METODO ---
+   * Salva il progresso del video usando `navigator.sendBeacon`.
+   * A differenza di `HttpClient`, `sendBeacon` non permette di aggiungere header custom
+   * come `Authorization` in modo semplice.
    *
-   * NOTA: Il tuo backend deve essere aggiornato per leggere l'utente da `request.user`
-   * (derivato dalla sessione) invece che da un token nel corpo della richiesta.
+   * Questo metodo funzionerà solo se il tuo backend è configurato per gestire
+   * l'autenticazione per l'endpoint `/save_progress/` in un modo alternativo
+   * (ad esempio, accettando il token nel corpo della richiesta o usando un sistema
+   * di sessione/cookie solo per questa chiamata).
+   *
+   * Per ora, il codice frontend rimane invariato, ma sii consapevole di questa limitazione.
    */
   saveVideoProgressOnUnload(videoId: string, positionSeconds: number): void {
-    // Controlla se l'API sendBeacon è disponibile nel browser.
     if (typeof navigator === 'undefined' || !navigator.sendBeacon) {
       return;
     }
@@ -160,7 +136,6 @@ export class VideoService {
     const data = {
       video_id: videoId,
       position_seconds: positionSeconds,
-      // Il token non viene più inviato nel corpo della richiesta!
     };
 
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });

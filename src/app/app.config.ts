@@ -13,6 +13,7 @@ import {
 
 import { csrfInterceptor } from './csrf.interceptor';
 import { CsrfService } from './service/csrf.service';
+import { authInterceptor } from './auth.interceptor';
 
 /**
  * --- VERSIONE FINALE E CORRETTA ---
@@ -39,7 +40,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideClientHydration(),
-    provideHttpClient(withInterceptors([csrfInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, csrfInterceptor])),
     provideAnimationsAsync(),
 
     {
