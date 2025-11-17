@@ -1,5 +1,6 @@
 // in src/app/app.config.ts
-import { ApplicationConfig, APP_INITIALIZER } from '@angular/core'; // Importa APP_INITIALIZER
+import { ApplicationConfig, APP_INITIALIZER, PLATFORM_ID } from '@angular/core'; // <-- Importa PLATFORM_ID
+import { isPlatformBrowser } from '@angular/common'; // <-- Importa il check
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -10,37 +11,40 @@ import {
   GoogleLoginProvider,
 } from '@abacritt/angularx-social-login';
 
-// --- I NOSTRI IMPORT ---
 import { csrfInterceptor } from './csrf.interceptor';
-import { CsrfService } from './service/csrf.service'; // Importa il nuovo servizio
+import { CsrfService } from './service/csrf.service';
 
 /**
- * Funzione factory che verrà eseguita da APP_INITIALIZER.
- * Inietta il CsrfService e chiama il metodo per ottenere il cookie.
+ * --- CORREZIONE CHIAVE ---
+ * La factory ora riceve il platformId per capire se è in un browser o sul server.
  */
 export function initializeCsrfFactory(
-  csrfService: CsrfService
+  csrfService: CsrfService,
+  platformId: object
 ): () => Promise<any> {
-  return () => csrfService.ensureCsrfCookie();
+  // Esegui la chiamata per ottenere il cookie SOLO se siamo in un browser.
+  if (isPlatformBrowser(platformId)) {
+    return () => csrfService.ensureCsrfCookie();
+  }
+  // Se siamo sul server (durante la build), ritorna una funzione che non fa nulla
+  // e si risolve immediatamente, per non bloccare la build.
+  return () => Promise.resolve();
 }
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideClientHydration(),
-    provideHttpClient(withInterceptors([csrfInterceptor])), // L'interceptor rimane fondamentale
+    provideHttpClient(withInterceptors([csrfInterceptor])),
     provideAnimationsAsync(),
 
-    // --- BLOCCO DI INIZIALIZZAZIONE CSRF ---
-    // Questo blocco garantisce che il cookie CSRF esista prima che l'utente possa interagire.
     {
       provide: APP_INITIALIZER,
       useFactory: initializeCsrfFactory,
-      deps: [CsrfService], // Specifica le dipendenze della factory
+      // --- CORREZIONE: Aggiungi PLATFORM_ID alle dipendenze ---
+      deps: [CsrfService, PLATFORM_ID],
       multi: true,
     },
-    // --- FINE BLOCCO ---
-
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
