@@ -1,0 +1,200 @@
+/* slider.component.css */
+
+.slider-section {
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+/* Nascondiamo i bottoni di navigazione se lo slider non è scrollabile */
+.slider-nav-buttons:has(
+    + .slider-container .slider-content:not([is-scrollable="true"])
+  ) {
+  display: none;
+}
+
+.nav-button {
+  background-color: rgba(22, 22, 22, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transition: all 0.3s;
+}
+
+.nav-button:hover:not(:disabled) {
+  background-color: #39b09d;
+  border-color: #39b09d;
+}
+
+.nav-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.slider-container {
+  /* Contiene lo slider per nascondere l'overflow in modo pulito */
+  position: relative;
+}
+
+/* ***** MODIFICHE CHIAVE QUI ***** */
+.slider-content {
+  display: flex;
+  gap: 1.5rem;
+  padding-bottom: 1rem; /* Spazio per l'ombra in hover */
+
+  /* 1. Abilita lo scorrimento orizzontale nativo */
+  overflow-x: auto;
+  /* 2. Anima lo scorrimento programmatico (quando si cliccano le frecce) */
+  scroll-behavior: smooth;
+  /* 3. Abilita lo snap allo scorrimento sull'asse X */
+  scroll-snap-type: x mandatory;
+
+  /* 4. Nascondi la barra di scorrimento visualmente */
+  scrollbar-width: none; /* Firefox */
+}
+.slider-content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, etc. */
+}
+
+.slide {
+  position: relative;
+  /* Larghezza definita per lo snap. Flex-shrink a 0 per evitare che si restringa. */
+  flex: 0 0 23%; /* Circa 4 slide visibili, aggiusta se necessario */
+  min-width: 250px;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden; /* Nasconde le parti dell'immagine che escono durante lo zoom */
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  /* 5. Definisce il punto di allineamento per lo snap */
+  scroll-snap-align: start;
+}
+
+.slide:hover {
+  transform: scale(1.08); /* Effetto di zoom leggermente più sottile */
+  z-index: 10;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.slide:hover .slide-image {
+  transform: scale(
+    1.1
+  ); /* Leggero zoom anche sull'immagine per un effetto parallax */
+}
+
+/* Overlay per migliorare la leggibilità del testo */
+.slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 50%);
+  z-index: 1;
+}
+
+.slide-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.slide-hover-meta {
+  color: #fff;
+  /* Inizia nascosto e appare in hover */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease-out;
+  pointer-events: none;
+  width: 100%;
+}
+.slide:hover .slide-hover-meta {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.slide-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.slide-visuals,
+.slide-duration {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.slide-duration {
+  color: #39b09d;
+  font-weight: 500;
+}
+
+/* Barra di progresso */
+.progress-bar-container {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  margin-top: 0.5rem; /* Spazio tra meta e barra */
+}
+.progress-bar {
+  height: 100%;
+  background: #39b09d;
+  border-radius: 2px;
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .slide {
+    flex-basis: 30%;
+  } /* ~3 slide */
+}
+@media (max-width: 992px) {
+  .slide {
+    flex-basis: 45%;
+  } /* ~2 slide */
+}
+@media (max-width: 768px) {
+  .slider-nav-buttons {
+    display: none;
+  } /* Nascondi frecce su mobile, si usa lo swipe */
+  .slide {
+    flex-basis: 80%;
+    min-width: 220px;
+  } /* ~1.5 slide */
+}

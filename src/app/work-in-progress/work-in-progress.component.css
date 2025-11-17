@@ -1,0 +1,54 @@
+/* Stili per il contenitore "Lavori in Corso" */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  font-family: sans-serif;
+  background-color: #000; /* sfondo nero */
+  color: #fff; /* testo chiaro per contrasto */
+  padding: 20px;
+}
+.logo {
+  width: 180px; /* larghezza maggiore */
+  height: auto; /* mantieni proporzioni per logo wide */
+  max-height: 120px; /* evita che diventi troppo alto */
+  cursor: pointer;
+  margin-bottom: 20px;
+  fill: #fff; /* logo chiaro su sfondo scuro */
+  display: block;
+}
+
+/* Stili per il contenitore "Login" */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #fff;
+  font-family: sans-serif;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+input {
+  padding: 10px;
+  font-size: 16px;
+  min-width: 250px; /* Larghezza minima per l'input */
+  background: #111; /* input scuro */
+  color: #fff;
+  border: 1px solid #333;
+}
+button {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #1e90ff;
+  color: #fff;
+  border: none;
+}

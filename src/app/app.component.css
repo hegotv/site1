@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+.main-content-area {
+  padding-top: 70px; /* Assicurati che questo valore corrisponda a --header-height */
+}

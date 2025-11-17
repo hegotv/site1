@@ -1,0 +1,188 @@
+/* =================================================================
+   VARIABILI GLOBALI E STILI DI BASE
+   ================================================================= */
+:host {
+  --primary-color: #39b09d; /* Verde acqua per accenti */
+  --background-color: #121212; /* Nero profondo per lo sfondo */
+  --surface-color: #1e1e1e; /* Grigio scuro per le superfici (card, input) */
+  --text-primary: #ffffff; /* Testo principale bianco */
+  --text-secondary: #b3b3b3; /* Testo secondario grigio chiaro */
+  --border-color: #2c2c2c; /* Colore per bordi sottili */
+}
+
+main.all-podcasts-container {
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* =================================================================
+   HEADER DELLA PAGINA
+   ================================================================= */
+.page-header {
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+/* =================================================================
+   GRIGLIA DEGLI EPISODI
+   ================================================================= */
+.episodes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 25px;
+}
+
+.episode-card {
+  background-color: var(--surface-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.episode-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  border-color: var(--border-color);
+}
+
+.card-artwork {
+  position: relative;
+  height: 20vh;
+}
+
+.card-artwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.episode-card:hover .play-overlay {
+  opacity: 1;
+}
+
+.play-overlay .fa-play {
+  color: white;
+  font-size: 2.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.card-info {
+  padding: 15px;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* =================================================================
+   STATI DI CARICAMENTO E NESSUN RISULTATO
+   ================================================================= */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh; /* Occupa gran parte dello schermo */
+  color: #f5f5f5;
+  gap: 1rem; /* Spazio tra spinner e testo */
+}
+
+.spinner {
+  border: 4px solid rgba(245, 245, 245, 0.3);
+  border-left-color: #39b09d; /* Colore principale del tema */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.no-results-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+  min-height: 50vh; /* Assicura che occupi spazio */
+}
+
+.no-results-state .fa-podcast {
+  font-size: 4rem;
+  margin-bottom: 25px;
+  color: var(--border-color);
+}
+
+.no-results-state h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 0 0 10px;
+}
+
+.no-results-state p {
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* =================================================================
+   MEDIA QUERIES PER RESPONSIVENESS
+   ================================================================= */
+@media (max-width: 380px) {
+  .page-header h1 {
+    font-size: 2rem;
+  }
+  .episodes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  main.all-podcasts-container {
+    padding: 40px;
+  }
+  .episodes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+  .page-header h1 {
+    font-size: 3.5rem;
+  }
+}

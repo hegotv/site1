@@ -1,0 +1,74 @@
+<section class="watchlist-page">
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>La mia Watchlist</h1>
+      <p>I tuoi film e le tue serie preferite, sempre a portata di mano.</p>
+    </div>
+  </div>
+
+  <!-- Contenitore principale per la logica condizionale -->
+  <ng-container
+    *ngIf="favoriteCategories && favoriteCategories.length > 0; else noItems"
+  >
+    <div class="watchlist-content">
+      <!-- Intestazione della Sezione -->
+      <div class="section-header">
+        <h2>Le tue Serie</h2>
+        <!-- Controlli di Navigazione per lo Slider -->
+        <div class="slider-controls">
+          <button
+            (click)="scrollLeft()"
+            class="scroll-button left"
+            aria-label="Scorri a sinistra"
+          >
+            <mat-icon>arrow_back_ios</mat-icon>
+          </button>
+          <button
+            (click)="scrollRight()"
+            class="scroll-button right"
+            aria-label="Scorri a destra"
+          >
+            <mat-icon>arrow_forward_ios</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Griglia Video come Slider Orizzontale -->
+      <div #videoGrid class="video-grid">
+        <div
+          class="video-card"
+          *ngFor="let item of favoriteCategories"
+          (click)="goToSeason(item.slug)"
+          tabindex="0"
+          [attr.aria-label]="'Vai alla serie ' + item.title"
+        >
+          <div class="card-image-container">
+            <img
+              [src]="
+                'https://hegobck-production.up.railway.app' + item.CatimageOrizz
+              "
+              [alt]="item.title"
+              loading="lazy"
+            />
+            <div class="image-overlay"></div>
+          </div>
+          <div class="card-body">
+            <h3>{{ item.title }}</h3>
+            <div class="meta">
+              <span>{{ getUniqueSeasons(item) }} Stagioni</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Template per Watchlist Vuota -->
+  <ng-template #noItems>
+    <div class="empty-watchlist">
+      <mat-icon class="empty-icon">visibility_off</mat-icon>
+      <h2>La tua watchlist è vuota</h2>
+      <p>Inizia ad esplorare e aggiungi le serie che non vuoi perdere!</p>
+    </div>
+  </ng-template>
+</section>

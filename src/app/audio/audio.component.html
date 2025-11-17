@@ -1,0 +1,127 @@
+@if (isLoading) {
+<!-- Stato di Caricamento -->
+<div class="loading-overlay">
+  <div class="loading-content">
+    <img src="assets/HEGO_crop.png" alt="HEGO Logo" class="loading-logo" />
+    <div class="spinner"></div>
+  </div>
+</div>
+} @else if (errorMessage) {
+<!-- Stato di Errore -->
+<div class="player-error-state">
+  <i class="fas fa-exclamation-triangle"></i>
+  <h2>Impossibile Caricare l'Episodio</h2>
+  <p>{{ errorMessage }}</p>
+</div>
+} @else if (episode) {
+<!-- Contenuto del Player (se l'episodio è stato caricato correttamente) -->
+<div class="audio-player-container">
+  <!-- Sezione Player Principale -->
+  <div class="player-content">
+    <img
+      [src]="episode.artwork_image"
+      [alt]="episode.title"
+      class="artwork-image"
+    />
+
+    <div class="episode-info">
+      <h2 class="episode-title">
+        @if(episodeNumber) {
+        <span class="episode-number">Ep. {{ episodeNumber }} -</span>
+        }
+        {{ episode.title }}
+      </h2>
+      <p class="speaker-info">
+        {{ seasonTitle || "Podcast" }} • {{ episode.speaker }}
+      </p>
+    </div>
+
+    <audio
+      #audioPlayer
+      [src]="episode.audio_stream_url"
+      (timeupdate)="onTimeUpdate()"
+      (play)="onPlay()"
+      (pause)="onPause()"
+      (ended)="onEnded()"
+      (canplay)="onCanPlay()"
+      preload="metadata"
+      style="display: none"
+    ></audio>
+
+    <div class="progress-controls" [class.seekable]="isSeekable">
+      <span>{{ currentTime * 1000 | date : "mm:ss" : "UTC" }}</span>
+      <div class="progress-bar-wrapper" (click)="onSeekClick($event)">
+        <div
+          class="progress-bar"
+          [style.width.%]="duration > 0 ? (currentTime / duration) * 100 : 0"
+        ></div>
+      </div>
+      <span>{{ duration * 1000 | date : "mm:ss" : "UTC" }}</span>
+    </div>
+
+    <div class="main-controls">
+      <button
+        class="control-btn"
+        (click)="seekRelative(-15)"
+        title="Indietro di 15s"
+        [disabled]="!isSeekable"
+      >
+        <i class="fas fa-undo"></i>
+      </button>
+      <button
+        class="control-btn play-pause-btn"
+        (click)="togglePlayPause()"
+        [title]="isPlaying ? 'Pausa' : 'Play'"
+        [disabled]="!isSeekable"
+      >
+        @if (isPlaying) {
+        <i class="fas fa-pause"></i>
+        } @else {
+        <i class="fas fa-play"></i>
+        }
+      </button>
+      <button
+        class="control-btn"
+        (click)="seekRelative(15)"
+        title="Avanti di 15s"
+        [disabled]="!isSeekable"
+      >
+        <i class="fas fa-redo"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Sezione "Altri Episodi" -->
+  @if(otherEpisodes.length > 0) {
+  <div class="other-episodes-section">
+    <h3 class="section-title">Altri episodi in "{{ seasonTitle }}"</h3>
+    <div class="episodes-list">
+      @for (otherEp of otherEpisodes; track otherEp.id) {
+      <div
+        class="episode-item"
+        (click)="playOtherEpisode(otherEp.id)"
+        tabindex="0"
+        role="button"
+      >
+        <img
+          [src]="otherEp.artwork_image"
+          [alt]="otherEp.title"
+          class="item-artwork"
+        />
+        <div class="item-info">
+          <p class="item-title">
+            <span class="episode-number">{{ otherEp.number }}.</span>
+            {{ otherEp.title }}
+          </p>
+          <span class="item-duration">{{ otherEp.duration }}</span>
+        </div>
+        <div class="item-play-icon">
+          <i class="fas fa-play"></i>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>
+}

@@ -1,0 +1,223 @@
+main {
+  display: flex;
+  flex: 1;
+}
+.login-box {
+  flex: 1;
+  padding: 4rem 3rem;
+  max-width: 50vw;
+}
+.login-box h1 {
+  font-size: 40px;
+  font-weight: bold;
+  color: #39b09d;
+  margin-bottom: 0.5rem;
+}
+.login-box .subtitle {
+  color: #aaa;
+  margin-bottom: 2rem;
+}
+
+/* Contenitore per i campi del form per una corretta spaziatura */
+.form-field {
+  margin-bottom: 1.5rem;
+  position: relative; /* Utile se l'errore dovesse essere posizionato in modo assoluto */
+}
+
+/* Stili unificati per tutti gli input di testo */
+.login-box form input[type="email"],
+.password-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: #111;
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Aggiunta transizione */
+}
+
+/* Rimuoviamo il margine specifico dall'input email, ora è gestito da .form-field */
+.login-box form input[type="email"] {
+  margin-bottom: 0;
+}
+
+.login-box form input[type="email"]:focus,
+.password-input:focus {
+  outline: none;
+  border-color: #39b09d;
+  box-shadow: 0 0 5px rgba(57, 176, 157, 0.5);
+}
+.login-box form input[type="email"]::placeholder,
+.password-input::placeholder {
+  color: #888;
+}
+.login-box form input[type="email"]:focus::placeholder,
+.password-input:focus::placeholder {
+  color: #aaa;
+}
+
+/* <<<<<<<<<<<<<<< NUOVE REGOLE PER LA VALIDAZIONE >>>>>>>>>>>>>>> */
+
+/* Stile per evidenziare i campi non validi dopo l'interazione dell'utente */
+.login-box form input.ng-invalid.ng-touched,
+.password-input.ng-invalid.ng-touched {
+  border-color: #e53935; /* Rosso per l'errore */
+}
+
+/* Stile per i messaggi di errore sotto ogni campo */
+.error-message {
+  color: #e53935; /* Stesso rosso dell'errore */
+  font-size: 0.8rem;
+  padding-top: 4px;
+  min-height: 1.2em; /* Riserva lo spazio per evitare salti nel layout */
+  text-align: left;
+}
+
+/* <<<<<<<<<<<<<<< FINE NUOVE REGOLE >>>>>>>>>>>>>>> */
+
+input[type="checkbox"] {
+  margin-right: 0.5rem;
+  border: none;
+  background-color: transparent;
+}
+
+p,
+label {
+  color: #aaa;
+}
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-box form label.remember-me-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.sign-in {
+  padding: 0.8rem 2rem;
+  background: transparent;
+  border: 1px solid #39b09d;
+  color: #39b09d;
+  border-radius: 30px;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+.sign-in:hover {
+  background: #39b09d;
+  color: #111;
+}
+.register {
+  margin-bottom: 1rem;
+}
+.register a {
+  color: #39b09d;
+}
+hr {
+  border: 0;
+  height: 1px;
+  background: #333;
+  margin: 1rem 0;
+}
+.or {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.bg {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  z-index: -1;
+}
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.8rem;
+  background: transparent;
+  border: 1px solid #666;
+  border-radius: 10px;
+  color: #f1f1f1;
+}
+
+.google-btn img {
+  width: 20px;
+  height: 20px;
+}
+.google-btn-wrapper {
+  position: relative;
+  width: 100%;
+}
+#google-signin-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 99%;
+  opacity: 0;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  padding-right: 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  color: #888;
+  background: none;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .login-box {
+    max-width: 100vw;
+    padding: 2rem 1rem;
+  }
+  .login-box h1 {
+    font-size: 2.5rem;
+    font-weight: 1600;
+  }
+  .login-box form input[type="email"],
+  .password-input {
+    padding: 0.6rem 1rem; /* Aumentato leggermente per coerenza con la registrazione */
+  }
+  .sign-in,
+  .google-btn {
+    /* Unificato selettore */
+    padding: 0.6rem;
+    width: 100%;
+    font-size: 0.9rem;
+  }
+  .register {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .bg {
+    width: 200%;
+    height: 100%;
+    top: 0;
+    opacity: 0.5;
+    left: -50%;
+    bottom: auto;
+    right: auto;
+  }
+}

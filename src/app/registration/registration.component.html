@@ -1,0 +1,188 @@
+<div class="register-container">
+  <div class="register-form">
+    <h2>REGISTRATI</h2>
+    <p>Senza censura, senza paura.</p>
+
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+      <!-- Nome e Cognome con messaggi di errore -->
+      <div class="form-row">
+        <div class="form-field">
+          <input type="text" placeholder="Nome" formControlName="nome" />
+          <div
+            *ngIf="
+              registrationForm.get('nome')?.invalid &&
+              (registrationForm.get('nome')?.dirty ||
+                registrationForm.get('nome')?.touched)
+            "
+            class="error-message"
+          >
+            <small *ngIf="registrationForm.get('nome')?.errors?.['required']"
+              >Il nome è richiesto.</small
+            >
+          </div>
+        </div>
+        <div class="form-field">
+          <input type="text" placeholder="Cognome" formControlName="cognome" />
+          <div
+            *ngIf="
+              registrationForm.get('cognome')?.invalid &&
+              (registrationForm.get('cognome')?.dirty ||
+                registrationForm.get('cognome')?.touched)
+            "
+            class="error-message"
+          >
+            <small *ngIf="registrationForm.get('cognome')?.errors?.['required']"
+              >Il cognome è richiesto.</small
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Data di nascita e Sesso con messaggi di errore -->
+      <div class="form-row two">
+        <div class="form-field">
+          <input
+            type="date"
+            placeholder="Data di nascita"
+            formControlName="dataDiNascita"
+          />
+          <div
+            *ngIf="
+              registrationForm.get('dataDiNascita')?.invalid &&
+              (registrationForm.get('dataDiNascita')?.dirty ||
+                registrationForm.get('dataDiNascita')?.touched)
+            "
+            class="error-message"
+          >
+            <small
+              *ngIf="registrationForm.get('dataDiNascita')?.errors?.['required']"
+              >La data di nascita è richiesta.</small
+            >
+          </div>
+        </div>
+        <div class="form-field">
+          <select formControlName="sesso">
+            <option disabled value="">Sesso</option>
+            <option value="Femmina">F</option>
+            <option value="Maschio">M</option>
+            <option value="Altro">Altro</option>
+          </select>
+          <div
+            *ngIf="
+              registrationForm.get('sesso')?.invalid &&
+              (registrationForm.get('sesso')?.dirty ||
+                registrationForm.get('sesso')?.touched)
+            "
+            class="error-message"
+          >
+            <small *ngIf="registrationForm.get('sesso')?.errors?.['required']"
+              >Il sesso è richiesto.</small
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Email con messaggi di errore -->
+      <div class="form-field">
+        <input type="email" placeholder="Email" formControlName="email" />
+        <div
+          *ngIf="
+            registrationForm.get('email')?.invalid &&
+            (registrationForm.get('email')?.dirty ||
+              registrationForm.get('email')?.touched)
+          "
+          class="error-message"
+        >
+          <small *ngIf="registrationForm.get('email')?.errors?.['required']"
+            >L'email è richiesta.</small
+          >
+          <small *ngIf="registrationForm.get('email')?.errors?.['email']"
+            >Inserisci un formato email valido.</small
+          >
+        </div>
+      </div>
+
+      <!-- Password con messaggi di errore -->
+      <div class="form-field">
+        <div class="password-container">
+          <input
+            [type]="hidePassword ? 'password' : 'text'"
+            id="password"
+            formControlName="password"
+            class="password-input"
+            placeholder="Password"
+            required
+          />
+          <button
+            type="button"
+            mat-icon-button
+            (click)="togglePasswordVisibility()"
+            class="password-toggle"
+            aria-label="Toggle password visibility"
+          >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+        </div>
+        <div
+          *ngIf="
+            registrationForm.get('password')?.invalid &&
+            (registrationForm.get('password')?.dirty ||
+              registrationForm.get('password')?.touched)
+          "
+          class="error-message"
+        >
+          <small *ngIf="registrationForm.get('password')?.errors?.['required']"
+            >La password è richiesta.</small
+          >
+        </div>
+      </div>
+
+      <div class="flex">
+        <button
+          class="register-btn"
+          type="submit"
+          [disabled]="registrationForm.invalid"
+        >
+          REGISTRATI ORA
+        </button>
+        <p class="login-link" *ngIf="!isMobile">
+          Hai già un account? <a routerLink="/login">Effettua il login</a>
+        </p>
+      </div>
+
+      <div class="divider"><span>o</span></div>
+
+      <div class="google-btn-wrapper">
+        <div class="google-btn">
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+          />
+          <span>Continua con Google</span>
+        </div>
+        <asl-google-signin-button
+          id="google-signin-button"
+          type="standard"
+          size="large"
+        ></asl-google-signin-button>
+      </div>
+
+      <p class="login-link" *ngIf="isMobile">
+        Hai già un account? <a routerLink="/login">Effettua il login</a>
+      </p>
+    </form>
+
+    <!-- Messaggio di errore generale per la registrazione -->
+    <div
+      class="error-message"
+      *ngIf="registrationErrorMessage"
+      style="color: red; margin-top: 15px"
+    >
+      {{ registrationErrorMessage }}
+    </div>
+
+    <img src="../../assets/BG2.png" alt="" class="bg" />
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="contact-container">
+  <p class="intro-text">
+    Hai domande, suggerimenti o hai bisogno di supporto? Compila il form qui
+    sotto o scrivici direttamente a
+    <a href="mailto:info@hegotv.com">info&#64;hegotv.com</a>. Ti risponderemo il
+    prima possibile.
+  </p>
+
+  <form
+    *ngIf="!isSubmitted"
+    [formGroup]="contactForm"
+    (ngSubmit)="onSubmit()"
+    class="contact-form"
+  >
+    <div class="form-group">
+      <label for="name">Nome</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        placeholder="Il tuo nome"
+      />
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="la.tua@email.com"
+      />
+    </div>
+    <div class="form-group">
+      <label for="message">Messaggio</label>
+      <textarea
+        id="message"
+        formControlName="message"
+        rows="6"
+        placeholder="Scrivi qui il tuo messaggio..."
+      ></textarea>
+    </div>
+    <button type="submit" [disabled]="contactForm.invalid" class="submit-btn">
+      Invia Messaggio
+    </button>
+  </form>
+
+  <div *ngIf="isSubmitted" class="success-message">
+    <h3>Grazie per averci contattato!</h3>
+    <p>Abbiamo ricevuto il tuo messaggio e ti risponderemo al più presto.</p>
+  </div>
+</div>

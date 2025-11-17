@@ -1,0 +1,215 @@
+/* all.component.css */
+
+/*
+  Questo file contiene gli stili specifici per la pagina "Tutti i Format".
+  Gli stili sono derivati da home.component.css per mantenere la coerenza visiva,
+  ma sono stati rimossi tutti gli elementi non pertinenti come la sezione Hero,
+  i caroselli e le sezioni specifiche della homepage.
+*/
+
+/* --- Importazioni Globali e Reset di Base --- */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
+
+h1,
+h3,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+/* --- Layout Principale e Stato di Caricamento --- */
+.all-shows-container {
+  padding: 2rem 0; /* Spazio verticale sopra e sotto il contenuto */
+  min-height: 80vh; /* Assicura che la pagina occupi altezza anche con poco contenuto */
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  color: #f5f5f5;
+  gap: 1rem;
+}
+
+.spinner {
+  border: 4px solid rgba(245, 245, 245, 0.3);
+  border-left-color: #39b09d; /* Colore principale del tema */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Intestazione della Sezione "Tutti i Format" --- */
+.all-shows-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  padding: 0; /* Rimuove il padding extra dato che è già sull'header */
+  margin: 0; /* Rimuove il margine extra dato che è già sull'header */
+  font-size: 1.8rem;
+  color: #f5f5f5;
+}
+
+/* Opzionale: stile per un eventuale bottone "Guarda Tutti" se venisse ripristinato */
+.all-shows-header .watch-btn {
+  color: #f5f5f5;
+  padding: 0.8rem 1.5rem;
+  border: 2px solid #f5f5f5;
+  border-radius: 25px;
+  font-weight: 700;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.all-shows-header .watch-btn:hover {
+  background-color: #f5f5f5;
+  color: #141414;
+}
+
+/* --- Griglia delle Categorie --- */
+.category-grid {
+  display: grid;
+  /* Griglia responsiva che crea colonne da min 280px a max 1fr */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 0 3rem;
+}
+
+.category-grid-item {
+  background-color: #222;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  height: 50vh; /* Altezza fissa per uniformità */
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.category-grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.category-grid-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+  transition: filter 0.3s ease;
+}
+
+.category-grid-item:hover img {
+  filter: brightness(0.9);
+}
+
+.category-grid-item-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  color: #f5f5f5;
+}
+
+.category-grid-item-content h3 {
+  font-size: 1.4rem;
+  text-align: left;
+  color: #f5f5f5;
+}
+
+.category-grid-item-content p {
+  font-size: 0.9rem;
+  color: #b0b0b0;
+  margin-top: 0.3rem;
+  text-transform: uppercase; /* Per uniformare "SEASONS" e "VIDEOS" */
+  letter-spacing: 0.5px;
+}
+
+.no-content-message {
+  text-align: center;
+  color: #b0b0b0;
+  padding: 3rem;
+  font-size: 1.2rem;
+}
+
+/* --- Media Queries per la Responsività --- */
+
+@media (max-width: 768px) {
+  .all-shows-header {
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 0 1.5rem;
+  }
+
+  .category-grid-item {
+    height: 150px;
+  }
+
+  .category-grid-item-content h3 {
+    font-size: 1.2rem;
+  }
+
+  .category-grid-item-content p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-grid {
+    /* Passa a 2 colonne su schermi molto piccoli */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .category-grid-item {
+    height: 120px;
+  }
+
+  .category-grid-item-content {
+    padding: 0.75rem;
+  }
+
+  .category-grid-item-content h3 {
+    font-size: 1rem;
+  }
+
+  /* Nasconde il contatore video/stagioni su schermi molto piccoli per pulizia */
+  .category-grid-item-content p {
+    display: none;
+  }
+}

@@ -1,0 +1,249 @@
+/* Stili Generali della Pagina */
+.watchlist-page {
+  color: #f5f5f5;
+  background-color: #0b0c10;
+  font-family: "Montserrat", sans-serif;
+  padding-bottom: 60px; /* Spazio in fondo */
+}
+
+/* Sezione Hero */
+.hero-section {
+  height: 60vh;
+  display: flex;
+  align-items: flex-end; /* Allinea il contenuto in basso */
+  padding: 40px 60px;
+  box-sizing: border-box;
+  background-image: linear-gradient(
+      to top,
+      rgba(11, 12, 16, 1) 10%,
+      rgba(11, 12, 16, 0) 100%
+    ),
+    url("../../assets/favorite.png"); /* Gradiente per una transizione più morbida */
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+}
+
+.hero-content h1 {
+  font-size: 4rem; /* Dimensione più contenuta e moderna */
+  color: #ffffff;
+  font-weight: 800;
+  margin: 0;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Ombra per leggibilità */
+}
+
+.hero-content p {
+  font-size: 1.25rem;
+  color: #e0e0e0;
+  margin: 10px 0 0;
+  max-width: 500px; /* Limita la larghezza per una migliore leggibilità */
+}
+
+/* Contenuto della Watchlist (slider) */
+.watchlist-content {
+  padding: 0 60px;
+  margin-top: 40px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.slider-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.scroll-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.scroll-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.scroll-button mat-icon {
+  font-size: 20px;
+}
+
+/* Griglia Video / Slider */
+.video-grid {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto; /* Abilita lo scroll orizzontale */
+  scroll-behavior: smooth;
+  padding-bottom: 20px; /* Spazio per l'ombra e per non tagliare elementi */
+  scrollbar-width: none; /* Nasconde la scrollbar per Firefox */
+}
+
+.video-grid::-webkit-scrollbar {
+  display: none; /* Nasconde la scrollbar per Chrome, Safari, etc. */
+}
+
+/* Card Video */
+.video-card {
+  flex: 0 0 280px; /* Larghezza fissa, non si restringe */
+  width: 280px;
+  background-color: #1a1d21;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.video-card:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-image-container {
+  position: relative;
+  width: 100%;
+  height: 160px;
+}
+
+.card-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.video-card:hover .card-image-container img {
+  transform: scale(1.1); /* Effetto zoom sull'immagine */
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(26, 29, 33, 0.8) 0%,
+    transparent 50%
+  );
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.card-body h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f5f5f5;
+  margin: 0 0 8px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Aggiunge "..." se il titolo è troppo lungo */
+}
+
+.card-body .meta {
+  font-size: 0.9rem;
+  color: #a0a0a0;
+}
+
+/* Watchlist Vuota */
+.empty-watchlist {
+  text-align: center;
+  padding: 80px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.empty-icon {
+  font-size: 80px;
+  width: 80px;
+  height: 80px;
+  color: #4f5154;
+  margin-bottom: 24px;
+}
+
+.empty-watchlist h2 {
+  font-size: 2rem;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.empty-watchlist p {
+  font-size: 1.1rem;
+  color: #a0a0a0;
+  max-width: 400px;
+}
+
+/* Media Queries per la Responsività */
+@media (max-width: 1024px) {
+  .hero-section,
+  .watchlist-content {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .hero-content h1 {
+    font-size: 3.5rem;
+  }
+
+  .video-card {
+    flex-basis: 250px;
+    width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section,
+  .watchlist-content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .hero-section {
+    height: 50vh;
+    background-position: center;
+  }
+
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .video-card {
+    flex-basis: 220px;
+    width: 220px;
+  }
+}

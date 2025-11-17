@@ -1,0 +1,14 @@
+<!-- La logica dell'iframe è corretta, ma usa la nuova variabile safeUrl -->
+<div class="video-container" *ngIf="safeUrl">
+  <iframe
+    #playerIframe
+    id="bunny-stream-player"
+    *ngIf="safeUrl"
+    [src]="safeUrl"
+    frameborder="0"
+    style="border: none; position: absolute; top: 0; height: 100%; width: 100%"
+    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+    allowfullscreen="true"
+  >
+  </iframe>
+</div>

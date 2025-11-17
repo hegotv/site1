@@ -1,0 +1,48 @@
+<section class="slider-section" *ngIf="items.length > 0">
+  <div class="slider-header">
+    <h2 class="section-title">{{ sectionTitle }}</h2>
+    <div class="slider-nav-buttons">
+      <button
+        mat-icon-button
+        class="nav-button prev-button"
+        (click)="backScroll()"
+        [disabled]="isBackDisabled"
+        aria-label="Previous"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        class="nav-button next-button"
+        (click)="nextScroll()"
+        [disabled]="isNextDisabled"
+        aria-label="Next"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="slider-container">
+    <!-- Rimosso l'evento (scroll) da qui, lo gestiamo nel .ts -->
+    <div #sliderContent class="slider-content">
+      <!--
+        Loop sull'array generico 'items'. Il click emette un evento.
+      -->
+      <div
+        *ngFor="let item of items; trackBy: trackByItem"
+        class="slide"
+        (click)="onClickSlide(item)"
+      >
+        <!--
+          ***** MODIFICA CHIAVE QUI *****
+          Qui viene proiettato il template fornito dal componente genitore.
+          Il contesto '$implicit' passa l'oggetto 'item' al template.
+        -->
+        <ng-container
+          *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"
+        ></ng-container>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,589 @@
+/* --- Stili Globali per il Componente --- */
+:host {
+  display: block;
+  background-color: #111;
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+}
+
+.main-content {
+  padding: 0 3rem;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #fff;
+  margin: 3rem 0 1.5rem 0;
+}
+
+.all-shows-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.all-shows-header .section-title {
+  margin: 0;
+}
+
+.all-shows-link-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  color: #39b09d;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.all-shows-link-btn:hover {
+  background: rgba(57, 176, 157, 0.08);
+}
+
+.all-shows-link-btn .material-symbols-outlined {
+  font-size: 1.3rem;
+}
+
+/* =================================================================
+   HERO SECTION (INVARIATO)
+   ================================================================= */
+.hero-section {
+  position: relative;
+  height: 90vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+}
+.hero-slides-wrapper,
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-slide {
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+.hero-slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+.hero-background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+}
+.hero-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(17, 17, 17, 1) 10%,
+    rgba(17, 17, 17, 0.5) 40%,
+    transparent 70%
+  );
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  padding: 3rem;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  max-width: 50%;
+}
+.hero-content h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #ccc;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+}
+.hero-metadata {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  color: #ccc;
+}
+.hero-metadata .views {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.hero-metadata .material-symbols-outlined {
+  font-size: 1.1rem;
+}
+.hero-description {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #aaa;
+  margin-bottom: 2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hero-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.hero-controls .control-btn {
+  background: transparent;
+  border: 3px solid #39b09c;
+  color: #ccc;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 4px 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+  transition: background 0.3s;
+}
+.hero-controls .control-btn:hover {
+  background: #39b09c;
+  color: #fff;
+}
+.hero-pagination {
+  position: absolute;
+  z-index: 2;
+  bottom: 3rem;
+  right: 3rem;
+  display: flex;
+  gap: 8px;
+}
+.hero-mobile {
+  padding: 16px;
+}
+.hero-mobile img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  object-fit: cover;
+}
+.progress-bar-container {
+  width: 50px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: #39b09d;
+  border-radius: 2px;
+}
+.progress-bar.active {
+  animation: fillHeroBar 5s linear forwards;
+}
+@keyframes fillHeroBar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* =================================================================
+   STILI PER LE GRIGLIE E SLIDER
+   ================================================================= */
+
+.custom-grid-section {
+  margin-bottom: 3rem;
+}
+
+/* --- Sezione Trending (Griglia Flex) --- */
+.trending-releases-grid {
+  display: flex; /* <-- RIPRISTINATO */
+  gap: 1.5rem;
+  cursor: pointer;
+}
+
+.trending-card {
+  /* <-- RIPRISTINATO */
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  color: #fff;
+  height: 40vh;
+  flex: 1; /* Le card si espandono per riempire lo spazio */
+  background-color: #2e2e2e;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: transform 0.3s ease;
+}
+.trending-card:hover {
+  transform: scale(1.02);
+}
+
+.trending-card .card-background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transition: transform 0.4s ease;
+}
+.trending-card:hover .card-background {
+  transform: scale(1.05);
+}
+
+.trending-card .card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  z-index: 1;
+}
+
+.trending-card-content {
+  position: relative;
+  padding: 1.2rem;
+  z-index: 2;
+}
+.trending-card-content .card-header {
+  margin-bottom: 1rem;
+}
+.trending-card-content .card-duration {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.trending-card-content .card-title {
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #fff;
+}
+.trending-card .watch-btn {
+  background: #39b09c;
+  color: #111;
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  font-weight: 700;
+  border: none;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(10px);
+}
+.trending-card:hover .watch-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Sezione Browse by Category (CSS Grid) --- */
+.browse-category-grid {
+  /* <-- RIPRISTINATO */
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: 1.5rem;
+}
+
+.browse-category-card {
+  /* <-- RIPRISTINATO */
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+.browse-category-card:hover {
+  transform: scale(1.05);
+}
+.browse-category-card .browse-category-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  transition: all 0.4s ease;
+}
+.browse-category-card:hover .browse-category-image {
+  filter: brightness(0.9);
+  transform: scale(1.05);
+}
+.browse-category-card .card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+.browse-category-title {
+  position: relative;
+  z-index: 3;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* --- Stili per le card dentro gli SLIDER --- */
+/* (Questi stili si applicano a "Continue Watching" e "All Shows") */
+.slide-content-wrapper,
+.all-shows-card-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: #222;
+}
+.slide-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
+}
+.slide:hover .slide-image {
+  transform: scale(1.05);
+}
+.slide-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  z-index: 2;
+}
+.slide-hover-meta {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease-out;
+}
+.slide:hover .slide-hover-meta {
+  opacity: 1;
+  transform: translateY(0);
+}
+.slide-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+.slide-visuals,
+.slide-duration {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.slide-info .progress-bar-container {
+  width: calc(100% - 2rem);
+  position: absolute;
+  bottom: 0;
+  left: 1rem;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+.all-shows-card-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.all-shows-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 1.5rem;
+}
+.all-shows-content h3 {
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+/* =================================================================
+   LOADING, SPINNER & SKELETON (INVARIATO)
+   ================================================================= */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 10, 10, 0.92);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.loading-logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 2rem;
+  filter: drop-shadow(0 2px 16px #39b09d88);
+}
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 6px solid #222;
+  border-top: 6px solid #39b09d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.skeleton-box {
+  position: relative;
+  background: #3a3a3a;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.skeleton-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  animation: shine 1.5s infinite;
+}
+@keyframes shine {
+  0% {
+    left: -150px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* =================================================================
+   MEDIA QUERIES PER MOBILE (INVARIATO)
+   ================================================================= */
+@media (max-width: 768px) {
+  :host {
+    overflow-x: hidden;
+  }
+  .main-content {
+    padding: 0 1rem;
+  }
+  .section-title {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem 0;
+  }
+  .all-shows-header {
+    margin-bottom: 1rem;
+  }
+  .hero-section {
+    height: auto;
+  }
+  .hero-content {
+    max-width: 100%;
+    padding: 1.5rem;
+    position: absolute;
+    height: auto;
+    bottom: 20px;
+    left: 0;
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+  .hero-description,
+  .hero-metadata,
+  .hero-pagination,
+  .hero-content h1 {
+    display: none;
+  }
+  .hero-controls {
+    width: 100%;
+    margin-bottom: 0;
+    justify-content: space-evenly;
+  }
+  .control-btn {
+    padding: 0.4rem 1rem;
+    font-size: 1.2rem;
+    border-width: 0px;
+    border-radius: 6px;
+    height: 40px;
+    min-width: 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    background: #39b09c;
+    color: #fff;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  .control-btn.second {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(6px);
+    color: #000000;
+  }
+
+  /* RIPRISTINATE REGOLE PER GRIGLIE SU MOBILE */
+  .trending-releases-grid {
+    flex-direction: column; /* Le card si impilano verticalmente */
+  }
+  .trending-card {
+    height: 40vh; /* Riduciamo l'altezza su mobile */
+  }
+  .browse-category-grid {
+    grid-template-columns: 1fr; /* Una colonna per le categorie */
+  }
+}

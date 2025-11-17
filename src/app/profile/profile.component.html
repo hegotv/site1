@@ -1,0 +1,40 @@
+<!-- Usa un contenitore ng-container per evitare elementi extra nel DOM -->
+<ng-container *ngIf="userProfile">
+  <main>
+    <div class="column">
+      <!-- 
+        SUGGERIMENTO 5: Gestione dinamica dell'immagine.
+        Usa la foto profilo se esiste, altrimenti usa quella di default.
+        onError gestisce il caso in cui l'URL della foto sia rotto.
+      -->
+      <img
+        [src]="userProfile.photo || defaultPhotoUrl"
+        (error)="onImageError($event)"
+        alt="Foto profilo di {{ userProfile.name }} {{ userProfile.surname }}"
+        class="profile-photo"
+      />
+
+      <h1>
+        {{ userProfile.name || "Utente" }} {{ userProfile.surname || "" }}
+      </h1>
+      <h2>{{ userProfile.email }}</h2>
+
+      <div class="button-group">
+        <button class="btn settings-btn" (click)="openSettings()">
+          <mat-icon>settings</mat-icon> IMPOSTAZIONI
+        </button>
+        <button class="btn logout-btn" (click)="Logout()">
+          <mat-icon>logout</mat-icon> LOG OUT
+        </button>
+      </div>
+    </div>
+
+    <!-- 
+      SUGGERIMENTO 6 (UX): Mostra le impostazioni come un overlay 
+      per un'esperienza più fluida.
+    -->
+    <div class="settings-overlay" *ngIf="showSettings">
+      <app-settings (closeSettings)="showSettings = false"></app-settings>
+    </div>
+  </main>
+</ng-container>

@@ -1,0 +1,9 @@
+<div class="app-cont">
+  <app-videopage
+    class="app-video"
+    [url]="url"
+    [libraryID]="data?.libraryID"
+    (timeUpdated)="onTimeUpdate($event)"
+  >
+  </app-videopage>
+</div>

@@ -1,0 +1,188 @@
+/* =================================================================
+   PODCAST COMPONENT STYLES - BASATO SUL NUOVO TEMA
+   ================================================================= */
+
+/* --- Stili di Base della Pagina --- */
+:host {
+  display: block;
+}
+
+.podcast-page-container {
+  padding: 0 3rem;
+}
+
+/* --- Stili per ogni Sezione/Categoria di Podcast --- */
+.podcast-category-section {
+  margin-bottom: 3rem;
+}
+
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.category-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #fff;
+  margin: 0;
+}
+
+/* =================================================================
+   NUOVI STILI PER LA GRIGLIA E LE CARD DELLE STAGIONI
+   ================================================================= */
+
+/* --- Griglia Flessibile per le Stagioni (sostituisce il carosello) --- */
+.seasons-grid {
+  display: grid;
+  /* Crea colonne flessibili: si adatteranno per riempire lo spazio,
+     con una larghezza minima di 250px e massima di 1 frazione (1fr) */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* --- Card della Singola Stagione --- */
+.season-card {
+  border-radius: 10px;
+  background-color: #1a1a1a;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.season-card.clickable:hover {
+  background-color: #2e2e2e;
+}
+
+.season-thumbnail-container {
+  position: relative;
+  /* Mantiene un aspect ratio di 16:9, comune per le thumbnail */
+  aspect-ratio: 16 / 9;
+  background-color: #222; /* Colore di sfondo mentre l'immagine carica */
+}
+
+.season-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.season-card.clickable:hover .season-thumbnail {
+  transform: scale(1.05);
+}
+
+/* Stile per il segnaposto quando una stagione non ha immagine */
+.thumbnail-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-size: 3rem; /* Dimensione dell'icona */
+}
+
+.play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.season-card.clickable:hover .play-overlay {
+  opacity: 1;
+}
+
+.play-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: #39b09c;
+  color: #111;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.play-button:hover {
+  transform: scale(1.1);
+}
+
+.season-info {
+  padding: 1rem;
+}
+
+/* Titolo della stagione all'interno della card */
+.season-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.3rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Autore/Speaker della stagione */
+.season-author {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin: 0;
+}
+
+/* =================================================================
+   STILI GENERICI (caricamento, responsive)
+   ================================================================= */
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.loading-spinner {
+  width: 56px;
+  height: 56px;
+  border: 6px solid #222;
+  border-top: 6px solid #39b09d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Responsive per Mobile --- */
+@media (max-width: 768px) {
+  .podcast-page-container {
+    padding: 0 1rem;
+  }
+  .category-title {
+    font-size: 1.3rem;
+  }
+  .seasons-grid {
+    /* La griglia si adatterà automaticamente.
+       Possiamo ridurre il gap su schermi più piccoli se necessario. */
+    gap: 1rem;
+  }
+}

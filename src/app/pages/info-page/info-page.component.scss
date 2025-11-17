@@ -1,0 +1,53 @@
+:host {
+  display: block;
+  background-color: #0a0a0a;
+  color: #e0e0e0;
+  padding: 8rem 2rem 5rem 2rem; // Spazio sopra e sotto
+  min-height: 80vh;
+}
+
+.info-page-container {
+  max-width: 900px; // Larghezza massima per la leggibilità
+  margin: 0 auto;
+}
+
+.info-page-header {
+  text-align: center;
+  margin-bottom: 4rem;
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+}
+
+// Stili globali per il contenuto delle pagine informative
+.info-page-content {
+  line-height: 1.8;
+  font-size: 1.1rem;
+
+  // Stili per i sottotitoli che useremo nelle pagine
+  h2 {
+    font-size: 1.8rem;
+    color: #ffffff;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #39b09d; // Colore primario del footer
+    padding-left: 1rem;
+  }
+
+  // Stili per i link
+  a {
+    color: #39b09d;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #52d1be;
+    }
+  }
+}

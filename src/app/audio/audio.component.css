@@ -1,0 +1,271 @@
+/* src/app/audio/audio.component.css */
+
+/* =================================================================
+   VARIABILI E STILI DI BASE (Mobile First)
+   ================================================================= */
+:host {
+  --primary-color: #39b09d;
+  --background-color: #121212;
+  --surface-color: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-color: #2c2c2c;
+
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  /* Spaziatura fluida che si adatta allo schermo */
+  padding: clamp(20px, 5vw, 40px);
+  background-color: var(--background-color);
+  box-sizing: border-box;
+}
+
+/* =================================================================
+   CONTENITORE PRINCIPALE (Layout di base a colonna)
+   ================================================================= */
+.audio-player-container {
+  display: flex;
+  margin-top: 8vh;
+  flex-direction: column;
+  gap: clamp(30px, 6vw, 50px); /* Gap fluido */
+  width: 100%;
+  max-width: 600px; /* Larghezza massima per il layout a colonna */
+}
+
+.player-content {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: clamp(20px, 5vw, 30px); /* Padding fluido */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  width: 100%;
+}
+
+.artwork-image {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.episode-title {
+  /* Titolo con dimensione fluida */
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.speaker-info {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+/* --- Controlli di Riproduzione --- */
+.progress-controls {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+.progress-controls.seekable {
+  opacity: 1;
+}
+.progress-bar-wrapper {
+  flex-grow: 1;
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.progress-bar {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 5px;
+}
+
+.main-controls {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.control-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.control-btn:hover:not(:disabled) {
+  color: var(--text-primary);
+  transform: scale(1.1);
+}
+.control-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.play-pause-btn {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.play-pause-btn:hover:not(:disabled) {
+  color: var(--background-color);
+}
+
+/* --- Sezione "Altri Episodi" --- */
+.other-episodes-section {
+  width: 100%;
+}
+.section-title {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+.episodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.episode-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.episode-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.item-artwork {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.item-info {
+  flex-grow: 1;
+  min-width: 0; /* Per far funzionare l'ellipsis */
+}
+.item-title {
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.item-duration {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+.item-play-icon {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.episode-item:hover .item-play-icon {
+  opacity: 1;
+}
+
+/* --- Stati di Caricamento ed Errore --- */
+.player-loading-state,
+.player-error-state {
+  color: var(--text-secondary);
+  text-align: center;
+}
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  color: #f5f5f5;
+  gap: 1rem;
+}
+
+.spinner {
+  border: 4px solid rgba(245, 245, 245, 0.3);
+  border-left-color: #39b09d; /* Colore principale del tema */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.player-error-state .fa-exclamation-triangle {
+  font-size: 3rem;
+  color: #ff5555;
+  margin-bottom: 20px;
+}
+.player-error-state h2 {
+  color: var(--text-primary);
+}
+
+/* =================================================================
+   TABLET E DESKTOP (Layout a due colonne)
+   ================================================================= */
+@media (min-width: 992px) {
+  .audio-player-container {
+    /* Passa a un layout a riga */
+    flex-direction: row;
+    align-items: flex-start;
+    /* Aumenta la larghezza massima per contenere le due colonne */
+    max-width: 1200px;
+    gap: 50px;
+  }
+
+  /* La colonna del player occupa circa il 60% dello spazio */
+  .player-content {
+    flex: 2; /* Occuperà il doppio dello spazio della lista episodi */
+    /* Possiamo usare sticky per mantenere il player visibile mentre si scorre la lista */
+    position: sticky;
+    top: 40px;
+  }
+
+  /* La colonna degli episodi occupa il restante 40% */
+  .other-episodes-section {
+    flex: 1.5; /* Leggermente meno del player */
+  }
+
+  /* Rendi la lista scrollabile se ci sono troppi episodi */
+  .episodes-list {
+    max-height: 70vh; /* Altezza massima prima che appaia lo scroll */
+    overflow-y: auto;
+    padding-right: 10px; /* Spazio per la scrollbar */
+  }
+}

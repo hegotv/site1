@@ -1,0 +1,601 @@
+/* =================================================================== */
+/* VARIABILI E STILI GLOBALI                                           */
+/* =================================================================== */
+:host {
+  --header-height: 70px;
+  --primary-color: #39b09d;
+  --bg-dark: #0f0f0f;
+  --bg-surface: #1a1a1a;
+  --bg-surface-light: #2c2c2c;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --border-color: #444;
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease-in-out;
+}
+
+/* Reset e base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+ul {
+  list-style: none;
+}
+a,
+button {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  font: inherit;
+}
+
+/* Scrollbar custom (desktop) */
+@media (min-width: 769px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--bg-surface-light);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--border-color);
+  }
+}
+
+/* =================================================================== */
+/* COMPONENTI RIUTILIZZABILI                                           */
+/* =================================================================== */
+.user-info-block {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.user-avatar .material-symbols-outlined {
+  font-size: 40px;
+  display: block;
+}
+.user-details {
+  min-width: 0;
+}
+.user-name,
+.user-email {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.user-name {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+.user-email {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+/* Pulsanti icona */
+.icon-button {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: color var(--transition-fast),
+    background-color var(--transition-fast), transform var(--transition-fast);
+}
+.icon-button:hover {
+  color: var(--primary-color);
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+.icon-button:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* =================================================================== */
+/* LAYOUT PRINCIPALE E HEADER                                          */
+/* =================================================================== */
+.app-custom-sidenav-container {
+  position: relative;
+  z-index: 1000;
+}
+.fixed-header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  height: var(--header-height);
+  z-index: 10;
+  background-color: transparent;
+  transition: background-color var(--transition-medium),
+    box-shadow var(--transition-medium);
+}
+.fixed-header.scrolled {
+  background-color: rgba(15, 15, 15, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+.main-container {
+  height: 100%;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo-container .logo {
+  height: 40px;
+}
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  /* SOLUZIONE 1/3: Crea spazio per il menu-button esterno */
+  padding-right: 54px;
+}
+
+/* =================================================================== */
+/* MOBILE FIRST                                                        */
+/* =================================================================== */
+.nav-links,
+.profile-login-area {
+  display: none;
+}
+
+/* SOLUZIONE 2/3: Posiziona il menu-button al livello più alto e in posizione fissa */
+.menu-button {
+  display: flex;
+  position: fixed; /* Lo toglie dal flusso e lo fissa sopra tutto */
+  top: 13px; /* Lo centra verticalmente (70px - 44px) / 2 = 13px */
+  right: 1rem; /* Lo allinea al padding laterale */
+  z-index: 1010; /* Lo mette sopra la sidenav (1000) */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* SOLUZIONE 3/3: Animazione da menu a close e gestione visibilità */
+.menu-button .material-symbols-outlined {
+  transition: transform var(--transition-medium);
+}
+.menu-button.active .material-symbols-outlined {
+  transform: rotate(180deg);
+  color: var(--primary-color);
+}
+.search-wrapper.active ~ .menu-button {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+}
+
+/* Sidenav mobile */
+.custom-sidenav-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  color: var(--text-primary);
+  width: min(85vw, 320px);
+  height: 100vh;
+  background-color: var(--bg-surface);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+}
+.custom-sidenav-panel::before {
+  content: ""; /* Obbligatorio per ogni pseudo-elemento */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+
+  /* Questo è il nostro SVG low poly. I colori usano la tua --primary-color! */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3e%3cpolygon fill='%23444444' fill-opacity='0.15' points='0,100 100,0 100,100'/%3e%3cpolygon fill='%23444444' fill-opacity='0.3' points='0,0 0,100 50,100'/%3e%3cpolygon fill='%23444444' fill-opacity='0.08' points='0,20 100,40 50,100'/%3e%3c/svg%3e");
+  background-size: cover; /* Fa in modo che il pattern copra tutto lo spazio */
+  background-position: center center;
+
+  opacity: 0.4; /* Opacità generale del pattern per non disturbare il testo */
+  z-index: -1; /* Fondamentale: posiziona lo sfondo DIETRO al testo e ai link */
+}
+.custom-sidenav-panel.is-opened {
+  transform: translateX(0);
+}
+.custom-sidenav-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  opacity: 1;
+  transition: opacity var(--transition-medium);
+}
+.profile-area {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.sidenav-links {
+  margin-top: 9vh;
+}
+
+.sidenav-links ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.sidenav-links a {
+  display: block;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color var(--transition-medium),
+    color var(--transition-medium);
+}
+.sidenav-links a:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.sidenav-links a.active {
+  color: var(--primary-color);
+  background-color: rgba(57, 176, 157, 0.15);
+}
+.sidenav-divider {
+  border: 0;
+  height: 1px;
+  background: var(--border-color);
+  margin: 1rem 0;
+}
+.logout-mobile {
+  color: var(--primary-color) !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =================================================================== */
+/* RICERCA ANIMATA (MOBILE & DESKTOP) - MODIFICATO                     */
+/* =================================================================== */
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-surface-light);
+  border-radius: 50px;
+  transition: width 0.4s ease-in-out, background-color 0.4s ease;
+  width: 44px; /* Larghezza iniziale (solo pulsante) */
+  height: 44px;
+  position: relative; /* Cruciale per posizionare il pulsante figlio */
+}
+
+.search-wrapper.active {
+  width: 180px; /* Larghezza quando la ricerca è attiva */
+
+  background-color: var(--bg-surface);
+}
+
+.search-toggle-button {
+  /* MODIFICA: Posizionato in modo assoluto per rimanere fisso a destra */
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 43px; /* Dimensione fissa per il click */
+
+  /* Stili ereditati da .icon-button ma specificati qui per chiarezza */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2; /* Sta sopra l'input field */
+  color: var(--text-primary);
+}
+
+.search-input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  /* Il padding destro lascia spazio per il pulsante fisso e il clear button */
+  padding: 0 50px 0 15px;
+  opacity: 0; /* Nascosto di default */
+  transition: opacity 0.3s ease 0.1s;
+  pointer-events: none; /* Non cliccabile quando nascosto */
+}
+
+.search-wrapper.active .search-input-container {
+  opacity: 1;
+  pointer-events: auto; /* Cliccabile quando visibile */
+}
+
+.search-input-field {
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.search-input-field::placeholder {
+  color: var(--text-secondary);
+}
+
+.clear-search-button {
+  position: absolute;
+  right: 45px; /* Posizionato a sinistra del pulsante toggle principale */
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.clear-search-button:hover {
+  color: var(--primary-color);
+  background-color: var(--bg-surface-light);
+}
+
+.clear-search-button .material-symbols-outlined {
+  font-size: 20px;
+}
+
+/* Nasconde il menu di navigazione desktop quando la ricerca è attiva */
+.nav-links.hidden {
+  display: none;
+}
+
+/* =================================================================== */
+/* RISULTATI DI RICERCA - MOBILE & DESKTOP (Invariato)                 */
+/* =================================================================== */
+.search-results-overlay {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+  background-color: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 9; /* Sotto l'header */
+  padding: 1rem;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.search-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.search-results-list li {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  background-color: var(--bg-surface-light);
+  border-radius: 8px;
+  transition: background-color var(--transition-fast);
+}
+
+.search-results-list li:hover {
+  background-color: #3a3a3a;
+}
+
+.result-thumbnail {
+  width: 90px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.result-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.result-description {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.no-results-message,
+.loading-message {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 1rem;
+}
+
+@media (min-width: 769px) {
+  .nav-links,
+  .profile-login-area {
+    display: flex;
+  }
+  .menu-button,
+  .custom-sidenav-panel,
+  .custom-sidenav-backdrop {
+    display: none !important;
+  }
+  .main-container {
+    padding: 0 2rem;
+  }
+  .logo-container .logo {
+    height: 35px;
+  }
+  nav.nav-links {
+    flex: 1;
+    justify-content: center;
+  }
+  nav.nav-links ul {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: 50px;
+    background-color: rgba(122, 122, 122, 0.4);
+    backdrop-filter: blur(10px);
+  }
+  nav.nav-links a {
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    transition: all var(--transition-fast);
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  nav.nav-links a:hover {
+    color: var(--primary-color);
+    background-color: rgba(57, 176, 157, 0.2);
+  }
+  nav.nav-links a.active {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+
+  /* Right section */
+  .right-section {
+    gap: 1rem;
+    /* CORREZIONE: Annulla il padding per mobile, facendo riapparire il login button */
+    padding-right: 0;
+  }
+
+  /* Stile Search Desktop */
+  .search-wrapper.active {
+    margin-right: 6.8rem;
+    width: 60vw;
+  }
+
+  /* Login / Profilo */
+  .profile-login-area {
+    position: relative;
+    align-items: center;
+  }
+  .login-link a {
+    border: 1px solid var(--primary-color);
+    border-radius: 50px;
+    padding: 0.6rem 1.2rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    transition: all var(--transition-medium);
+  }
+  .login-link a:hover {
+    background-color: var(--primary-color);
+    color: var(--bg-dark);
+    transform: scale(1.05);
+  }
+  .profile-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-radius: 50px;
+    border: none;
+    background-color: #1a1a1a;
+    transition: background-color var(--transition-fast);
+  }
+  .profile-dropdown-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+  .profile-icon {
+    background-color: var(--bg-surface-light);
+    border-radius: 50%;
+    color: var(--primary-color);
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    margin-right: 5px;
+  }
+  .dropdown-arrow {
+    color: white;
+    transition: transform var(--transition-medium);
+  }
+  .dropdown-arrow.rotated {
+    transform: rotate(180deg);
+  }
+  .profile-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 280px;
+    background-color: var(--bg-surface-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    z-index: 100;
+    animation: fadeIn 0.2s ease-out;
+  }
+  .profile-dropdown-menu .user-info-block {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .dropdown-menu-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .dropdown-menu-item {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    color: #a0a0a0;
+    background: none;
+    border: none;
+    text-align: left;
+    transition: background-color var(--transition-fast);
+  }
+  .dropdown-menu-item:hover {
+    background-color: #444;
+  }
+  .dropdown-menu-item.logout {
+    color: var(--primary-color);
+  }
+  .dropdown-menu-item .material-symbols-outlined {
+    margin-right: 12px;
+  }
+}
+
+/* Rimuove il margin-top dai sidenav links quando l'utente è loggato */
+:host-context(.logged-in) .sidenav-links {
+  margin-top: 0;
+}
+
+/* =================================================================== */
+/* ANIMAZIONI                                                          */
+/* =================================================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

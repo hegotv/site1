@@ -1,0 +1,62 @@
+:host {
+  cursor: none;
+}
+
+.custom-cursor {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  position: fixed;
+  top: -20px;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+
+  &.visible {
+    opacity: 1;
+  }
+
+  .goo-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    filter: url("#goo"); // 👈 qui il filtro
+  }
+}
+
+.custom-cursor__dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: background-color 0.2s ease-out;
+}
+
+.custom-cursor__circle {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #39b09c70;
+  transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+}
+
+.custom-cursor.cursor-grow {
+  .custom-cursor__circle {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0.3;
+  }
+
+  .custom-cursor__dot {
+    opacity: 0.8;
+    background-color: #ffffffcf;
+  }
+}
+
+@media (max-width: 768px) {
+  .custom-cursor {
+    display: none;
+  }
+}

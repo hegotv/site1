@@ -1,0 +1,29 @@
+<!-- Sezione "Lavori in Corso" - visibile di default -->
+<div class="container" *ngIf="!showLogin">
+  <!-- Sostituisci questo SVG con il tuo logo o un'immagine -->
+  <img
+    src="../../assets/HEGO_crop.png"
+    class="logo"
+    (click)="onLogoClick()"
+    alt="HEGO Logo"
+  />
+
+  <h1>Lavori in Corso</h1>
+  <p>Stiamo aggiornando il sito. Torna a trovarci presto!</p>
+</div>
+
+<!-- Sezione Login - visibile solo dopo il triplo click -->
+<div class="login-container" *ngIf="showLogin">
+  <h2>Accesso Riservato</h2>
+  <form (ngSubmit)="onSubmit()">
+    <input
+      type="password"
+      [(ngModel)]="enteredPassword"
+      name="password"
+      placeholder="Inserisci la password"
+      required
+      autofocus
+    />
+    <button type="submit">Entra</button>
+  </form>
+</div>

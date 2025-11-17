@@ -1,0 +1,63 @@
+<main class="podcast-page-container">
+  @if (isLoading) {
+  <div class="loading-state">...</div>
+  } @else {
+  <!-- Ciclo principale sulle SEZIONI -->
+  @for (section of podcastSections; track section.id) {
+  <!--
+      ===============================================================
+      <<<<<<<<<<<<<<<<<<<<< UTILIZZO DEL NUOVO SLIDER >>>>>>>>>>>>>>>>>>
+      ===============================================================
+    -->
+  <app-slider
+    [sectionTitle]="section.title"
+    [items]="section.seasons"
+    [itemTemplate]="seasonCardTemplate"
+    (slideClick)="handleSeasonClick($event)"
+  ></app-slider>
+  } @empty {
+  <p class="no-content-message">Nessun contenuto disponibile.</p>
+  } }
+</main>
+
+<!--
+  ===============================================================
+  <<<<<<<<< TEMPLATE PER LA CARD DELLA STAGIONE (PROIETTATO) >>>>>>>>>
+  ===============================================================
+  Definiamo qui come deve apparire ogni singolo elemento dello slider.
+  'let-season' riceve l'oggetto 'item' passato dal contesto dello slider.
+-->
+<ng-template #seasonCardTemplate let-season>
+  <div
+    class="season-card"
+    [class.clickable]="season.episodes && season.episodes.length > 0"
+    [attr.aria-label]="'Vedi tutti gli episodi di ' + season.title"
+  >
+    <!-- Contenitore per l'immagine di copertina -->
+    <div class="season-thumbnail-container">
+      @if (season.episodes && season.episodes.length > 0) {
+      <img
+        [src]="season.artwork_image"
+        alt="Copertina di {{ season.title }}"
+        class="season-thumbnail"
+      />
+      } @else {
+      <div class="thumbnail-placeholder">
+        <i class="fas fa-podcast"></i>
+      </div>
+      }
+      <div class="play-overlay">
+        <button class="play-button" aria-label="Vedi episodi" tabindex="-1">
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Informazioni testuali della card -->
+    <div class="season-info">
+      <h4 class="season-title">{{ season.title }}</h4>
+      @if (season.episodes && season.episodes.length > 0) {
+      <p class="season-author">{{ season.episodes[0].speaker }}</p>
+      }
+    </div>
+  </div>
+</ng-template>

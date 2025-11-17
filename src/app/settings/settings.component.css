@@ -1,0 +1,171 @@
+.settings-modal {
+  background: #1e1e1ebb;
+  border-radius: 15px;
+  backdrop-filter: blur(20px);
+  padding: 30px;
+  width: 45vw;
+  height: 70vh;
+  display: flex;
+  align-items: flex-start;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 48px;
+  font-weight: lighter;
+  color: #ccc;
+  cursor: pointer;
+}
+
+h2 {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-weight: 500;
+  color: #bff;
+}
+
+.profile-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.profile-photo {
+  position: relative;
+  width: 15vw;
+  margin-right: 5vw;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.profile-photo:hover .photo-overlay {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+input,
+select {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background-color: #222;
+  color: #c7fdfd;
+}
+
+input::placeholder {
+  color: #999;
+}
+
+.save-btn {
+  padding: 12px;
+  background: #34d1c4;
+  border: none;
+  border-radius: 30px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.save-btn:hover {
+  background: #2bb3a6;
+}
+.input-block {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 150px;
+}
+
+.input-block label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #bff;
+}
+
+.form-group.double {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+input {
+  flex: none;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background-color: #222;
+  color: #c7fdfd;
+}
+@media (max-width: 768px) {
+  .settings-modal {
+    width: 100vw;
+    border-radius: 0;
+    height: 90vh;
+    transform: translate(-50%, -45%);
+    display: block;
+  }
+
+  .profile-photo {
+    width: 30vw;
+    margin-right: 0;
+  }
+
+  .profile-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .form-group {
+    flex-direction: column;
+  }
+
+  .form-group.double {
+    flex-direction: column;
+  }
+}

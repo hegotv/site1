@@ -1,0 +1,80 @@
+<footer class="site-footer">
+  <div class="footer-content-grid">
+    <!-- Colonne di Link -->
+    <div class="footer-links-grid">
+      <!-- Colonna 1: Link principali di navigazione -->
+      <div class="link-column">
+        <h4>ESPLORA</h4>
+        <a [routerLink]="['/home']">Home</a>
+        <a [routerLink]="['/serie']">Tutte le Serie</a>
+        <a [routerLink]="['/podcast']">Tutti i Podcast</a>
+      </div>
+
+      <!-- Colonna 2: Link relativi all'account utente -->
+      <div class="link-column">
+        <h4>IL TUO ACCOUNT</h4>
+        <a [routerLink]="['/profile']">Il Tuo Profilo</a>
+        <a [routerLink]="['/favorite']">I Tuoi Preferiti</a>
+        <a [routerLink]="['/login']">Accedi</a>
+        <a [routerLink]="['/register']">Registrati</a>
+      </div>
+
+      <!-- Colonna 3: Link informativi e di supporto -->
+      <div class="link-column">
+        <h4>INFORMAZIONI</h4>
+        <a [routerLink]="['/info/about']">Chi Siamo</a>
+        <!-- Esempio: da creare -->
+        <a [routerLink]="['/info/faq']">Domande Frequenti (FAQ)</a>
+        <!-- Esempio: da creare -->
+        <a [routerLink]="['/info/contacts']">Contattaci</a>
+        <!-- Esempio: da creare -->
+        <a [routerLink]="['/info/privacy-policy']">Privacy Policy</a>
+        <!-- Esempio: da creare -->
+        <a [routerLink]="['/info/terms']">Termini di Servizio</a>
+        <!-- Esempio: da creare -->
+      </div>
+    </div>
+
+    <!-- Logo (a destra) -->
+    <div class="footer-logo">
+      <img src="assets/HEGO_crop.png" alt="Hego TV Logo" />
+      <p>La piattaforma libera, per tutti senza censura</p>
+    </div>
+  </div>
+
+  <!-- Copyright e Social (in basso) -->
+  <div class="footer-bottom">
+    <p class="copyright-text">
+      © Copyright Hego TV 2025. Tutti i diritti riservati.
+    </p>
+    <div class="social-links">
+      <a
+        href="https://instagram.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram"
+      >
+        <span class="icon-instagram"></span>
+        <!-- Sostituisci con le tue icone -->
+      </a>
+      <a
+        href="https://youtube.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="YouTube"
+      >
+        <span class="icon-youtube"></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Pulsante Scroll to Top -->
+  <button
+    class="scroll-to-top"
+    (click)="scrollToTop()"
+    [class.show]="showScrollButton"
+    aria-label="Torna in cima"
+  >
+    <span class="material-symbols-outlined">keyboard_arrow_up</span>
+  </button>
+</footer>

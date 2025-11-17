@@ -1,0 +1,290 @@
+<div class="app-custom-sidenav-container">
+  <!-- Backdrop per la chiusura del sidenav -->
+  <div
+    class="custom-sidenav-backdrop"
+    *ngIf="isSidenavOpen"
+    (click)="closeSidenav()"
+  ></div>
+
+  <!-- Pannello Sidenav -->
+  <aside
+    class="custom-sidenav-panel"
+    [class.is-opened]="isSidenavOpen"
+    #customSidenavPanel
+  >
+    <!-- Contenuto della Sidenav (invariato) -->
+    <div *ngIf="isLoggedIn" class="profile-area">
+      <div class="user-info-block">
+        <div class="user-avatar">
+          <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="user-details">
+          <p class="user-name">{{ name }}</p>
+          <p class="user-email">{{ email }}</p>
+        </div>
+      </div>
+    </div>
+    <nav class="sidenav-links">
+      <ul>
+        <li>
+          <a
+            routerLink="/home"
+            routerLinkActive="active"
+            (click)="closeSidenav()"
+            >HOME</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/podcast"
+            routerLinkActive="active"
+            (click)="closeSidenav()"
+            >PODCAST</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/serie"
+            routerLinkActive="active"
+            (click)="closeSidenav()"
+            >SERIE</a
+          >
+        </li>
+      </ul>
+      <ng-container *ngIf="isMobile">
+        <hr class="sidenav-divider" />
+        <ul *ngIf="isLoggedIn">
+          <li><a (click)="goToAccount()">Account</a></li>
+          <li><a (click)="goToWatchlist()">Watchlist</a></li>
+          <li>
+            <a class="logout-mobile" (click)="logout()">
+              <span class="material-symbols-outlined">logout</span> Log Out
+            </a>
+          </li>
+        </ul>
+        <ul *ngIf="!isLoggedIn">
+          <li><a routerLink="/login" (click)="closeSidenav()">LOGIN</a></li>
+        </ul>
+      </ng-container>
+    </nav>
+  </aside>
+
+  <!-- ======================================================= -->
+  <!-- PULSANTE MENU SPOSTATO QUI, FUORI E PRIMA DELL'HEADER   -->
+  <!-- ======================================================= -->
+  <button
+    #menuButton
+    class="icon-button menu-button"
+    (click)="toggleSidenav()"
+    aria-label="Apri o chiudi menu"
+    [class.active]="isSidenavOpen"
+  >
+    <span class="material-symbols-outlined">
+      {{ isSidenavOpen ? "close" : "menu" }}
+    </span>
+  </button>
+
+  <!-- Header Fisso -->
+  <header class="fixed-header" [class.scrolled]="isScrolled">
+    <div class="main-container">
+      <!-- Logo -->
+      <div class="logo-container">
+        <a (click)="goToHome()" style="cursor: pointer">
+          <img src="assets/HEGO_crop.png" alt="HEGO Logo" class="logo" />
+        </a>
+      </div>
+
+      <!-- Navigazione Principale -->
+      <nav class="nav-links" [class.hidden]="isSearchActive">
+        <ul>
+          <li>
+            <a
+              routerLink="/home"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >HOME</a
+            >
+          </li>
+          <li>
+            <a
+              routerLink="/podcast"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >PODCAST</a
+            >
+          </li>
+          <li>
+            <a
+              routerLink="/serie"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >SERIE</a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sezione Destra (NON CONTIENE PIÙ IL PULSANTE MENU) -->
+      <div class="right-section">
+        <!-- Contenitore per la Ricerca Animata -->
+        <div class="search-wrapper" [class.active]="isSearchActive">
+          <button
+            type="button"
+            class="icon-button search-toggle-button"
+            (click)="toggleSearch()"
+            aria-label="Apri/chiudi ricerca"
+          >
+            <span class="material-symbols-outlined">
+              {{ isSearchActive ? "close" : "search" }}
+            </span>
+          </button>
+          <div class="search-input-container">
+            <input
+              type="text"
+              class="search-input-field"
+              placeholder="Cerca..."
+              [(ngModel)]="searchQuery"
+              (input)="onSearchInput()"
+            />
+          </div>
+        </div>
+
+        <div class="profile-login-area" *ngIf="!isMobile && !isSearchActive">
+          <div *ngIf="isLoggedIn" class="profile-dropdown">
+            <button
+              #profileToggle
+              class="profile-dropdown-toggle"
+              (click)="toggleDropdown()"
+              aria-haspopup="true"
+              [attr.aria-expanded]="isDropdownOpen"
+            >
+              <div class="profile-icon">
+                <span class="material-symbols-outlined">account_circle</span>
+              </div>
+              <span
+                class="material-symbols-outlined dropdown-arrow"
+                [class.rotated]="isDropdownOpen"
+                >expand_more</span
+              >
+            </button>
+            <div
+              #profileDropdown
+              class="profile-dropdown-menu"
+              *ngIf="isDropdownOpen"
+            >
+              <div class="user-info-block">
+                <div class="user-avatar">
+                  <span class="material-symbols-outlined">account_circle</span>
+                </div>
+                <div class="user-details">
+                  <p class="user-name">
+                    {{ name || "Nome" }} {{ surname || "Cognome" }}
+                  </p>
+                  <p class="user-email">{{ email }}</p>
+                </div>
+              </div>
+              <ul class="dropdown-menu-items-list">
+                <li>
+                  <button
+                    type="button"
+                    class="dropdown-menu-item"
+                    (click)="goToAccount()"
+                  >
+                    Account
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    class="dropdown-menu-item"
+                    (click)="goToWatchlist()"
+                  >
+                    Watchlist
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    class="dropdown-menu-item logout"
+                    (click)="logout()"
+                  >
+                    <span class="material-symbols-outlined">logout</span> Log
+                    Out
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div *ngIf="isStateInitialized && !isLoggedIn" class="login-link">
+            <a routerLink="/login">LOGIN</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Overlay Risultati Ricerca -->
+    <div class="search-results-overlay" *ngIf="isSearchActive">
+      <!-- Risultati Trovati -->
+      <ng-container
+        *ngIf="searchResults.length > 0 || searchCategoryResults.length > 0"
+      >
+        <ul class="search-results-list">
+          <li
+            *ngFor="let category of searchCategoryResults"
+            class="search-result-item category-result-item"
+            (click)="goToCategory(category.slug)"
+            tabindex="0"
+            role="button"
+          >
+            <img
+              [src]="category.CatimageOrizz || 'assets/placeholder.png'"
+              alt="{{ category.title }}"
+              class="result-thumbnail"
+            />
+            <div class="result-info">
+              <p class="result-title">{{ category.title }}</p>
+              <p class="result-description">Categoria</p>
+            </div>
+          </li>
+          <li
+            *ngFor="let video of searchResults; trackBy: trackByVideoId"
+            class="search-result-item"
+            (click)="goToVideoDetail(video.id)"
+            tabindex="0"
+            role="button"
+          >
+            <img
+              [src]="video.thumbnail || 'assets/placeholder.png'"
+              alt="{{ video.title }}"
+              class="result-thumbnail"
+            />
+            <div class="result-info">
+              <p class="result-title">{{ video.title }}</p>
+              <p class="result-description">
+                {{ video.description | slice : 0 : 100 }}...
+              </p>
+            </div>
+          </li>
+        </ul>
+      </ng-container>
+
+      <!-- Messaggio Nessun Risultato -->
+      <ng-container
+        *ngIf="
+          searchQuery.length > 0 &&
+          searchResults.length === 0 &&
+          searchCategoryResults.length === 0 &&
+          !isLoading
+        "
+      >
+        <p class="no-results-message">
+          Nessun risultato trovato per "{{ searchQuery }}"
+        </p>
+      </ng-container>
+
+      <!-- Messaggio Caricamento -->
+      <ng-container *ngIf="isLoading">
+        <p class="loading-message">Caricamento risultati...</p>
+      </ng-container>
+    </div>
+  </header>
+</div>

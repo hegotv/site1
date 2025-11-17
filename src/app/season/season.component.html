@@ -1,0 +1,156 @@
+<div
+  *ngIf="selectedCategory; else loadingOrError"
+  class="season-page-container"
+>
+  <!-- Sezione Hero del Formato -->
+  <div class="format-hero">
+    <img
+      [src]="baseUrl + selectedCategory.CatimageOrizz"
+      [alt]="selectedCategory.title"
+      class="format-hero-img"
+    />
+    <div class="format-hero-overlay"></div>
+    <div class="format-hero-content">
+      <h1>{{ selectedCategory.title | uppercase }}</h1>
+      <div class="format-metadata">
+        <!-- Se la lunghezza di availableSeasons è 1, usa 'STAGIONE', altrimenti 'STAGIONI' -->
+        <span
+          >{{ availableSeasons.length }}
+          {{ availableSeasons.length === 1 ? "STAGIONE" : "STAGIONI" }}</span
+        >
+
+        <span>• FULL HD</span>
+
+        <!-- Se la lunghezza di videos è 1, usa 'EPISODIO', altrimenti 'EPISODI' -->
+        <span
+          >• {{ selectedCategory.videos.length }}
+          {{
+            selectedCategory.videos.length === 1 ? "EPISODIO" : "EPISODI"
+          }}</span
+        >
+      </div>
+      <p class="format-description">{{ selectedCategory.description }}</p>
+      <div class="format-controls">
+        <button
+          class="control-btn play-btn"
+          (click)="goToVideo(selectedCategory.videos[0].id)"
+        >
+          <span class="material-symbols-outlined">play_arrow</span> PLAY
+        </button>
+        <button
+          class="control-btn favorite-btn"
+          (click)="toggleFavorite()"
+          [ngClass]="{ saved: isFavorite() }"
+          *ngIf="isLoggedIn"
+          [attr.aria-pressed]="isFavorite()"
+          [attr.title]="
+            isFavorite() ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'
+          "
+        >
+          <span
+            class="material-symbols-outlined"
+            [ngClass]="{ 'favorite-filled': isFavorite() }"
+          >
+            {{ isFavorite() ? "favorite" : "favorite_border" }}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenuto principale della pagina stagioni/episodi -->
+  <div class="episodes-section">
+    <div class="episodes-header">
+      <h2>EPISODI</h2>
+      <!-- Selettore Stagioni -->
+      <div *ngIf="availableSeasons.length > 1" class="season-selector-wrapper">
+        <select
+          [(ngModel)]="selectedSeason"
+          (change)="filterEpisodesBySeason()"
+          class="season-selector"
+        >
+          <option *ngFor="let season of availableSeasons" [ngValue]="season">
+            SEASON {{ season }}
+          </option>
+        </select>
+        <span class="material-symbols-outlined season-arrow-icon"
+          >keyboard_arrow_down</span
+        >
+      </div>
+    </div>
+
+    <div class="episodes-content-wrapper" (mouseleave)="onEpisodeLeave()">
+      <!-- Lista degli episodi -->
+      <div class="episodes-list">
+        <ng-container *ngIf="filteredEpisodes.length > 0; else noEpisodes">
+          <div
+            *ngFor="
+              let episode of filteredEpisodes;
+              trackBy: trackById;
+              let i = index
+            "
+            class="episode-card"
+            (click)="goToVideo(episode.id)"
+            (mouseenter)="onEpisodeHover(episode)"
+          >
+            <div class="episode-thumbnail-container">
+              <img [src]="episode.thumbnail" [alt]="episode.title" />
+              <div class="episode-play-overlay">
+                <span class="material-symbols-outlined play-icon"
+                  >play_arrow</span
+                >
+              </div>
+            </div>
+            <div class="episode-details">
+              <p class="episode-number">
+                <span
+                  >S{{ episode.season }} EPISODIO {{ i + 1 }} -
+                  {{ episode.duration | formatDuration }} -
+                  {{ episode.visuals | viewsFormat }}</span
+                >
+                <span class="material-icons">visibility</span>
+              </p>
+              <h3 class="episode-title">{{ episode.title | uppercase }}</h3>
+              <p class="episode-short-desc">{{ episode.description }}</p>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #noEpisodes>
+          <p class="no-content-message">
+            Nessun episodio trovato per questa stagione.
+          </p>
+        </ng-template>
+      </div>
+
+      <!-- Pannello dettagli al passaggio del mouse (sticky) -->
+      <div *ngIf="hoveredEpisode" class="episode-details-panel">
+        <img
+          [src]="hoveredEpisode.thumbnail"
+          [alt]="hoveredEpisode.title"
+          class="panel-img"
+        />
+        <div class="panel-info">
+          <h2>{{ hoveredEpisode.title }}</h2>
+          <div class="panel-metadata">
+            <span>{{ hoveredEpisode.duration | formatDuration }}</span>
+            <span
+              >•
+              {{ hoveredEpisode.visuals | viewsFormat }} VISUALIZZAZIONI</span
+            >
+          </div>
+          <p class="panel-description">{{ hoveredEpisode.description }}</p>
+          <button
+            class="watch-video-btn"
+            (click)="goToVideo(hoveredEpisode.id)"
+          >
+            GUARDA ORA
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingOrError>
+  <p class="loading-message">Caricamento in corso o dati non disponibili...</p>
+</ng-template>

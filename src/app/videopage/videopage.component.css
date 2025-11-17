@@ -1,0 +1,55 @@
+.video-wrapper {
+  position: relative; /* Necessario per posizionare l'overlay in modo assoluto */
+  width: 100%;
+  height: 100%;
+  min-height: 300px; /* Assicurati che il contenitore abbia un'altezza per visualizzare l'iframe */
+  display: flex; /* Centra l'iframe se necessario, ma l'iframe è 100% */
+  justify-content: center;
+  align-items: center;
+}
+
+.video-wrapper iframe {
+  /* Assicurati che l'iframe sia visibile e non nascosto da z-index */
+  position: relative;
+  z-index: 1; /* L'iframe è sotto l'overlay */
+}
+
+.pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Sfondo semi-trasparente */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  text-align: center;
+  border-radius: 10px;
+  opacity: 0; /* Inizialmente invisibile */
+  pointer-events: none; /* Cruciale: permette i click attraverso l'overlay */
+  transition: opacity 0.3s ease-in-out; /* Animazione di dissolvenza */
+  z-index: 2; /* L'overlay è sopra l'iframe */
+}
+
+.pause-overlay.show {
+  opacity: 1; /* Rendi visibile quando ha la classe 'show' */
+}
+
+.loading-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  font-size: 1.5em;
+  border-radius: 10px;
+  z-index: 3; /* Sopra tutto quando carica */
+}

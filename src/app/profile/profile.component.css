@@ -1,0 +1,139 @@
+/* SUGGERIMENTO 7: Usa le variabili CSS per una facile manutenzione */
+:host {
+  --primary-color: #39b09d;
+  --text-color: whitesmoke;
+  --dark-color: black;
+  --border-radius-large: 50%;
+  --border-radius-small: 50px;
+}
+
+main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-image: url(../../assets/settings.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative; /* Necessario per l'overlay */
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  text-align: center; /* Assicura che il testo sia centrato */
+}
+
+.profile-photo {
+  width: 200px;
+  height: 200px;
+  border-radius: var(--border-radius-large);
+  object-fit: cover; /* Assicura che l'immagine non sia distorta */
+  border: 4px solid var(--primary-color); /* Aggiunge un tocco di colore */
+  background-color: var(--text-color); /* Sfondo per immagini trasparenti */
+}
+
+h1 {
+  font-size: 3rem;
+  color: var(--primary-color);
+  font-weight: 800; /* Leggermente meno estremo di 2000 */
+  text-transform: uppercase;
+  margin: 0;
+}
+
+h2 {
+  color: var(--text-color);
+  font-weight: 400;
+  margin: 0;
+}
+
+.button-group {
+  gap: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Stile base per entrambi i bottoni */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* SUGGERIMENTO 8: Usa unità più flessibili di vw */
+  width: 180px;
+  height: 3rem;
+  font-weight: bold;
+  border-radius: var(--border-radius-small);
+  border: 2px solid var(--primary-color);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out; /* Transizione sul bottone base */
+}
+
+.settings-btn {
+  color: var(--primary-color);
+  background-color: transparent;
+}
+
+.settings-btn:hover {
+  background-color: var(--primary-color);
+  color: var(--dark-color);
+  transform: translateY(-3px); /* Effetto "sollevamento" */
+}
+
+.logout-btn {
+  background-color: var(--primary-color);
+  color: var(--dark-color);
+}
+
+.logout-btn:hover {
+  background-color: transparent;
+  color: var(--primary-color);
+  transform: translateY(-3px);
+}
+
+/* Stile per l'overlay delle impostazioni */
+.settings-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  main {
+    background-position: right;
+  }
+  .profile-photo {
+    width: 150px;
+    height: 150px;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+  }
+  .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
