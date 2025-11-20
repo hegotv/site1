@@ -169,7 +169,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
   /** --- MIGLIORAMENTO: Navigazione moderna con parametri di rotta --- */
   goToVideo(id: string): void {
     if (id) {
-      this.router.navigate(['/details', id]);
+      this.router.navigate(['/details'], { queryParams: { id: id } });
     }
   }
 

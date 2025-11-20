@@ -219,8 +219,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   goToVideo(videoId: string, startTime?: number): void {
-    const extras = startTime ? { queryParams: { time: startTime } } : {};
-    this.router.navigate(['/details', videoId], extras);
+    const queryParams: any = { id: videoId };
+    if (startTime != null) {
+      queryParams.time = startTime;
+    }
+    this.router.navigate(['/details'], { queryParams });
   }
 
   goToAllShows(macro?: string): void {
