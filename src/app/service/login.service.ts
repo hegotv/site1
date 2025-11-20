@@ -66,6 +66,7 @@ export class LoginService {
     return this.http
       .post<LoginResponse>(`${this.apiUrl}/google/`, {
         access_token: user.idToken,
+        id_token: user.idToken,
       })
       .pipe(
         tap((response) =>
