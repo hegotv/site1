@@ -19,7 +19,7 @@
           <span class="material-symbols-outlined">account_circle</span>
         </div>
         <div class="user-details">
-          <p class="user-name">{{ name }}</p>
+          <p class="user-name">{{ first_name }}</p>
           <p class="user-email">{{ email }}</p>
         </div>
       </div>
@@ -178,7 +178,7 @@
                 </div>
                 <div class="user-details">
                   <p class="user-name">
-                    {{ name || "Nome" }} {{ surname || "Cognome" }}
+                    {{ first_name || "Nome" }} {{ last_name || "Cognome" }}
                   </p>
                   <p class="user-email">{{ email }}</p>
                 </div>

@@ -68,8 +68,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   // Dati utente e ricerca
   email?: string;
-  name?: string;
-  surname?: string;
+  first_name?: string;
+  last_name?: string;
   searchQuery = '';
   searchResults: Video[] = [];
   searchCategoryResults: Category[] = [];
@@ -273,14 +273,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       const userStr = sessionStorage.getItem('userProfile');
       if (userStr) {
         const user = JSON.parse(userStr);
-        this.name = user.name || '';
-        this.surname = user.surname || '';
+        this.first_name = user.first_name || '';
+        this.last_name = user.last_name || '';
         this.email = user.email || '';
         return;
       }
     }
-    this.name = undefined;
-    this.surname = undefined;
+    this.first_name = undefined;
+    this.last_name = undefined;
     this.email = undefined;
   }
 
