@@ -1,29 +1,21 @@
-// in src/app/auth.interceptor.ts
-import {
-  HttpInterceptorFn,
-  HttpRequest,
-  HttpHandlerFn,
-} from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { LoginService } from './service/login.service';
 import { environment } from '../enviroments/enviroment';
 
-export const authInterceptor: HttpInterceptorFn = (
-  req: HttpRequest<unknown>,
-  next: HttpHandlerFn
-) => {
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const loginService = inject(LoginService);
-  const authToken = loginService.getToken();
-  const apiUrl = environment.apiUrl;
+  const token = loginService.getToken();
+  const apiUrl = environment.apiUrl; // Assicurati che punti al backend
 
-  // Aggiungi l'header solo se abbiamo un token e la richiesta è per la nostra API
-  if (authToken && req.url.startsWith(apiUrl)) {
-    const clonedReq = req.clone({
+  // Se abbiamo un token e la richiesta va al nostro backend
+  if (token && req.url.startsWith(apiUrl)) {
+    const authReq = req.clone({
       setHeaders: {
-        Authorization: `Token ${authToken}`,
+        Authorization: `Token ${token}`,
       },
     });
-    return next(clonedReq);
+    return next(authReq);
   }
 
   return next(req);
