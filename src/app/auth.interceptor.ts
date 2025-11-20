@@ -5,10 +5,12 @@ import { environment } from '../enviroments/enviroment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const loginService = inject(LoginService);
-  const token = loginService.getToken(); // Questo restituisce null o "undefined" stringa
+  const token = loginService.getToken();
+  // Aggiungiamo un log per vedere cosa legge l'interceptor
+  console.log('AUTH INTERCEPTOR -> URL:', req.url, 'TOKEN:', token);
 
-  // CONTROLLO RIGOROSO: Aggiungi l'header SOLO se il token esiste ed è valido
   if (token && token !== 'undefined' && token !== 'null') {
+    console.log('AUTH INTERCEPTOR -> Aggiungo Header Authorization');
     const authReq = req.clone({
       setHeaders: {
         Authorization: `Token ${token}`,
@@ -17,6 +19,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(authReq);
   }
 
-  // Se non c'è token, invia la richiesta pulita (senza header Authorization)
+  console.log(
+    'AUTH INTERCEPTOR -> Token non valido o mancante, invio richiesta liscia'
+  );
   return next(req);
 };

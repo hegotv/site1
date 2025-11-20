@@ -4,25 +4,25 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-# Assicurati che il percorso di build sia corretto!
 RUN npm run build
 
-# --- STAGE 2: Serve ---
-FROM nginx:stable-alpine
+# --- STAGE 2: Serve with Node (SSR) ---
+FROM node:18-alpine
 
-# Installa 'envsubst' che ci serve per sostituire le variabili d'ambiente
-RUN apk update && apk add gettext
+WORKDIR /app
 
-# Copia il NUOVO file template e lo script di avvio
-COPY nginx.conf.template /etc/nginx/conf.d/nginx.conf.template
-COPY start-nginx.sh /start-nginx.sh
+# Copia la cartella dist dalla build
+COPY --from=builder /app/dist ./dist
+# Copia package.json per sapere come avviare (se serve)
+COPY --from=builder /app/package.json ./
 
-# Rendi lo script di avvio eseguibile
-RUN chmod +x /start-nginx.sh
+# Environment variables
+ENV NODE_ENV=production
+ENV PORT=8080
 
-# Copia i file compilati dallo stage "builder"
-# VERIFICA QUESTO PERCORSO! Deve corrispondere all'output della tua build
-COPY --from=builder /app/dist/hego_front-main/browser /usr/share/nginx/html
+# Espone la porta
+EXPOSE 8080
 
-# Diciamo a Docker di eseguire il nostro script personalizzato all'avvio del container
-CMD ["/start-nginx.sh"]
+# Avvia il server Node creato dalla build Angular SSR
+# Verifica il percorso: di solito è dist/nome-progetto/server/server.mjs
+CMD ["node", "dist/hego_front-main/server/server.mjs"]
