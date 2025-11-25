@@ -128,7 +128,13 @@ export class VideoService {
    * Per ora, il codice frontend rimane invariato, ma sii consapevole di questa limitazione.
    */
   saveVideoProgressOnUnload(videoId: string, positionSeconds: number): void {
-    if (typeof navigator === 'undefined' || !navigator.sendBeacon) {
+    // Recupera il token. Adatta questa riga in base a dove salvi il token (es. localStorage, Cookie, o un altro Service)
+    const token =
+      localStorage.getItem('auth-token') ||
+      sessionStorage.getItem('auth-token');
+
+    if (!token) {
+      console.warn('Nessun token trovato, impossibile salvare il progresso.');
       return;
     }
 
@@ -138,7 +144,15 @@ export class VideoService {
       position_seconds: positionSeconds,
     };
 
-    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-    navigator.sendBeacon(url, blob);
+    // Usa fetch con keepalive invece di sendBeacon
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`, // O 'Bearer ${token}' in base alla tua config Django
+      },
+      body: JSON.stringify(data),
+      keepalive: true, // <--- QUESTA È LA MAGIA
+    }).catch((err) => console.error('Errore salvataggio beacon:', err));
   }
 }
