@@ -7,7 +7,12 @@
       <!-- Nome e Cognome con messaggi di errore -->
       <div class="form-row">
         <div class="form-field">
-          <input type="text" placeholder="Nome" formControlName="nome" />
+          <input
+            type="text"
+            placeholder="Nome"
+            formControlName="nome"
+            autocomplete="given-name"
+          />
           <div
             *ngIf="
               registrationForm.get('nome')?.invalid &&
@@ -22,7 +27,12 @@
           </div>
         </div>
         <div class="form-field">
-          <input type="text" placeholder="Cognome" formControlName="cognome" />
+          <input
+            type="text"
+            placeholder="Cognome"
+            formControlName="cognome"
+            autocomplete="family-name"
+          />
           <div
             *ngIf="
               registrationForm.get('cognome')?.invalid &&
@@ -111,6 +121,7 @@
             formControlName="password"
             class="password-input"
             placeholder="Password"
+            autocomplete="new-password"
             required
           />
           <button
@@ -154,17 +165,24 @@
 
       <div class="divider"><span>o</span></div>
 
-      <div class="google-wrapper">
-        <asl-google-signin-button
-          type="standard"
-          size="large"
-          theme="filled_black"
-          text="continue_with"
-          shape="rectangular"
-          logo_alignment="left"
-          [width]="350"
-        >
-        </asl-google-signin-button>
+      <div class="custom-google-wrapper">
+        <!-- Parte Grafica -->
+        <div class="my-custom-btn">
+          <div class="icon-wrapper">
+            <img
+              src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
+              alt="Google logo"
+            />
+          </div>
+          <span class="btn-text">Continua con Google</span>
+        </div>
+
+        <!-- Parte Funzionale (Overlay) -->
+        <div class="google-overlay">
+          <asl-google-signin-button type="standard" size="large" [width]="400">
+            <!-- Metti una larghezza GRANDE per essere sicuro che riempia -->
+          </asl-google-signin-button>
+        </div>
       </div>
 
       <p class="login-link" *ngIf="isMobile">

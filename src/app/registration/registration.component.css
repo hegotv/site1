@@ -139,17 +139,87 @@ label {
   z-index: 0;
 }
 
-.google-wrapper {
-  display: flex;
-  justify-content: center; /* Centra il pulsante */
+.custom-google-wrapper {
+  position: relative;
   width: 100%;
-  margin-top: 1rem;
-  min-height: 40px; /* Evita salti di layout mentre carica */
+  max-width: 350px; /* Larghezza del tuo pulsante */
+  height: 50px; /* Altezza del tuo pulsante */
+  margin: 1rem auto;
+  overflow: hidden; /* IMPORTANTE: Taglia via le parti in eccesso del pulsante gigante */
+  cursor: pointer; /* Forza il cursore a manina su tutto il blocco */
+  border-radius: 4px; /* Copia il radius del tuo pulsante */
 }
 
-/* Se vuoi essere sicuro al 100% che nessun CSS esterno lo rompa: */
-::ng-deep .google-wrapper iframe {
-  margin: 0 auto !important;
+/* --- 1. Il TUO stile personalizzato --- */
+.my-custom-btn {
+  /* Posizionamento */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  /* Stile grafico */
+  background-color: transparent; /* O il colore che vuoi, es: #fff o #111 */
+  border: 1px solid #666; /* Bordo grigio */
+  border-radius: 4px; /* Angoli arrotondati */
+
+  /* Allineamento contenuto (Flexbox) */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra tutto */
+  gap: 10px;
+
+  /* Tipografia */
+  color: #fff; /* Testo bianco */
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  pointer-events: none;
+  /* Z-index basso perché sta sotto */
+  z-index: 1;
+}
+
+.icon-wrapper img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+/* Effetto Hover (opzionale, solo visivo) */
+.custom-google-wrapper:hover .my-custom-btn {
+  border-color: #39b09d; /* Cambia colore bordo al passaggio del mouse */
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* --- 2. Il pulsante Google VERO (Invisibile) --- */
+.google-overlay {
+  position: absolute;
+  top: -10px; /* Spostiamo un po' per sicurezza */
+  left: -10px; /* Spostiamo un po' per sicurezza */
+  width: calc(100% + 20px); /* Più largo del contenitore */
+  height: calc(100% + 20px); /* Più alto del contenitore */
+  z-index: 10; /* Deve stare SOPRA */
+
+  /* Trucco per la trasparenza */
+  opacity: 0.01; /* Non usare 0 spaccato, alcuni browser disattivano i click. 0.01 è invisibile ma cliccabile */
+}
+
+/* Forza il pulsante interno di Angular a riempire lo spazio */
+::ng-deep .google-overlay iframe {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(1.2) !important; /* Lo centriamo e lo ingrandiamo del 20% */
+  opacity: 1 !important; /* L'iframe deve essere opaco, è il contenitore .google-overlay che è trasparente */
+  width: 100% !important;
+  height: 100% !important;
+  cursor: pointer !important;
+}
+::ng-deep .google-overlay asl-google-signin-button {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .bg {
   position: fixed;

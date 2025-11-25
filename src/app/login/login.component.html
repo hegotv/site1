@@ -37,6 +37,7 @@
             formControlName="password"
             class="password-input"
             placeholder="Password"
+            autocomplete="current-password"
             required
           />
           <button
@@ -83,17 +84,31 @@
       </div>
       <hr />
       <p class="or">o</p>
-      <div class="google-wrapper">
-        <asl-google-signin-button
-          type="standard"
-          size="large"
-          theme="filled_black"
-          text="continue_with"
-          shape="rectangular"
-          logo_alignment="left"
-          [width]="350"
-        >
-        </asl-google-signin-button>
+      <!-- Wrapper che tiene tutto insieme -->
+      <div class="custom-google-wrapper">
+        <!-- 1. Il TUO design personalizzato (quello che l'utente vede) -->
+        <div class="my-custom-btn">
+          <div class="icon-wrapper">
+            <!-- Icona Google ufficiale -->
+            <img
+              src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
+              alt="Google logo"
+            />
+          </div>
+          <span class="btn-text">Continua con Google</span>
+        </div>
+
+        <!-- 2. Il pulsante Google VERO (Invisibile ma cliccabile, sta SOPRA) -->
+        <div class="google-overlay">
+          <asl-google-signin-button
+            type="standard"
+            size="large"
+            [width]="350"
+            height="50"
+          >
+            <!-- Altezza uguale al tuo tasto custom -->
+          </asl-google-signin-button>
+        </div>
       </div>
       <p class="register" *ngIf="isMobile">
         Non hai un account? <br /><a routerLink="/register">Crealo ora</a>
