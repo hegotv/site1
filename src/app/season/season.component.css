@@ -13,6 +13,12 @@ i {
   vertical-align: middle;
 }
 
+.season-page-container {
+  position: relative;
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
 /* --- Sezione Hero --- */
 .format-hero {
   position: relative;
@@ -144,11 +150,10 @@ i {
 }
 
 .episodes-header h2 {
-  .episode-number i {
-    font-size: 18px;
-  }
+  font-size: 32px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
-
 .season-selector-wrapper {
   position: relative;
   display: inline-block;
