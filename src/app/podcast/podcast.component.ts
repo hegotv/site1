@@ -14,11 +14,12 @@ import {
   PodcastSeason, // PodcastEpisode potrebbe non essere usato direttamente qui, ma è bene averlo
 } from '../service/podcast.service';
 import { SliderComponent } from '../slider/slider.component';
+import { FooterComponent } from '../footer/footer.component';
 
 @Component({
   selector: 'app-podcast',
   standalone: true,
-  imports: [CommonModule, SliderComponent],
+  imports: [CommonModule, SliderComponent, FooterComponent],
   templateUrl: './podcast.component.html',
   styleUrls: ['./podcast.component.css'],
 })

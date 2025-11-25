@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { CategoryService } from '../service/category.service';
 import { Category } from '../shared/interfaces';
 import { finalize } from 'rxjs/operators';
+import { FooterComponent } from '../footer/footer.component';
 
 interface DisplayShow {
   title: string;
@@ -18,7 +19,7 @@ interface DisplayShow {
 @Component({
   selector: 'app-all',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FooterComponent],
   templateUrl: './all.component.html',
   styleUrls: ['./all.component.css'],
 })
