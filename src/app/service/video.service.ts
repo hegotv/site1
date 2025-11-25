@@ -128,31 +128,30 @@ export class VideoService {
    * Per ora, il codice frontend rimane invariato, ma sii consapevole di questa limitazione.
    */
   saveVideoProgressOnUnload(videoId: string, positionSeconds: number): void {
-    // Recupera il token. Adatta questa riga in base a dove salvi il token (es. localStorage, Cookie, o un altro Service)
+    // 1. Recupera il token
+    // Assicurati che la chiave sia quella giusta (es. 'auth-token', 'token', ecc.)
     const token =
-      localStorage.getItem('auth-token') ||
-      sessionStorage.getItem('auth-token');
+      localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 
-    if (!token) {
-      console.warn('Nessun token trovato, impossibile salvare il progresso.');
+    if (typeof navigator === 'undefined' || !navigator.sendBeacon) {
       return;
     }
 
     const url = `${this.apiUrl}/save_progress/`;
+
+    // 2. Metti il token DENTRO i dati, non nell'header
     const data = {
       video_id: videoId,
       position_seconds: positionSeconds,
+      auth_token: token, // <--- Campo speciale per il backend
     };
 
-    // Usa fetch con keepalive invece di sendBeacon
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`, // O 'Bearer ${token}' in base alla tua config Django
-      },
-      body: JSON.stringify(data),
-      keepalive: true, // <--- QUESTA È LA MAGIA
-    }).catch((err) => console.error('Errore salvataggio beacon:', err));
+    // 3. Usa Blob con type application/json
+    // sendBeacon fa una POST semplice, niente Preflight, parte subito.
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    const success = navigator.sendBeacon(url, blob);
+
+    // Opzionale: logga se il browser ha accettato di metterlo in coda
+    // console.log('Beacon queued:', success);
   }
 }
