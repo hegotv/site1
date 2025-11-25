@@ -139,39 +139,17 @@ label {
   z-index: 0;
 }
 
-.google-btn {
+.google-wrapper {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  justify-content: center; /* Centra il pulsante */
   width: 100%;
-  padding: 0.8rem;
-  background: transparent;
-  border: 1px solid #666;
-  border-radius: 10px;
-  color: #f1f1f1;
+  margin-top: 1rem;
+  min-height: 40px; /* Evita salti di layout mentre carica */
 }
 
-.google-btn img {
-  width: 20px;
-  height: 20px;
-}
-::ng-deep #google-signin-button {
-  position: absolute !important;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  opacity: 0;
-  z-index: 10; /* Assicura che stia sopra al tuo pulsante custom */
-  display: block; /* Forza il display block */
-}
-
-/* Modifica anche il wrapper per sicurezza */
-.google-btn-wrapper {
-  position: relative;
-  width: 100%;
-  display: block; /* Assicura che il contenitore occupi spazio */
+/* Se vuoi essere sicuro al 100% che nessun CSS esterno lo rompa: */
+::ng-deep .google-wrapper iframe {
+  margin: 0 auto !important;
 }
 .bg {
   position: fixed;

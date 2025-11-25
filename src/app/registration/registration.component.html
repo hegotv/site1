@@ -154,19 +154,17 @@
 
       <div class="divider"><span>o</span></div>
 
-      <div class="google-btn-wrapper">
-        <div class="google-btn">
-          <img
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-            alt="Google"
-          />
-          <span>Continua con Google</span>
-        </div>
+      <div class="google-wrapper">
         <asl-google-signin-button
-          id="google-signin-button"
           type="standard"
           size="large"
-        ></asl-google-signin-button>
+          theme="filled_black"
+          text="continue_with"
+          shape="rectangular"
+          logo_alignment="left"
+          [width]="280"
+        >
+        </asl-google-signin-button>
       </div>
 
       <p class="login-link" *ngIf="isMobile">
