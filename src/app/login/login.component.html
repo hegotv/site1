@@ -85,29 +85,22 @@
       <hr />
       <p class="or">o</p>
       <!-- Wrapper che tiene tutto insieme -->
-      <div class="custom-google-wrapper">
-        <!-- 1. Il TUO design personalizzato (quello che l'utente vede) -->
-        <div class="my-custom-btn">
-          <div class="icon-wrapper">
-            <!-- Icona Google ufficiale -->
-            <img
-              src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
-              alt="Google logo"
-            />
-          </div>
-          <span class="btn-text">Continua con Google</span>
+      <div class="google-final-wrapper">
+        <!-- STRATO 1: La tua grafica (Sotto) -->
+        <div class="my-custom-design">
+          <img
+            src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
+            alt="G"
+          />
+          <span>Continua con Google</span>
         </div>
 
-        <!-- 2. Il pulsante Google VERO (Invisibile ma cliccabile, sta SOPRA) -->
-        <div class="google-overlay">
+        <!-- STRATO 2: Il pulsante Google (Sopra, invisibile e GIGANTE) -->
+        <div class="google-invisible-layer">
           <asl-google-signin-button
             type="standard"
             size="large"
-            [width]="350"
-            height="50"
-          >
-            <!-- Altezza uguale al tuo tasto custom -->
-          </asl-google-signin-button>
+          ></asl-google-signin-button>
         </div>
       </div>
       <p class="register" *ngIf="isMobile">
