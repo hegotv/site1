@@ -59,7 +59,7 @@ i {
 }
 
 .format-hero h1 {
-  font-size: 80px;
+  font-size: 1.4rem;
   font-weight: 900;
   margin-bottom: 20px;
   line-height: 1;
@@ -88,7 +88,7 @@ i {
 .control-btn {
   padding: 10px 20px;
   border-radius: 8px;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -348,7 +348,8 @@ i {
   color: #ccc;
   line-height: 1.6;
   margin-bottom: 25px;
-  /* Gestisce descrizioni lunghe */
+  scrollbar-width: thin;
+  scrollbar-color: #39b09d transparent;
   max-height: 200px;
   overflow-y: auto;
 }
@@ -357,7 +358,7 @@ i {
   display: block;
   width: 100%;
   text-align: center;
-  padding: 12px;
+  padding: 8px;
   border: 2px solid #39b09d;
   color: #39b09d;
   border-radius: 8px;
@@ -381,7 +382,7 @@ i {
     padding: 40px;
   }
   .format-hero h1 {
-    font-size: 60px;
+    font-size: 1.2rem;
   }
   .format-hero-content {
     max-width: 80%;
@@ -411,7 +412,7 @@ i {
     max-width: 100%;
   }
   .format-hero h1 {
-    font-size: 48px;
+    font-size: 2rem;
   }
   .format-description {
     font-size: 16px;
@@ -443,7 +444,7 @@ i {
 
 @media (max-width: 480px) {
   .format-hero h1 {
-    font-size: 42px;
+    font-size: 2rem;
   }
   .format-description {
     font-size: 14px;
