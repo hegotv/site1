@@ -89,23 +89,21 @@
         Non hai un account? <br /><a routerLink="/register">Crealo ora</a>
       </p>
     </form>
-    <div class="stack-container">
-      <!-- Livello 1: Il tuo design (Sotto) -->
-      <div class="custom-design">
+    <div class="google-final-stack">
+      <!-- LIVELLO 1: Il pulsante Google VERO (Invisibile ma presente) -->
+      <div class="google-layer-real">
+        <asl-google-signin-button type="standard" size="large" [width]="350">
+          <!-- Larghezza uguale al CSS -->
+        </asl-google-signin-button>
+      </div>
+
+      <!-- LIVELLO 2: La tua Grafica (Solo estetica) -->
+      <div class="custom-graphics-layer">
         <img
           src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
           alt="G"
         />
         <span>Continua con Google</span>
-      </div>
-
-      <!-- Livello 2: Il pulsante Google (Sopra) -->
-      <div class="google-layer">
-        <!-- width e height nulli qui, gestiamo tutto via CSS -->
-        <asl-google-signin-button
-          type="standard"
-          size="large"
-        ></asl-google-signin-button>
       </div>
     </div>
     <!-- Messaggio di Errore Generale per il Login -->

@@ -136,77 +136,75 @@ hr {
   height: 100%;
   z-index: -1;
 }
-/* Definiamo una griglia con una sola cella.
-   Tutti i figli finiranno uno sopra l'altro nella stessa cella. */
-.stack-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-
-  /* Dimensioni del tuo pulsante */
+/* CONTENITORE PRINCIPALE */
+.google-final-stack {
+  position: relative; /* Crea il contesto per sovrapporre i figli */
   width: 100%;
-  max-width: 350px;
-  height: 50px;
+  max-width: 350px; /* Larghezza desiderata */
+  height: 50px; /* Altezza fissa */
   margin: 1rem auto;
-
-  /* Cursore */
-  cursor: pointer;
+  cursor: pointer; /* Forza la manina */
 }
 
-/* Regole comuni per entrambi i livelli: occupano tutto lo spazio */
-.custom-design,
-.google-layer {
-  grid-column: 1 / -1; /* Occupa tutta la larghezza */
-  grid-row: 1 / -1; /* Occupa tutta l'altezza */
+/* --- LIVELLO GOOGLE (Quello che clicchi) --- */
+.google-layer-real {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  z-index: 20; /* Z-INDEX ALTO: Deve stare sopra a tutto! */
+
+  /* TRUCCO VISIBILITÀ: */
+  /* Parti con 0.5 per vedere se si sovrappone bene. 
+     Quando funziona, metti 0.01 (NON 0). */
+  opacity: 0.01;
+
+  overflow: hidden; /* Taglia l'iframe se esce dai bordi */
 }
 
-/* --- LIVELLO 1: GRAFICA (SOTTO) --- */
-.custom-design {
-  /* Stile estetico */
+/* Forziamo l'iframe interno a riempire tutto lo spazio */
+::ng-deep .google-layer-real iframe {
+  width: 360px !important; /* Leggermente più largo del container */
+  height: 60px !important; /* Leggermente più alto */
+  margin-top: -5px; /* Centraggio grezzo */
+  margin-left: -5px; /* Centraggio grezzo */
+}
+
+/* --- LIVELLO GRAFICA (Quello che vedi) --- */
+.custom-graphics-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Sta sotto al pulsante Google */
+
+  /* IL SEGRETO: Rende questo livello "fantasma" per il mouse.
+     I click passeranno attraverso questo div e colpiranno quello di Google. */
+  pointer-events: none;
+
+  /* Il tuo stile grafico */
   background-color: transparent;
   border: 1px solid #666;
-  border-radius: 8px;
+  border-radius: 8px; /* O quello che preferisci */
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   color: #fff;
-  font-size: 16px;
-
-  /* IMPORTANTE: Disabilita i click sulla grafica per non interferire */
-  pointer-events: none;
-  z-index: 1;
+  font-family: inherit;
 }
-.custom-design img {
+
+.custom-graphics-layer img {
   width: 20px;
   height: 20px;
 }
 
-/* --- LIVELLO 2: GOOGLE (SOPRA) --- */
-.google-layer {
-  z-index: 10; /* Sicuramente sopra */
-
-  /* TEST: Mettilo a 0.5 per vederlo. 
-     Se riesci a cliccarlo, cambia questo valore a 0.001 */
-  opacity: 0.5;
-
-  /* Allineamento */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden; /* Taglia se l'iframe sborda */
-}
-
-/* Forza l'iframe a riempire la cella */
-::ng-deep .google-layer iframe {
-  min-width: 100% !important;
-  min-height: 100% !important;
-  width: 100% !important;
-  height: 100% !important;
-  transform: scale(1.1); /* Leggero zoom per sicurezza */
-  cursor: pointer !important;
+/* Effetto Hover: quando passi sul container, illumina la grafica sotto */
+.google-final-stack:hover .custom-graphics-layer {
+  border-color: #39b09d;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 .password-container {
   position: relative;
