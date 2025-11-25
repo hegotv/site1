@@ -11,7 +11,7 @@
 }
 
 .section-title {
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   font-weight: 500;
   color: #fff;
   margin: 3rem 0 1.5rem 0;
@@ -46,7 +46,7 @@
   background: rgba(57, 176, 157, 0.08);
 }
 
-.all-shows-link-btn .material-symbols-outlined {
+.all-shows-link-btn i {
   font-size: 1.3rem;
 }
 
@@ -128,7 +128,7 @@
   align-items: center;
   gap: 0.3rem;
 }
-.hero-metadata .material-symbols-outlined {
+.hero-metadata i {
   font-size: 1.1rem;
 }
 .hero-description {
@@ -276,7 +276,7 @@
   display: block;
 }
 .trending-card-content .card-title {
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-weight: 500;
   text-transform: uppercase;
   color: #fff;
@@ -525,7 +525,6 @@
     padding: 0 1rem;
   }
   .section-title {
-    font-size: 1.5rem;
     margin: 2.5rem 0 1rem 0;
   }
   .all-shows-header {

@@ -227,7 +227,7 @@
     transform: rotate(360deg);
   }
 }
-.player-error-state .fa-exclamation-triangle {
+.player-error-state .fa-solid-exclamation-triangle {
   font-size: 3rem;
   color: #ff5555;
   margin-bottom: 20px;

@@ -8,7 +8,8 @@ import {
   AfterViewInit,
   HostListener,
   ChangeDetectorRef,
-  TemplateRef, // 1. Importa TemplateRef
+  TemplateRef,
+  ViewEncapsulation, // 1. Importa TemplateRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [CommonModule, MatIconModule, MatButtonModule],
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class SliderComponent implements AfterViewInit {
   // 2. Input generici: accetta qualsiasi array e un template

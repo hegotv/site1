@@ -16,7 +16,7 @@
     <div *ngIf="isLoggedIn" class="profile-area">
       <div class="user-info-block">
         <div class="user-avatar">
-          <span class="material-symbols-outlined">account_circle</span>
+          <i class="fa-solid fa-circle-user"></i>
         </div>
         <div class="user-details">
           <p class="user-name">{{ first_name }}</p>
@@ -58,7 +58,7 @@
           <li><a (click)="goToWatchlist()">Watchlist</a></li>
           <li>
             <a class="logout-mobile" (click)="logout()">
-              <span class="material-symbols-outlined">logout</span> Log Out
+              <i class="fa-solid fa-right-from-bracket"></i> Log Out
             </a>
           </li>
         </ul>
@@ -79,9 +79,7 @@
     aria-label="Apri o chiudi menu"
     [class.active]="isSidenavOpen"
   >
-    <span class="material-symbols-outlined">
-      {{ isSidenavOpen ? "close" : "menu" }}
-    </span>
+    <i [ngClass]="isSidenavOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"></i>
   </button>
 
   <!-- Header Fisso -->
@@ -134,9 +132,11 @@
             (click)="toggleSearch()"
             aria-label="Apri/chiudi ricerca"
           >
-            <span class="material-symbols-outlined">
-              {{ isSearchActive ? "close" : "search" }}
-            </span>
+            <i
+              [ngClass]="
+                isSearchActive ? 'fa-solid fa-xmark' : 'fa-solid fa-search'
+              "
+            ></i>
           </button>
           <div class="search-input-container">
             <input
@@ -159,13 +159,12 @@
               [attr.aria-expanded]="isDropdownOpen"
             >
               <div class="profile-icon">
-                <span class="material-symbols-outlined">account_circle</span>
+                <i class="fa-solid fa-circle-user"></i>
               </div>
-              <span
-                class="material-symbols-outlined dropdown-arrow"
+              <i
+                class="fa-solid fa-chevron-down dropdown-arrow"
                 [class.rotated]="isDropdownOpen"
-                >expand_more</span
-              >
+              ></i>
             </button>
             <div
               #profileDropdown
@@ -174,7 +173,7 @@
             >
               <div class="user-info-block">
                 <div class="user-avatar">
-                  <span class="material-symbols-outlined">account_circle</span>
+                  <i class="fa-solid fa-circle-user"></i>
                 </div>
                 <div class="user-details">
                   <p class="user-name">
@@ -208,8 +207,7 @@
                     class="dropdown-menu-item logout"
                     (click)="logout()"
                   >
-                    <span class="material-symbols-outlined">logout</span> Log
-                    Out
+                    <i class="fa-solid fa-right-from-bracket"></i> Log Out
                   </button>
                 </li>
               </ul>

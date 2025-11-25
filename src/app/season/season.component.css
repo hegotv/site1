@@ -9,16 +9,8 @@ button {
   cursor: pointer; /* Aggiunto per coerenza */
 }
 
-.material-symbols-outlined,
-.material-icons {
-  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+i {
   vertical-align: middle;
-}
-
-.season-page-container {
-  position: relative;
-  background-color: #1a1a1a;
-  color: #fff;
 }
 
 /* --- Sezione Hero --- */
@@ -117,25 +109,31 @@ button {
   color: #fff;
 }
 
-.favorite-btn.saved .material-symbols-outlined {
-  font-variation-settings: "FILL" 1;
+.favorite-btn.saved i {
   color: #39b09d;
   transform: scale(1.2);
 }
-
-.favorite-btn:not(.saved):hover .material-symbols-outlined {
+.favorite-btn:not(.saved):hover i {
   transform: scale(1.1);
 }
-
-.favorite-btn .material-symbols-outlined {
-  transition: color 0.3s, font-variation-settings 0.3s,
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.favorite-btn i {
+  transition: color 0.3s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* --- Sezione Episodi --- */
 .episodes-section {
   padding: 40px 60px;
   box-sizing: border-box;
+  .favorite-btn.saved i {
+    color: #39b09d;
+    transform: scale(1.2);
+  }
+  .favorite-btn:not(.saved):hover i {
+    transform: scale(1.1);
+  }
+  .favorite-btn i {
+    transition: color 0.3s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
 
 .episodes-header {
@@ -146,9 +144,9 @@ button {
 }
 
 .episodes-header h2 {
-  font-size: 32px;
-  font-weight: 700;
-  text-transform: uppercase;
+  .episode-number i {
+    font-size: 18px;
+  }
 }
 
 .season-selector-wrapper {
@@ -268,7 +266,7 @@ button {
   margin-bottom: 8px;
 }
 
-.episode-number .material-icons {
+.episode-number i {
   font-size: 18px;
 }
 

@@ -55,7 +55,7 @@ button {
   align-items: center;
   gap: 15px;
 }
-.user-avatar .material-symbols-outlined {
+.user-avatar i {
   font-size: 40px;
   display: block;
 }
@@ -156,17 +156,19 @@ button {
 .menu-button {
   display: flex;
   position: fixed; /* Lo toglie dal flusso e lo fissa sopra tutto */
-  top: 13px; /* Lo centra verticalmente (70px - 44px) / 2 = 13px */
+  top: 15px; /* Lo centra verticalmente (70px - 44px) / 2 = 13px */
   right: 1rem; /* Lo allinea al padding laterale */
   z-index: 1010; /* Lo mette sopra la sidenav (1000) */
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* SOLUZIONE 3/3: Animazione da menu a close e gestione visibilità */
-.menu-button .material-symbols-outlined {
+.menu-button i {
   transition: transform var(--transition-medium);
+  font-size: 24px;
+  padding: 0 3px;
 }
-.menu-button.active .material-symbols-outlined {
+.menu-button.active i {
   transform: rotate(180deg);
   color: var(--primary-color);
 }
@@ -352,7 +354,7 @@ button {
   background-color: var(--bg-surface-light);
 }
 
-.clear-search-button .material-symbols-outlined {
+.clear-search-button i {
   font-size: 20px;
 }
 
@@ -576,7 +578,7 @@ button {
   .dropdown-menu-item.logout {
     color: var(--primary-color);
   }
-  .dropdown-menu-item .material-symbols-outlined {
+  .dropdown-menu-item i {
     margin-right: 12px;
   }
 }

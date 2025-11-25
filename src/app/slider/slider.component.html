@@ -1,26 +1,6 @@
 <section class="slider-section" *ngIf="items.length > 0">
   <div class="slider-header">
     <h2 class="section-title">{{ sectionTitle }}</h2>
-    <div class="slider-nav-buttons">
-      <button
-        mat-icon-button
-        class="nav-button prev-button"
-        (click)="backScroll()"
-        [disabled]="isBackDisabled"
-        aria-label="Previous"
-      >
-        <mat-icon>chevron_left</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        class="nav-button next-button"
-        (click)="nextScroll()"
-        [disabled]="isNextDisabled"
-        aria-label="Next"
-      >
-        <mat-icon>chevron_right</mat-icon>
-      </button>
-    </div>
   </div>
 
   <div class="slider-container">

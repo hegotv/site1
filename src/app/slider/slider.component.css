@@ -1,7 +1,7 @@
 /* slider.component.css */
 
 .slider-section {
-  margin-bottom: 3rem;
+  margin-bottom: 0.5rem;
   position: relative;
 }
 
@@ -9,37 +9,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
 }
 .section-title {
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #ffffff;
   margin-bottom: 1rem;
-}
-
-/* Nascondiamo i bottoni di navigazione se lo slider non è scrollabile */
-.slider-nav-buttons:has(
-    + .slider-container .slider-content:not([is-scrollable="true"])
-  ) {
-  display: none;
-}
-
-.nav-button {
-  background-color: rgba(22, 22, 22, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  transition: all 0.3s;
-}
-
-.nav-button:hover:not(:disabled) {
-  background-color: #39b09d;
-  border-color: #39b09d;
-}
-
-.nav-button:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
 }
 
 .slider-container {
@@ -83,7 +58,7 @@
 }
 
 .slide:hover {
-  transform: scale(1.08); /* Effetto di zoom leggermente più sottile */
+  /* Effetto di zoom leggermente più sottile */
   z-index: 10;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
 }
@@ -95,7 +70,8 @@
   transition: transform 0.4s ease;
 }
 
-.slide:hover .slide-image {
+.slide:hover .slide-image,
+.slide:hover img {
   transform: scale(
     1.1
   ); /* Leggero zoom anche sull'immagine per un effetto parallax */
@@ -186,7 +162,7 @@
 }
 @media (max-width: 992px) {
   .slide {
-    flex-basis: 45%;
+    flex-basis: 40%;
   } /* ~2 slide */
 }
 @media (max-width: 768px) {

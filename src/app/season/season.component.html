@@ -35,7 +35,7 @@
           class="control-btn play-btn"
           (click)="goToVideo(selectedCategory.videos[0].id)"
         >
-          <span class="material-symbols-outlined">play_arrow</span> PLAY
+          <i class="fa-solid fa-play"></i> PLAY
         </button>
         <button
           class="control-btn favorite-btn"
@@ -47,12 +47,13 @@
             isFavorite() ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'
           "
         >
-          <span
-            class="material-symbols-outlined"
-            [ngClass]="{ 'favorite-filled': isFavorite() }"
-          >
-            {{ isFavorite() ? "favorite" : "favorite_border" }}
-          </span>
+          <i
+            [ngClass]="
+              isFavorite()
+                ? 'fa-solid fa-heart favorite-filled'
+                : 'fa-regular fa-heart'
+            "
+          ></i>
         </button>
       </div>
     </div>
@@ -73,9 +74,7 @@
             SEASON {{ season }}
           </option>
         </select>
-        <span class="material-symbols-outlined season-arrow-icon"
-          >keyboard_arrow_down</span
-        >
+        <i class="fa-solid fa-chevron-down season-arrow-icon"></i>
       </div>
     </div>
 
@@ -96,9 +95,7 @@
             <div class="episode-thumbnail-container">
               <img [src]="episode.thumbnail" [alt]="episode.title" />
               <div class="episode-play-overlay">
-                <span class="material-symbols-outlined play-icon"
-                  >play_arrow</span
-                >
+                <i class="fa-solid fa-play play-icon"></i>
               </div>
             </div>
             <div class="episode-details">
@@ -108,7 +105,7 @@
                   {{ episode.duration | formatDuration }} -
                   {{ episode.visuals | viewsFormat }}</span
                 >
-                <span class="material-icons">visibility</span>
+                <i class="fa-solid fa-eye"></i>
               </p>
               <h3 class="episode-title">{{ episode.title | uppercase }}</h3>
               <p class="episode-short-desc">{{ episode.description }}</p>
