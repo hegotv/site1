@@ -96,6 +96,26 @@ export class LoginService {
     });
   }
 
+  /**
+   * Tentativo di registrazione tramite Google. Il backend dovrebbe
+   * esporre una view che accetta id_token/access_token e crea l'utente.
+   * Se il tuo backend usa lo stesso endpoint di `/google/` per login e
+   * registro, puoi adattare l'URL di conseguenza.
+   */
+  signUpWithGoogle(user: SocialUser): Observable<UserProfile> {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/google-register/`, {
+        access_token: user.idToken,
+        id_token: user.idToken,
+      })
+      .pipe(
+        tap((response) =>
+          this.handleSuccessfulLogin(response.user, response.token)
+        ),
+        map((response) => response.user)
+      );
+  }
+
   logout(): Observable<any> {
     return this.http.post(`${this.apiUrl}/logout/`, {}).pipe(
       tap(() => this.clearSessionData()),

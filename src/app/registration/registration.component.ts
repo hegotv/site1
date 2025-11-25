@@ -11,7 +11,14 @@ import { Router, RouterLink } from '@angular/router';
 import { LoginService } from '../service/login.service';
 import { UserProfile } from '../shared/interfaces';
 import { MatIconModule } from '@angular/material/icon';
-import { Subscription, filter, switchMap, finalize } from 'rxjs';
+import {
+  Subscription,
+  filter,
+  switchMap,
+  finalize,
+  catchError,
+  throwError,
+} from 'rxjs';
 import {
   SocialAuthService,
   SocialUser,
@@ -76,12 +83,23 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.authSubscription = this.socialAuthService.authState
       .pipe(
         filter((user): user is SocialUser => !!user),
-        // --- CORREZIONE: Rimosso il secondo argomento `true` ---
-        switchMap((user) => this.loginService.loginWithGoogle(user))
+        // Proviamo prima il login; se il backend risponde che l'utente non
+        // esiste (es. 404), chiamiamo l'endpoint di registrazione Google.
+        switchMap((user) =>
+          this.loginService.loginWithGoogle(user).pipe(
+            catchError((err: any) => {
+              // adattare il controllo in base ai codici/risposte del backend
+              if (err && (err.status === 404 || err.status === 400)) {
+                return this.loginService.signUpWithGoogle(user);
+              }
+              return throwError(() => err);
+            })
+          )
+        )
       )
       .subscribe({
         next: (profile: UserProfile) => {
-          // Login con Google riuscito, naviga alla home
+          // Login o registrazione via Google riusciti
           this.router.navigate(['/']);
         },
         error: (err) => {
