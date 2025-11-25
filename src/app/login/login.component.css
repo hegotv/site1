@@ -136,36 +136,18 @@ hr {
   height: 100%;
   z-index: -1;
 }
-.google-btn {
+.google-wrapper {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  justify-content: center; /* Centra il pulsante */
   width: 100%;
-  padding: 0.8rem;
-  background: transparent;
-  border: 1px solid #666;
-  border-radius: 10px;
-  color: #f1f1f1;
+  margin-top: 1rem;
+  min-height: 40px; /* Evita salti di layout mentre carica */
 }
 
-.google-btn img {
-  width: 20px;
-  height: 20px;
+/* Se vuoi essere sicuro al 100% che nessun CSS esterno lo rompa: */
+::ng-deep .google-wrapper iframe {
+  margin: 0 auto !important;
 }
-.google-btn-wrapper {
-  position: relative;
-  width: 100%;
-}
-#google-signin-button {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 99%;
-  opacity: 0;
-}
-
 .password-container {
   position: relative;
   width: 100%;
