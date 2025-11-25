@@ -156,17 +156,22 @@ label {
   width: 20px;
   height: 20px;
 }
+::ng-deep #google-signin-button {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0;
+  z-index: 10; /* Assicura che stia sopra al tuo pulsante custom */
+  display: block; /* Forza il display block */
+}
+
+/* Modifica anche il wrapper per sicurezza */
 .google-btn-wrapper {
   position: relative;
   width: 100%;
-}
-#google-signin-button {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 99%;
-  opacity: 0;
+  display: block; /* Assicura che il contenitore occupi spazio */
 }
 .bg {
   position: fixed;
