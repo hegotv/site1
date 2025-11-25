@@ -84,29 +84,30 @@
       </div>
       <hr />
       <p class="or">o</p>
-      <!-- Wrapper che tiene tutto insieme -->
-      <div class="google-final-wrapper">
-        <!-- STRATO 1: La tua grafica (Sotto) -->
-        <div class="my-custom-design">
-          <img
-            src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
-            alt="G"
-          />
-          <span>Continua con Google</span>
-        </div>
 
-        <!-- STRATO 2: Il pulsante Google (Sopra, invisibile e GIGANTE) -->
-        <div class="google-invisible-layer">
-          <asl-google-signin-button
-            type="standard"
-            size="large"
-          ></asl-google-signin-button>
-        </div>
-      </div>
       <p class="register" *ngIf="isMobile">
         Non hai un account? <br /><a routerLink="/register">Crealo ora</a>
       </p>
     </form>
+    <div class="stack-container">
+      <!-- Livello 1: Il tuo design (Sotto) -->
+      <div class="custom-design">
+        <img
+          src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
+          alt="G"
+        />
+        <span>Continua con Google</span>
+      </div>
+
+      <!-- Livello 2: Il pulsante Google (Sopra) -->
+      <div class="google-layer">
+        <!-- width e height nulli qui, gestiamo tutto via CSS -->
+        <asl-google-signin-button
+          type="standard"
+          size="large"
+        ></asl-google-signin-button>
+      </div>
+    </div>
     <!-- Messaggio di Errore Generale per il Login -->
     <div
       *ngIf="loginErrorMessage"

@@ -136,29 +136,35 @@ hr {
   height: 100%;
   z-index: -1;
 }
-/* 1. IL CONTENITORE PRINCIPALE 
-   Definisce la grandezza del pulsante. Tutto ciò che esce da qui viene tagliato. */
-.google-final-wrapper {
-  position: relative; /* Crea il contesto per gli elementi assoluti */
-  width: 100%; /* Larghezza fluida */
-  max-width: 350px; /* Larghezza massima come volevi tu */
-  height: 50px; /* Altezza fissa del pulsante */
-  margin: 1rem auto; /* Centrato */
-  border-radius: 8px; /* Arrotondamento */
-  overflow: hidden; /* FONDAMENTALE: Taglia via il pulsante Google gigante */
-  cursor: pointer; /* Manina al passaggio del mouse */
+/* Definiamo una griglia con una sola cella.
+   Tutti i figli finiranno uno sopra l'altro nella stessa cella. */
+.stack-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+
+  /* Dimensioni del tuo pulsante */
+  width: 100%;
+  max-width: 350px;
+  height: 50px;
+  margin: 1rem auto;
+
+  /* Cursore */
+  cursor: pointer;
 }
 
-/* 2. LA TUA GRAFICA (STATICA)
-   Questo è quello che l'utente vede. */
-.my-custom-design {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* Regole comuni per entrambi i livelli: occupano tutto lo spazio */
+.custom-design,
+.google-layer {
+  grid-column: 1 / -1; /* Occupa tutta la larghezza */
+  grid-row: 1 / -1; /* Occupa tutta l'altezza */
   width: 100%;
   height: 100%;
+}
 
-  /* Il tuo stile grafico */
+/* --- LIVELLO 1: GRAFICA (SOTTO) --- */
+.custom-design {
+  /* Stile estetico */
   background-color: transparent;
   border: 1px solid #666;
   border-radius: 8px;
@@ -168,53 +174,39 @@ hr {
   gap: 12px;
   color: #fff;
   font-size: 16px;
-  font-weight: 500;
-  z-index: 1; /* Sta sotto */
-  pointer-events: none; /* I click passano attraverso la grafica */
-  transition: border-color 0.3s, background-color 0.3s;
-}
 
-.my-custom-design img {
+  /* IMPORTANTE: Disabilita i click sulla grafica per non interferire */
+  pointer-events: none;
+  z-index: 1;
+}
+.custom-design img {
   width: 20px;
   height: 20px;
 }
 
-/* Effetto Hover visivo */
-.google-final-wrapper:hover .my-custom-design {
-  border-color: #39b09d;
-  background-color: rgba(255, 255, 255, 0.05);
+/* --- LIVELLO 2: GOOGLE (SOPRA) --- */
+.google-layer {
+  z-index: 10; /* Sicuramente sopra */
+
+  /* TEST: Mettilo a 0.5 per vederlo. 
+     Se riesci a cliccarlo, cambia questo valore a 0.001 */
+  opacity: 0.5;
+
+  /* Allineamento */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* Taglia se l'iframe sborda */
 }
 
-/* 3. LO STRATO INVISIBILE DI GOOGLE
-   Questo div sta sopra la grafica. */
-.google-invisible-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10; /* Sta SOPRA a tutto */
-  opacity: 0.01; /* Quasi invisibile ma cliccabile (0 a volte crea problemi) */
-}
-
-/* 4. IL TRUCCO DELLO ZOOM (CSS PROFONDO)
-   Forziamo l'iframe ad essere enorme (Scale 1.5) e centrato.
-   In questo modo non ci sono bordi vuoti non cliccabili. */
-::ng-deep .google-invisible-layer iframe {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) scale(1.5) !important; /* Zoom del 150% */
+/* Forza l'iframe a riempire la cella */
+::ng-deep .google-layer iframe {
+  min-width: 100% !important;
+  min-height: 100% !important;
   width: 100% !important;
   height: 100% !important;
+  transform: scale(1.1); /* Leggero zoom per sicurezza */
   cursor: pointer !important;
-}
-
-/* Assicuriamo che il componente Angular riempia lo spazio */
-::ng-deep .google-invisible-layer asl-google-signin-button {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 .password-container {
   position: relative;
