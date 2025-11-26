@@ -127,6 +127,8 @@ export class AudioComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.setupMediaSession();
         this.cdr.detectChanges();
+
+        this.triggerIOSLoad();
       });
   }
 
@@ -203,6 +205,17 @@ export class AudioComponent implements OnInit, OnDestroy {
 
   playOtherEpisode(episodeId: number): void {
     this.router.navigate(['/podcasts/', episodeId]);
+  }
+
+  private triggerIOSLoad(): void {
+    // Usa setTimeout per assicurarti che il DOM sia aggiornato e il tag <audio> esista
+    setTimeout(() => {
+      if (this.audio) {
+        // Forza il ricaricamento della risorsa
+        this.audio.load();
+        console.log('Audio resource loaded manually for iOS compatibility');
+      }
+    }, 100);
   }
 
   // --- Media Session API ---
