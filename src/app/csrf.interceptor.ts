@@ -16,14 +16,10 @@ export const csrfInterceptor: HttpInterceptorFn = (
   const csrfToken = csrfService.getToken();
   const apiUrl = environment.apiUrl; // Recupera l'URL base dall'environment
 
-  console.log(`[CSRF Interceptor] Esecuzione per ${req.method} ${req.url}`);
-  console.log(`[CSRF Interceptor] Token recuperato dal servizio:`, csrfToken);
-
   // --- MODIFICA CHIAVE ---
   // Aggiungi l'header se abbiamo un token E se la richiesta è diretta alla nostra API.
   // Abbiamo rimosso il controllo sul metodo HTTP (GET, POST, etc.).
   if (csrfToken && req.url.startsWith(apiUrl)) {
-    console.log(`[CSRF Interceptor] Aggiungo l'header X-CSRFToken.`);
     const clonedReq = req.clone({
       setHeaders: {
         'X-CSRFToken': csrfToken,
@@ -32,6 +28,5 @@ export const csrfInterceptor: HttpInterceptorFn = (
     return next(clonedReq);
   }
 
-  console.log(`[CSRF Interceptor] Nessun header aggiunto.`);
   return next(req);
 };

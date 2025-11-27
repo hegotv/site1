@@ -1,6 +1,17 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  Inject,
+  PLATFORM_ID,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import {
+  CommonModule,
+  ViewportScroller,
+  isPlatformBrowser,
+} from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -41,16 +52,26 @@ export class SeasonComponent implements OnInit, OnDestroy {
   private favoriteCategorySlugs = new Set<string>();
   private subscriptions = new Subscription();
   public readonly baseUrl = 'https://hegobck-production.up.railway.app';
+  public isMobile = false;
+
+  private isBrowser: boolean;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private categoryService: CategoryService,
     private loginService: LoginService,
-    private cdr: ChangeDetectorRef // Inietta per aggiornamenti UI
-  ) {}
+    private cdr: ChangeDetectorRef, // Inietta per aggiornamenti UI
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private viewportScroller: ViewportScroller
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit(): void {
+    if (this.isBrowser) {
+      this.isMobile = window.innerWidth <= 768;
+    }
     // Sottoscrizione allo stato di login per caricare i preferiti
     this.subscriptions.add(
       this.loginService.isLoggedIn$.subscribe((loggedIn) => {
@@ -147,13 +168,39 @@ export class SeasonComponent implements OnInit, OnDestroy {
   }
 
   filterEpisodesBySeason(): void {
+    // 3. Salviamo la posizione attuale dello scroll (asse Y)
+    const currentScrollPosition = this.viewportScroller.getScrollPosition();
+
     if (this.selectedSeason === null || !this.selectedCategory) {
       this.filteredEpisodes = [];
       return;
     }
+
     this.filteredEpisodes = this.selectedCategory.videos.filter(
       (episode) => episode.season === this.selectedSeason
     );
+
+    // 4. Forziamo il rilevamento dei cambiamenti per aggiornare il DOM
+    this.cdr.detectChanges();
+
+    // 5. Ripristiniamo la posizione dello scroll.
+    // Se il sito ha `scroll-behavior: smooth` impostato via CSS, la chiamata
+    // a `scrollToPosition` verrà animata — per evitare l'animazione forziamo
+    // temporaneamente `scroll-behavior: auto` nel browser e poi lo ripristiniamo.
+    requestAnimationFrame(() => {
+      if (this.isBrowser) {
+        const docEl = document.documentElement as HTMLElement;
+        const prev = docEl.style.scrollBehavior;
+        docEl.style.scrollBehavior = 'auto';
+        this.viewportScroller.scrollToPosition(currentScrollPosition);
+        // Ripristina lo style dopo il prossimo frame per non alterare il comportamento globale
+        requestAnimationFrame(() => {
+          docEl.style.scrollBehavior = prev || '';
+        });
+      } else {
+        this.viewportScroller.scrollToPosition(currentScrollPosition);
+      }
+    });
   }
 
   onEpisodeHover(episode: Video): void {

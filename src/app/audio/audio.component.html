@@ -1,36 +1,45 @@
 @if (isLoading) {
-<!-- Stato di Caricamento -->
-<div class="loading-overlay">
+<div
+  class="loading-overlay"
+  role="alert"
+  aria-busy="true"
+  aria-label="Caricamento episodio"
+>
   <div class="loading-content">
-    <img src="assets/HEGO_crop.png" alt="HEGO Logo" class="loading-logo" />
+    <img
+      src="assets/HEGO_crop.png"
+      alt=""
+      aria-hidden="true"
+      class="loading-logo"
+    />
     <div class="spinner"></div>
   </div>
 </div>
 } @else if (errorMessage) {
-<!-- Stato di Errore -->
-<div class="player-error-state">
-  <i class="fas fa-exclamation-triangle"></i>
+<div class="player-error-state" role="alert">
+  <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
   <h2>Impossibile Caricare l'Episodio</h2>
   <p>{{ errorMessage }}</p>
+  <button class="retry-btn" (click)="ngOnInit()">Riprova</button>
 </div>
 } @else if (episode) {
-<!-- Contenuto del Player (se l'episodio è stato caricato correttamente) -->
 <div class="audio-player-container">
-  <!-- Sezione Player Principale -->
+  <!-- PLAYER -->
   <div class="player-content">
     <img
       [src]="episode.artwork_image"
-      [alt]="episode.title"
+      [alt]="'Copertina episodio: ' + episode.title"
       class="artwork-image"
+      loading="eager"
     />
 
     <div class="episode-info">
-      <h2 class="episode-title">
+      <h1 class="episode-title">
         @if(episodeNumber) {
         <span class="episode-number">Ep. {{ episodeNumber }} -</span>
         }
         {{ episode.title }}
-      </h2>
+      </h1>
       <p class="speaker-info">
         {{ seasonTitle || "Podcast" }} • {{ episode.speaker }}
       </p>
@@ -49,65 +58,111 @@
       style="display: none"
     ></audio>
 
-    <div class="progress-controls" [class.seekable]="isSeekable">
-      <span>{{ currentTime * 1000 | date : "mm:ss" : "UTC" }}</span>
-      <div class="progress-bar-wrapper" (click)="onSeekClick($event)">
+    <!-- Progress Bar Accessibile -->
+    <div
+      class="progress-controls"
+      [class.seekable]="isSeekable"
+      [attr.aria-disabled]="!isSeekable"
+    >
+      <span class="time-label" aria-hidden="true">
+        {{ formatDuration(currentTime) }}
+      </span>
+
+      <!-- 
+         Utilizziamo role="slider" per l'accessibilità. 
+         In un'app complessa, si potrebbe usare <input type="range">, 
+         ma qui manteniamo il div per coerenza stilistica aggiungendo eventi.
+      -->
+      <div
+        class="progress-bar-wrapper"
+        (click)="onSeek($event)"
+        role="slider"
+        tabindex="0"
+        [attr.aria-valuemin]="0"
+        [attr.aria-valuemax]="duration"
+        [attr.aria-valuenow]="currentTime"
+        [attr.aria-label]="'Avanzamento riproduzione'"
+        (keydown.arrowright)="seekRelative(5)"
+        (keydown.arrowleft)="seekRelative(-5)"
+      >
+        <div class="progress-bar-background"></div>
         <div
-          class="progress-bar"
+          class="progress-bar-fill"
           [style.width.%]="duration > 0 ? (currentTime / duration) * 100 : 0"
         ></div>
+        <!-- Thumb per indicare la posizione corrente -->
+        <div
+          class="progress-thumb"
+          [style.left.%]="duration > 0 ? (currentTime / duration) * 100 : 0"
+        ></div>
       </div>
-      <span>{{ duration * 1000 | date : "mm:ss" : "UTC" }}</span>
+
+      <span class="time-label" aria-hidden="true">
+        {{ formatDuration(duration) }}
+      </span>
     </div>
 
     <div class="main-controls">
       <button
         class="control-btn"
         (click)="seekRelative(-15)"
-        title="Indietro di 15s"
+        title="Indietro di 15 secondi"
+        aria-label="Indietro di 15 secondi"
         [disabled]="!isSeekable"
       >
-        <i class="fas fa-undo"></i>
+        <i class="fas fa-undo" aria-hidden="true"></i>
       </button>
+
       <button
         class="control-btn play-pause-btn"
         (click)="togglePlayPause()"
-        [title]="isPlaying ? 'Pausa' : 'Play'"
+        [title]="isPlaying ? 'Pausa' : 'Riproduci'"
+        [attr.aria-label]="isPlaying ? 'Pausa' : 'Riproduci'"
         [disabled]="!isSeekable"
       >
         @if (isPlaying) {
-        <i class="fas fa-pause"></i>
+        <i class="fas fa-pause" aria-hidden="true"></i>
         } @else {
-        <i class="fas fa-play"></i>
+        <i class="fas fa-play" aria-hidden="true"></i>
         }
       </button>
+
       <button
         class="control-btn"
         (click)="seekRelative(15)"
-        title="Avanti di 15s"
+        title="Avanti di 15 secondi"
+        aria-label="Avanti di 15 secondi"
         [disabled]="!isSeekable"
       >
-        <i class="fas fa-redo"></i>
+        <i class="fas fa-redo" aria-hidden="true"></i>
       </button>
     </div>
   </div>
 
-  <!-- Sezione "Altri Episodi" -->
+  <!-- ALTRI EPISODI -->
   @if(otherEpisodes.length > 0) {
-  <div class="other-episodes-section">
+  <section
+    class="other-episodes-section"
+    aria-label="Altri episodi della stagione"
+  >
     <h3 class="section-title">Altri episodi in "{{ seasonTitle }}"</h3>
-    <div class="episodes-list">
+    <div class="episodes-list" role="list">
       @for (otherEp of otherEpisodes; track otherEp.id) {
       <div
         class="episode-item"
         (click)="playOtherEpisode(otherEp.id)"
+        (keydown)="onEpisodeKeydown($event, otherEp.id)"
         tabindex="0"
-        role="button"
+        role="listitem"
+        [attr.aria-label]="
+          'Riproduci episodio ' + otherEp.number + ': ' + otherEp.title
+        "
       >
         <img
           [src]="otherEp.artwork_image"
-          [alt]="otherEp.title"
+          alt=""
           class="item-artwork"
+          loading="lazy"
         />
         <div class="item-info">
           <p class="item-title">
@@ -117,12 +172,12 @@
           <span class="item-duration">{{ otherEp.duration }}</span>
         </div>
         <div class="item-play-icon">
-          <i class="fas fa-play"></i>
+          <i class="fas fa-play" aria-hidden="true"></i>
         </div>
       </div>
       }
     </div>
-  </div>
+  </section>
   }
 </div>
 }

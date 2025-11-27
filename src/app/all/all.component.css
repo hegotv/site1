@@ -102,15 +102,14 @@ button {
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  height: 50vh; /* Altezza fissa per uniformità */
+  height: 60vh; /* Altezza fissa per uniformità */
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.category-grid-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+.category-grid-item:hover img {
+  transform: scale(1.05);
 }
 
 .category-grid-item img {
@@ -118,11 +117,11 @@ button {
   height: 100%;
   object-fit: cover;
   filter: brightness(0.7);
-  transition: filter 0.3s ease;
+  transition: all 0.5s ease;
 }
 
 .category-grid-item:hover img {
-  filter: brightness(0.9);
+  filter: brightness(1);
 }
 
 .category-grid-item-content {
@@ -176,15 +175,18 @@ button {
   }
 
   .category-grid-item {
-    height: 150px;
+    height: 135px;
   }
 
   .category-grid-item-content h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .category-grid-item-content p {
     font-size: 0.8rem;
+  }
+  .category-grid-item-content {
+    padding: 1rem 0.8rem;
   }
 }
 
@@ -194,18 +196,6 @@ button {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     padding: 0 1rem;
-  }
-
-  .category-grid-item {
-    height: 120px;
-  }
-
-  .category-grid-item-content {
-    padding: 0.75rem;
-  }
-
-  .category-grid-item-content h3 {
-    font-size: 1rem;
   }
 
   /* Nasconde il contatore video/stagioni su schermi molto piccoli per pulizia */

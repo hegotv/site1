@@ -28,10 +28,6 @@ export class CsrfService {
         .get<CsrfTokenResponse>(this.csrfTokenUrl, { withCredentials: true })
         .pipe(
           tap((response) => {
-            console.log(
-              '[CsrfService] Token ricevuto dal backend:',
-              response.csrfToken
-            );
             this.token = response.csrfToken;
           })
         )

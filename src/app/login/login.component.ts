@@ -83,14 +83,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(
         filter((user): user is SocialUser => !!user),
 
-        // --- AGGIUNGI QUESTO BLOCCO DI DEBUG ---
-        tap((user) => {
-          console.log('Oggetto User ricevuto dal social service:', user);
-          // Controlla specificamente il token che ti serve!
-          console.log('Valore di user.authToken:', user.authToken);
-        }),
-        // -----------------------------------------
-
         switchMap((user) => this.loginService.loginWithGoogle(user))
       )
       .subscribe({

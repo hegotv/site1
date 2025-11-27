@@ -128,7 +128,7 @@ i {
 
 /* --- Sezione Episodi --- */
 .episodes-section {
-  padding: 40px 60px;
+  padding: 15px 60px;
   box-sizing: border-box;
   .favorite-btn.saved i {
     color: #39b09d;
@@ -424,8 +424,8 @@ i {
     padding: 10px;
   }
   .episodes-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 20px;
   }
   /* La card dell'episodio diventa verticale */

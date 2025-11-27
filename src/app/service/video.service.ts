@@ -150,8 +150,5 @@ export class VideoService {
     // sendBeacon fa una POST semplice, niente Preflight, parte subito.
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const success = navigator.sendBeacon(url, blob);
-
-    // Opzionale: logga se il browser ha accettato di metterlo in coda
-    // console.log('Beacon queued:', success);
   }
 }

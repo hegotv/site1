@@ -26,7 +26,7 @@ main.all-podcasts-container {
 }
 
 .page-header h1 {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
   margin: 0 0 10px;
 }
@@ -167,9 +167,6 @@ main.all-podcasts-container {
    MEDIA QUERIES PER RESPONSIVENESS
    ================================================================= */
 @media (max-width: 380px) {
-  .page-header h1 {
-    font-size: 2rem;
-  }
   .episodes-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
@@ -182,8 +179,5 @@ main.all-podcasts-container {
   }
   .episodes-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
-  .page-header h1 {
-    font-size: 3.5rem;
   }
 }

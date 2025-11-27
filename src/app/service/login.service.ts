@@ -55,7 +55,6 @@ export class LoginService {
       .pipe(
         tap((response) => {
           // --- CORREZIONE: Usiamo response.token ---
-          console.log('Login riuscito, token ricevuto:', response.token);
           this.handleSuccessfulLogin(response.user, response.token);
         }),
         map((response) => response.user)

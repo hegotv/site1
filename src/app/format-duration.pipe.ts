@@ -1,11 +1,18 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Pipe({
   name: 'formatDuration',
   standalone: true,
 })
 export class FormatDurationPipe implements PipeTransform {
-  isMobile: boolean = window.innerWidth <= 768;
+  isMobile = false;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isMobile = window.innerWidth <= 768;
+    }
+  }
 
   transform(duration: string): string {
     if (!duration) {

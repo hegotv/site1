@@ -5,7 +5,11 @@
   <!-- Sezione Hero del Formato -->
   <div class="format-hero">
     <img
-      [src]="baseUrl + selectedCategory.CatimageOrizz"
+      [src]="
+        isMobile && selectedCategory.CatimageVert
+          ? baseUrl + selectedCategory.CatimageVert
+          : baseUrl + selectedCategory.CatimageOrizz
+      "
       [alt]="selectedCategory.title"
       class="format-hero-img"
     />
