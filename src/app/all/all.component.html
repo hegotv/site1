@@ -1,11 +1,35 @@
-<!-- all.component.html -->
+<!-- ======================================================================= -->
+<!-- SKELETON LOADING (VISIBILE DURANTE IL CARICAMENTO)                      -->
+<!-- ======================================================================= -->
+<div *ngIf="isLoading" class="skeleton-container fade-out">
+  <!-- Skeleton Header -->
+  <div class="all-shows-header">
+    <div class="skeleton-title skeleton-box"></div>
+  </div>
 
-<!-- Contenitore principale, visibile solo quando i dati non sono più in caricamento -->
-<div class="all-shows-container" *ngIf="!isLoading; else loadingState">
+  <!-- Skeleton Grid (Rispecchia la griglia reale) -->
+  <div class="category-grid skeleton-grid-override">
+    <!-- Generiamo 8 card fittizie per riempire lo schermo -->
+    <div class="skeleton-card skeleton-box"></div>
+    <div class="skeleton-card skeleton-box"></div>
+    <div class="skeleton-card skeleton-box"></div>
+    <div class="skeleton-card skeleton-box"></div>
+    <div class="skeleton-card skeleton-box"></div>
+    <div class="skeleton-card skeleton-box"></div>
+    <div class="skeleton-card skeleton-box"></div>
+    <div class="skeleton-card skeleton-box"></div>
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- CONTENUTO REALE (VISIBILE DOPO IL CARICAMENTO)                          -->
+<!-- ======================================================================= -->
+<div class="all-shows-container fade-in" *ngIf="!isLoading">
   <section class="all-shows-section">
     <div class="all-shows-header">
       <h1 class="section-title">{{ this.pageTitle }}</h1>
     </div>
+
     <div class="category-grid" *ngIf="displayShows.length > 0; else noAllShows">
       <!-- Itera sulla nuova lista di format raggruppati -->
       <div
@@ -16,11 +40,7 @@
         <img [src]="show.CatimageVert" [alt]="show.title" />
         <div class="category-grid-item-content">
           <h3>{{ show.title }}</h3>
-
-          <!-- Se c'è più di una stagione, mostra il conteggio delle stagioni -->
           <p *ngIf="show.seasonCount > 1">{{ show.seasonCount }} stagioni</p>
-
-          <!-- Se c'è una sola stagione, mostra il conteggio degli episodi -->
           <p *ngIf="show.seasonCount === 1">
             {{ show.episodeCount }}
             {{ show.episodeCount === 1 ? "episodio" : "episodi" }}
@@ -28,17 +48,11 @@
         </div>
       </div>
     </div>
+
     <ng-template #noAllShows>
       <p class="no-content-message">Nessuno show disponibile.</p>
     </ng-template>
   </section>
 </div>
 
-<!-- Stato di caricamento (visibile mentre isLoading è true) -->
-<ng-template #loadingState>
-  <div class="loading-container">
-    <div class="spinner"></div>
-    <p>Caricamento dei format...</p>
-  </div>
-</ng-template>
-<app-footer></app-footer>
+<app-footer *ngIf="!isLoading"></app-footer>

@@ -1,6 +1,76 @@
+<!-- ======================================================================= -->
+<!-- SKELETON LOADING (VISIBILE DURANTE IL CARICAMENTO)                      -->
+<!-- ======================================================================= -->
+<div *ngIf="isLoading" class="skeleton-container fade-out">
+  <!-- Skeleton Hero -->
+  <div class="skeleton-hero">
+    <div class="skeleton-hero-overlay"></div>
+    <!-- Sfumatura finta -->
+    <div class="skeleton-hero-content">
+      <div class="skeleton-title skeleton-box"></div>
+      <div class="skeleton-meta skeleton-box"></div>
+      <div class="skeleton-desc skeleton-box"></div>
+      <div class="skeleton-controls">
+        <div class="skeleton-btn skeleton-box"></div>
+        <div class="skeleton-btn circle skeleton-box"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skeleton Episodes Section -->
+  <div class="episodes-section skeleton-section">
+    <!-- Header Finto -->
+    <div class="episodes-header">
+      <div class="skeleton-header-title skeleton-box"></div>
+      <div class="skeleton-selector skeleton-box"></div>
+    </div>
+
+    <div class="episodes-content-wrapper">
+      <!-- Lista Episodi Finta -->
+      <div class="episodes-list">
+        <!-- Generiamo 4 card fittizie -->
+        <div class="skeleton-episode-card">
+          <div class="skeleton-ep-thumb skeleton-box"></div>
+          <div class="skeleton-ep-details">
+            <div class="skeleton-text-line sm skeleton-box"></div>
+            <div class="skeleton-text-line md skeleton-box"></div>
+            <div class="skeleton-text-line lg skeleton-box"></div>
+          </div>
+        </div>
+        <div class="skeleton-episode-card">
+          <div class="skeleton-ep-thumb skeleton-box"></div>
+          <div class="skeleton-ep-details">
+            <div class="skeleton-text-line sm skeleton-box"></div>
+            <div class="skeleton-text-line md skeleton-box"></div>
+            <div class="skeleton-text-line lg skeleton-box"></div>
+          </div>
+        </div>
+        <div class="skeleton-episode-card">
+          <div class="skeleton-ep-thumb skeleton-box"></div>
+          <div class="skeleton-ep-details">
+            <div class="skeleton-text-line sm skeleton-box"></div>
+            <div class="skeleton-text-line md skeleton-box"></div>
+            <div class="skeleton-text-line lg skeleton-box"></div>
+          </div>
+        </div>
+        <div class="skeleton-episode-card">
+          <div class="skeleton-ep-thumb skeleton-box"></div>
+          <div class="skeleton-ep-details">
+            <div class="skeleton-text-line sm skeleton-box"></div>
+            <div class="skeleton-text-line md skeleton-box"></div>
+            <div class="skeleton-text-line lg skeleton-box"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pannello Laterale Finto (Solo Desktop) -->
+      <div class="skeleton-panel mobile-hidden skeleton-box"></div>
+    </div>
+  </div>
+</div>
 <div
-  *ngIf="selectedCategory; else loadingOrError"
-  class="season-page-container"
+  *ngIf="!isLoading && selectedCategory"
+  class="season-page-container fade-in"
 >
   <!-- Sezione Hero del Formato -->
   <div class="format-hero">
@@ -151,7 +221,3 @@
     </div>
   </div>
 </div>
-
-<ng-template #loadingOrError>
-  <p class="loading-message">Caricamento in corso o dati non disponibili...</p>
-</ng-template>

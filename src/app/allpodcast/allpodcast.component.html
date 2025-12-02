@@ -1,44 +1,111 @@
-<!-- Contenitore principale, visibile solo quando i dati non sono più in caricamento -->
-<main class="all-podcasts-container" *ngIf="!isLoading; else loadingState">
-  <!-- Intestazione della pagina -->
-  <header class="page-header">
-    <h1>{{ season?.title || "Stagione" }}</h1>
-  </header>
+<!-- Il contenitore principale è sempre presente per mantenere lo sfondo e il padding -->
+<main class="all-podcasts-container">
+  <!-- ================================================================= -->
+  <!-- SKELETON LOADING (VISIBILE DURANTE IL CARICAMENTO)                -->
+  <!-- ================================================================= -->
+  @if (isLoading) {
+  <div class="skeleton-wrapper fade-out">
+    <!-- Intestazione Finta -->
+    <header class="page-header">
+      <div class="skeleton-title skeleton-box"></div>
+    </header>
 
-  <!-- Griglia degli Episodi -->
-  @if (season && season.episodes.length > 0) {
-  <section class="episodes-grid">
-    @for (episode of season.episodes; track episode.id) {
-    <div class="episode-card" (click)="playPodcast(episode)" tabindex="0">
-      <div class="card-artwork">
-        <img [src]="episode.artwork_image" [alt]="episode.title" />
-        <div class="play-overlay">
-          <i class="fas fa-play"></i>
+    <!-- Griglia Finta (Usa la stessa classe 'episodes-grid' per il layout) -->
+    <section class="episodes-grid">
+      <!-- Generiamo 8 card fittizie -->
+      <div class="skeleton-card">
+        <div class="skeleton-artwork skeleton-box"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-line-title skeleton-box"></div>
+          <div class="skeleton-line-meta skeleton-box"></div>
         </div>
       </div>
-      <div class="card-info">
-        <h3 class="card-title">Ep. {{ $index + 1 }} - {{ episode.title }}</h3>
-        <p class="card-meta">{{ season.title }}</p>
+      <div class="skeleton-card">
+        <div class="skeleton-artwork skeleton-box"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-line-title skeleton-box"></div>
+          <div class="skeleton-line-meta skeleton-box"></div>
+        </div>
       </div>
+      <div class="skeleton-card">
+        <div class="skeleton-artwork skeleton-box"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-line-title skeleton-box"></div>
+          <div class="skeleton-line-meta skeleton-box"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-artwork skeleton-box"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-line-title skeleton-box"></div>
+          <div class="skeleton-line-meta skeleton-box"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-artwork skeleton-box"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-line-title skeleton-box"></div>
+          <div class="skeleton-line-meta skeleton-box"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-artwork skeleton-box"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-line-title skeleton-box"></div>
+          <div class="skeleton-line-meta skeleton-box"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-artwork skeleton-box"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-line-title skeleton-box"></div>
+          <div class="skeleton-line-meta skeleton-box"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-artwork skeleton-box"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-line-title skeleton-box"></div>
+          <div class="skeleton-line-meta skeleton-box"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  } @else {
+  <div class="content-wrapper fade-in">
+    <!-- Intestazione della pagina -->
+    <header class="page-header">
+      <h1>{{ season?.title || "Stagione" }}</h1>
+    </header>
+
+    <!-- Griglia degli Episodi -->
+    @if (season && season.episodes.length > 0) {
+    <section class="episodes-grid">
+      @for (episode of season.episodes; track episode.id) {
+      <div class="episode-card" (click)="playPodcast(episode)" tabindex="0">
+        <div class="card-artwork">
+          <img [src]="episode.artwork_image" [alt]="episode.title" />
+          <div class="play-overlay">
+            <i class="fas fa-play"></i>
+          </div>
+        </div>
+        <div class="card-info">
+          <h3 class="card-title">Ep. {{ $index + 1 }} - {{ episode.title }}</h3>
+          <p class="card-meta">{{ season.title }}</p>
+        </div>
+      </div>
+      }
+    </section>
+    }
+
+    <!-- Stato "Nessun Episodio" -->
+    @if (!season || season.episodes.length === 0) {
+    <div class="no-results-state">
+      <i class="fas fa-podcast"></i>
+      <h2>Nessun Episodio Trovato</h2>
+      <p>Al momento non ci sono episodi disponibili per questa stagione.</p>
     </div>
     }
-  </section>
-  }
-
-  <!-- Stato "Nessun Episodio" -->
-  @if (!season || season.episodes.length === 0) {
-  <div class="no-results-state">
-    <i class="fas fa-podcast"></i>
-    <h2>Nessun Episodio Trovato</h2>
-    <p>Al momento non ci sono episodi disponibili per questa stagione.</p>
   </div>
   }
 </main>
-
-<!-- Stato di caricamento (visibile mentre isLoading è true) -->
-<ng-template #loadingState>
-  <div class="loading-container">
-    <div class="spinner"></div>
-    <p>Caricamento degli episodi...</p>
-  </div>
-</ng-template>

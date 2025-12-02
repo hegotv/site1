@@ -1,12 +1,34 @@
-<!-- ======================================================================= -->
-<!-- CONTENUTO PRINCIPALE DELLA PAGINA (VISIBILE DOPO IL CARICAMENTO)      -->
-<!-- ======================================================================= -->
-<div *ngIf="!isLoading">
-  <!-- ======================================================== -->
-  <!-- Hero Section -->
-  <!-- ======================================================== -->
+<app-christmas-snow></app-christmas-snow>
+<div *ngIf="isLoading" class="skeleton-container fade-out">
+  <!-- Skeleton Hero -->
+  <div class="skeleton-hero skeleton-box"></div>
+
+  <!-- Skeleton Section: Continue Watching / Trending -->
+  <div class="skeleton-section">
+    <div class="skeleton-title skeleton-box"></div>
+    <div class="skeleton-row">
+      <div class="skeleton-card skeleton-box"></div>
+      <div class="skeleton-card skeleton-box"></div>
+      <div class="skeleton-card skeleton-box"></div>
+      <div class="skeleton-card skeleton-box mobile-hidden"></div>
+    </div>
+  </div>
+
+  <!-- Skeleton Section: Categories -->
+  <div class="skeleton-section">
+    <div class="skeleton-title skeleton-box"></div>
+    <div class="skeleton-grid">
+      <div class="skeleton-cat-card skeleton-box"></div>
+      <div class="skeleton-cat-card skeleton-box"></div>
+      <div class="skeleton-cat-card skeleton-box"></div>
+      <div class="skeleton-cat-card skeleton-box mobile-hidden"></div>
+      <div class="skeleton-cat-card skeleton-box mobile-hidden"></div>
+      <div class="skeleton-cat-card skeleton-box mobile-hidden"></div>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isLoading" class="fade-in">
   @if(!isMobile){
-  <!-- Hero Section per Desktop -->
   <section *ngIf="heroVideos.length > 0" class="hero-section">
     <div class="hero-slides-wrapper">
       <ng-container *ngFor="let video of heroVideos; let i = index">

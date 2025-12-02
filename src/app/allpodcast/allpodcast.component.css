@@ -162,6 +162,90 @@ main.all-podcasts-container {
   max-width: 400px;
   line-height: 1.6;
 }
+.skeleton-box {
+  position: relative;
+  background: #2a2a2a; /* Colore base (un po' più chiaro dello sfondo) */
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.skeleton-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Header Finto */
+.skeleton-title {
+  width: 250px;
+  height: 24px;
+  margin-bottom: 10px;
+}
+
+/* Card Finta */
+.skeleton-card {
+  background-color: var(--surface-color); /* Stesso colore della card vera */
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid transparent;
+}
+
+.skeleton-artwork {
+  width: 100%;
+  height: 20vh; /* Stessa altezza di .card-artwork */
+  background-color: #2a2a2a;
+}
+
+.skeleton-info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton-line-title {
+  width: 90%;
+  height: 18px;
+}
+
+.skeleton-line-meta {
+  width: 60%;
+  height: 14px;
+}
+
+/* Transizioni */
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* =================================================================
    MEDIA QUERIES PER RESPONSIVENESS

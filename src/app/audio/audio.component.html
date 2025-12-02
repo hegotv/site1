@@ -1,18 +1,74 @@
 @if (isLoading) {
-<div
-  class="loading-overlay"
-  role="alert"
-  aria-busy="true"
-  aria-label="Caricamento episodio"
->
-  <div class="loading-content">
-    <img
-      src="assets/HEGO_crop.png"
-      alt=""
-      aria-hidden="true"
-      class="loading-logo"
-    />
-    <div class="spinner"></div>
+<div class="skeleton-wrapper fade-out">
+  <!-- Usiamo la stessa classe contenitore per ereditare il layout responsive -->
+  <div class="audio-player-container">
+    <!-- Skeleton Player Panel (Sinistra/Alto) -->
+    <div class="player-content skeleton-panel">
+      <!-- Artwork Finto -->
+      <div class="skeleton-artwork skeleton-box"></div>
+
+      <!-- Testi Finti -->
+      <div class="skeleton-title skeleton-box"></div>
+      <div class="skeleton-subtitle skeleton-box"></div>
+
+      <!-- Progress Bar Finta -->
+      <div class="skeleton-progress-row">
+        <div class="skeleton-time skeleton-box"></div>
+        <div class="skeleton-bar skeleton-box"></div>
+        <div class="skeleton-time skeleton-box"></div>
+      </div>
+
+      <!-- Controlli Finti -->
+      <div class="skeleton-controls-row">
+        <div class="skeleton-btn small skeleton-box"></div>
+        <div class="skeleton-btn big skeleton-box"></div>
+        <div class="skeleton-btn small skeleton-box"></div>
+      </div>
+    </div>
+
+    <!-- Skeleton Playlist (Destra/Basso) -->
+    <div class="other-episodes-section skeleton-playlist">
+      <div class="skeleton-section-title skeleton-box"></div>
+
+      <div class="episodes-list">
+        <!-- Generiamo 5 elementi finti -->
+        <div class="skeleton-list-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-list-info">
+            <div class="skeleton-line-long skeleton-box"></div>
+            <div class="skeleton-line-short skeleton-box"></div>
+          </div>
+        </div>
+        <div class="skeleton-list-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-list-info">
+            <div class="skeleton-line-long skeleton-box"></div>
+            <div class="skeleton-line-short skeleton-box"></div>
+          </div>
+        </div>
+        <div class="skeleton-list-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-list-info">
+            <div class="skeleton-line-long skeleton-box"></div>
+            <div class="skeleton-line-short skeleton-box"></div>
+          </div>
+        </div>
+        <div class="skeleton-list-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-list-info">
+            <div class="skeleton-line-long skeleton-box"></div>
+            <div class="skeleton-line-short skeleton-box"></div>
+          </div>
+        </div>
+        <div class="skeleton-list-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-list-info">
+            <div class="skeleton-line-long skeleton-box"></div>
+            <div class="skeleton-line-short skeleton-box"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 } @else if (errorMessage) {

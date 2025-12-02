@@ -15,7 +15,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { delay, finalize } from 'rxjs/operators';
 
 // Servizi, Pipe e Interfacce
 import { ViewsFormatPipe } from '../views-format.pipe';
@@ -90,6 +90,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
         if (category) {
           this.handleCategoryData(category);
         }
+
         this.isLoading = false; // Il caricamento iniziale è terminato (con o senza dati)
       })
     );
@@ -114,6 +115,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
 
   private handleCategoryData(category: Category): void {
     this.selectedCategory = category;
+
     const episodesWithSeason = this.selectedCategory.videos.filter(
       (v) => typeof v.season === 'number'
     );

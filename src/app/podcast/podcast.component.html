@@ -1,20 +1,53 @@
 <main class="podcast-page-container">
+  <!-- ================================================================= -->
+  <!-- SKELETON LOADING (VISIBILE DURANTE IL CARICAMENTO)                -->
+  <!-- ================================================================= -->
   @if (isLoading) {
-  <div class="loading-state">...</div>
-  } @else {
-  <!-- Ciclo principale sulle SEZIONI -->
-  @for (section of podcastSections; track section.id) {
+  <div class="skeleton-container fade-out">
+    <!-- Skeleton Section 1 (Simula una riga di podcast) -->
+    <div class="skeleton-section">
+      <div class="skeleton-title skeleton-box"></div>
+      <div class="skeleton-row">
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box mobile-hidden"></div>
+      </div>
+    </div>
 
-  <app-slider
-    [sectionTitle]="section.title"
-    [items]="section.seasons"
-    [itemTemplate]="seasonCardTemplate"
-    (slideClick)="handleSeasonClick($event)"
-  ></app-slider>
-  } @empty {
-  <p class="no-content-message">Nessun contenuto disponibile.</p>
-  } }
+    <!-- Skeleton Section 2 -->
+    <div class="skeleton-section">
+      <div class="skeleton-title skeleton-box"></div>
+      <div class="skeleton-row">
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box mobile-hidden"></div>
+      </div>
+    </div>
+  </div>
+  } @else {
+
+  <!-- ================================================================= -->
+  <!-- CONTENUTO PRINCIPALE (VISIBILE DOPO IL CARICAMENTO)               -->
+  <!-- ================================================================= -->
+  <div class="fade-in">
+    <!-- Ciclo principale sulle SEZIONI -->
+    @for (section of podcastSections; track section.id) {
+    <app-slider
+      [sectionTitle]="section.title"
+      [items]="section.seasons"
+      [itemTemplate]="seasonCardTemplate"
+      (slideClick)="handleSeasonClick($event)"
+    ></app-slider>
+    } @empty {
+    <p class="no-content-message">Nessun contenuto disponibile.</p>
+    }
+  </div>
+  }
 </main>
+
+<!-- Template Card (INVARIATO) -->
 <ng-template #seasonCardTemplate let-season>
   <div
     class="season-card"
@@ -37,7 +70,6 @@
         <i class="fas fa-play"></i>
       </div>
     </div>
-    <!-- Informazioni testuali della card -->
     <div class="season-info">
       <h4 class="season-title">{{ season.title }}</h4>
       @if (season.episodes && season.episodes.length > 0) {
@@ -46,4 +78,5 @@
     </div>
   </div>
 </ng-template>
-<app-footer></app-footer>
+
+<app-footer *ngIf="!isLoading"></app-footer>

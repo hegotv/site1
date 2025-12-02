@@ -451,7 +451,7 @@
   inset: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(10, 10, 10, 0.92);
+  background: rgba(10, 10, 10, 0.5);
   z-index: 9998;
   display: flex;
   align-items: center;
@@ -485,33 +485,141 @@
     transform: rotate(360deg);
   }
 }
+/* =================================================================
+   SKELETON STYLES
+   ================================================================= */
+
+/* Container principale per gli skeleton */
+.skeleton-container {
+  padding: 0;
+  width: 100%;
+  overflow: hidden;
+  background-color: #111;
+  min-height: 100vh;
+}
+
+/* Animazione base (Shimmer Effect) */
 .skeleton-box {
   position: relative;
-  background: #3a3a3a;
-  border-radius: 6px;
+  background: #2a2a2a; /* Colore base leggermente più chiaro del background */
   overflow: hidden;
+  border-radius: 4px;
 }
+
 .skeleton-box::after {
   content: "";
   position: absolute;
   top: 0;
-  left: -150px;
-  height: 100%;
-  width: 150px;
-  background: linear-gradient(
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
     90deg,
-    transparent,
-    rgba(255, 255, 255, 0.15),
-    transparent
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    /* Luce molto tenue */ rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
   );
-  animation: shine 1.5s infinite;
+  animation: shimmer 2s infinite;
 }
-@keyframes shine {
-  0% {
-    left: -150px;
-  }
+
+@keyframes shimmer {
   100% {
-    left: 100%;
+    transform: translateX(100%);
+  }
+}
+
+/* Layout specifici */
+
+/* Hero Skeleton */
+.skeleton-hero {
+  width: 100%;
+  height: 80vh; /* Simula l'altezza della Hero */
+  margin-bottom: 3rem;
+  border-radius: 0 0 10px 10px;
+}
+
+.skeleton-section {
+  padding: 0 3rem;
+  margin-bottom: 3rem;
+}
+
+/* Titolo Sezione */
+.skeleton-title {
+  width: 200px;
+  height: 24px;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+/* Riga Orizzontale (per simulare lo slider/trending) */
+.skeleton-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.skeleton-card {
+  flex: 1;
+  height: 220px; /* Altezza media card video */
+  border-radius: 10px;
+}
+
+/* Griglia Categorie */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.skeleton-cat-card {
+  height: 150px;
+  border-radius: 10px;
+}
+
+/* Transizioni Morbide (Fade In/Out) */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* =================================================================
+   MEDIA QUERIES PER SKELETON
+   ================================================================= */
+@media (max-width: 768px) {
+  .skeleton-hero {
+    height: 50vh; /* Hero più bassa su mobile */
+  }
+
+  .skeleton-section {
+    padding: 0 1rem;
+  }
+
+  /* Nascondi card extra su mobile */
+  .mobile-hidden {
+    display: none;
+  }
+
+  .skeleton-row {
+    flex-direction: column; /* Le card si impilano */
+  }
+
+  .skeleton-card {
+    width: 100%;
+    height: 180px;
+    flex: none;
+  }
+
+  .skeleton-grid {
+    grid-template-columns: 1fr; /* Una colonna */
   }
 }
 

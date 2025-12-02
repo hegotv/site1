@@ -134,28 +134,82 @@
    STILI GENERICI (caricamento, responsive)
    ================================================================= */
 
-.loading-state {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh;
+.skeleton-container {
+  width: 100%;
+  padding-top: 2rem;
+  min-height: 100vh;
 }
 
-.loading-spinner {
-  width: 56px;
-  height: 56px;
-  border: 6px solid #222;
-  border-top: 6px solid #39b09d;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.skeleton-section {
+  margin-bottom: 3rem;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
+/* Animazione Shimmer */
+.skeleton-box {
+  position: relative;
+  background: #2a2a2a;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.skeleton-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
   100% {
-    transform: rotate(360deg);
+    transform: translateX(100%);
+  }
+}
+
+/* Dimensioni specifiche per Podcast */
+.skeleton-title {
+  width: 200px;
+  height: 24px;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-row {
+  display: flex;
+  gap: 1.5rem;
+  overflow: hidden; /* Nasconde l'overflow per simulare lo slider */
+}
+
+.skeleton-card {
+  flex: 1;
+  /* Simula l'altezza approssimativa (thumbnail 16:9 + testo) */
+  min-height: 220px;
+  min-width: 250px; /* Larghezza minima simile alla griglia reale */
+}
+
+/* Transizioni */
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -171,5 +225,20 @@
     /* La griglia si adatterà automaticamente.
        Possiamo ridurre il gap su schermi più piccoli se necessario. */
     gap: 1rem;
+  }
+  /* Skeleton Mobile */
+  .skeleton-row {
+    flex-direction: column; /* Impila le card su mobile */
+    gap: 1rem;
+  }
+
+  .mobile-hidden {
+    display: none;
+  }
+
+  .skeleton-card {
+    width: 100%;
+    min-height: 200px;
+    flex: none;
   }
 }
