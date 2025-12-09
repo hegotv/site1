@@ -26,6 +26,11 @@ export const routes: Routes = [
       //
       { path: '', redirectTo: '/home', pathMatch: 'full' },
       {
+        path: 'admin',
+        loadComponent: () =>
+          import('./admin/admin.component').then((m) => m.AdminComponent),
+      },
+      {
         path: 'home',
         // NOTA: Devi importare HomeComponent qui se non usi lazy loading
         loadComponent: () =>

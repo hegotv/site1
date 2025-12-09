@@ -1,0 +1,239 @@
+/* =================================================================
+   ADMIN COMPONENT STYLES
+   Basato sul tema globale (Dark #111 + Accent #39b09d)
+   ================================================================= */
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #111;
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  padding-top: 2rem; /* Spazio per non attaccarsi all'header */
+}
+
+.admin-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+/* --- Cards (Login e Risultati) ---
+   Stile simile alle "trending-card" ma statiche */
+.login-card,
+.results-card {
+  background-color: #1e1e1e; /* Leggermente più chiaro dello sfondo */
+  border-radius: 10px;
+  padding: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Ombra profonda */
+  border: 1px solid #333; /* Bordo sottile */
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Animazione di entrata */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Tipografia --- */
+.login-card h2,
+.results-card h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.login-card p {
+  color: #aaa;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+/* --- Form Elements --- */
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #ccc;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: 14px 16px;
+  background-color: #111;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #39b09d; /* Accent Color */
+  box-shadow: 0 0 0 3px rgba(57, 176, 157, 0.2);
+}
+
+.form-control::placeholder {
+  color: #555;
+}
+
+/* --- Bottoni --- */
+.btn-primary {
+  width: 100%;
+  background-color: #39b09d;
+  color: #111; /* Testo scuro su sfondo verde per contrasto */
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1rem;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2a8f80;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(57, 176, 157, 0.4);
+}
+
+.btn-primary:disabled {
+  background-color: #444;
+  color: #888;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid #444;
+  color: #ccc;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 2rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+/* --- Messaggi di Errore --- */
+.alert-error {
+  background-color: rgba(255, 77, 77, 0.1);
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  color: #ff6b6b;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+/* --- Tabella Risultati --- */
+.header-results {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.badge {
+  background-color: #39b09d;
+  color: #111;
+  font-weight: 700;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.users-table th {
+  color: #39b09d; /* Accent color per le intestazioni */
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 1rem;
+  border-bottom: 2px solid #333;
+  font-weight: 600;
+}
+
+.users-table td {
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid #2a2a2a;
+  color: #ddd;
+  font-size: 0.95rem;
+}
+
+.users-table tr:last-child td {
+  border-bottom: none;
+}
+
+.users-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.users-table strong {
+  color: #fff;
+}
+
+/* Stato vuoto */
+.no-data {
+  color: #777;
+  font-style: italic;
+  margin-top: 2rem;
+}
+
+/* --- Responsive per Mobile --- */
+@media (max-width: 768px) {
+  .login-card,
+  .results-card {
+    padding: 1.5rem;
+  }
+
+  .header-results {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .users-table th,
+  .users-table td {
+    padding: 0.8rem 0.5rem;
+    font-size: 0.85rem;
+  }
+}

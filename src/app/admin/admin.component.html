@@ -1,0 +1,72 @@
+<div class="admin-container">
+  <!-- SEZIONE 1: LOGIN (Visibile se non ci sono ancora risultati) -->
+  <div *ngIf="!showResults" class="login-card">
+    <h2>Admin Access</h2>
+    <p>Visualizza gli utenti iscritti in giornata.</p>
+
+    <div class="form-group">
+      <label for="adminPass">Password Admin</label>
+      <input
+        type="password"
+        id="adminPass"
+        [(ngModel)]="password"
+        (keyup.enter)="getDailyUsers()"
+        placeholder="Inserisci password segreta"
+        class="form-control"
+      />
+    </div>
+
+    <!-- Messaggio di errore -->
+    <div *ngIf="errorMessage" class="alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <button
+      (click)="getDailyUsers()"
+      [disabled]="isLoading"
+      class="btn-primary"
+    >
+      <span *ngIf="isLoading">Caricamento...</span>
+      <span *ngIf="!isLoading">Accedi</span>
+    </button>
+  </div>
+
+  <!-- SEZIONE 2: RISULTATI (Visibile dopo il successo) -->
+  <div *ngIf="showResults" class="results-card">
+    <div class="header-results">
+      <h2>Utenti iscritti oggi</h2>
+      <span class="badge">Totale: {{ todayCount }}</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="users-table" *ngIf="users.length > 0; else noUsers">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Nome Completo</th>
+            <th>Ora Iscrizione</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.id }}</td>
+            <td>
+              <strong>{{ user.username }}</strong>
+            </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
+            <td>{{ user.joined_at }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #noUsers>
+      <p class="no-data">Nessun utente si è iscritto oggi.</p>
+    </ng-template>
+
+    <button (click)="resetView()" class="btn-secondary">Nuova Ricerca</button>
+  </div>
+</div>
