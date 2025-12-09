@@ -587,7 +587,122 @@ button {
 :host-context(.logged-in) .sidenav-links {
   margin-top: 0;
 }
+.search-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
 
+.search-skeleton-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Allineato al centro verticalmente */
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  /* Opzionale: un background leggerissimo per delimitare l'area */
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Animazione Shimmer (Uguale agli altri componenti) */
+.skeleton-box {
+  position: relative;
+  background: #333; /* Grigio scuro per contrasto su sfondo overlay */
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.skeleton-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Dimensioni specifiche per replicare i risultati reali */
+
+/* Thumbnail finta (90x60 come .result-thumbnail) */
+.skeleton-thumb {
+  width: 90px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.skeleton-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+/* Titolo finto */
+.skeleton-text-title {
+  width: 60%;
+  height: 16px;
+}
+
+/* Descrizione finta */
+.skeleton-text-desc {
+  width: 90%;
+  height: 12px;
+}
+
+/* Utilità per transizioni */
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.fade-out {
+  /* Assicura che lo skeleton non faccia flickering mentre scompare */
+  pointer-events: none;
+}
+.logo-container {
+  position: relative; /* Necessario per posizionare il cappello */
+}
+.logo-container::after {
+  content: "";
+  position: absolute;
+  top: -12px; /* Aggiusta in base alla dimensione del tuo logo */
+  left: 100px; /* Aggiusta per centrarlo sull'angolo del logo */
+  width: 50px; /* Dimensione del cappello */
+  height: 50px;
+  background-image: url("../../assets/santa-hat.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  transform: rotate(-15deg); /* Inclina un po' il cappello */
+  z-index: 20;
+  animation: floatHat 3s ease-in-out infinite;
+}
+
+@keyframes floatHat {
+  0%,
+  100% {
+    transform: rotate(-15deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-10deg) translateY(-1px);
+  }
+}
 /* =================================================================== */
 /* ANIMAZIONI                                                          */
 /* =================================================================== */

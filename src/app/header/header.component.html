@@ -279,10 +279,44 @@
         </p>
       </ng-container>
 
-      <!-- Messaggio Caricamento -->
-      <ng-container *ngIf="isLoading">
-        <p class="loading-message">Caricamento risultati...</p>
-      </ng-container>
+      <div *ngIf="isLoading" class="search-skeleton-list fade-out">
+        <!-- Generiamo 5 elementi skeleton per simulare una lista -->
+        <div class="search-skeleton-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-text-title skeleton-box"></div>
+            <div class="skeleton-text-desc skeleton-box"></div>
+          </div>
+        </div>
+        <div class="search-skeleton-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-text-title skeleton-box"></div>
+            <div class="skeleton-text-desc skeleton-box"></div>
+          </div>
+        </div>
+        <div class="search-skeleton-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-text-title skeleton-box"></div>
+            <div class="skeleton-text-desc skeleton-box"></div>
+          </div>
+        </div>
+        <div class="search-skeleton-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-text-title skeleton-box"></div>
+            <div class="skeleton-text-desc skeleton-box"></div>
+          </div>
+        </div>
+        <div class="search-skeleton-item">
+          <div class="skeleton-thumb skeleton-box"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-text-title skeleton-box"></div>
+            <div class="skeleton-text-desc skeleton-box"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 </div>
