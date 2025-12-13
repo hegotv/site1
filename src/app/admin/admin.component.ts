@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   HttpClient,
   HttpHeaders,
   HttpErrorResponse,
 } from '@angular/common/http';
+import { QrCodeComponent } from '../qr-code/qr-code.component'; // Assicurati che il percorso sia corretto
 
-// Interfaccia per tipizzare i dati utente che arrivano dal backend
 interface UserData {
   id: number;
-  username: string;
+  username: string | null;
   email: string;
   first_name: string;
   last_name: string;
@@ -27,80 +27,124 @@ interface AdminResponse {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, QrCodeComponent],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css',
 })
-export class AdminComponent {
-  // Variabili di stato
+export class AdminComponent implements OnInit, OnDestroy {
+  // Login State
   password: string = '';
   isLoading: boolean = false;
+  isLocked: boolean = false; // Nuovo: Blocco pulsante
   errorMessage: string = '';
-  showResults: boolean = false;
+  isAuthenticated: boolean = false;
 
-  // Dati ricevuti
+  // Security & Auto-Logout
+  private inactivityTimer: any;
+  private readonly INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 Minuti
+
+  // Dashboard State
+  activeTab: 'users' | 'qrcode' = 'users';
+  isSidebarOpen: boolean = false;
+
+  // Data
   users: UserData[] = [];
   todayCount: number = 0;
 
-  // URL del tuo backend
   private apiUrl =
     'https://hegobck-production.up.railway.app/auth/admin/daily-users/';
 
   constructor(private http: HttpClient) {}
 
-  getDailyUsers() {
-    // Reset errori e stato
+  ngOnInit() {
+    this.resetInactivityTimer();
+  }
+
+  ngOnDestroy() {
+    clearTimeout(this.inactivityTimer);
+  }
+
+  // Event listener per resetare il timer se l'utente muove il mouse o scrive
+  @HostListener('window:mousemove')
+  @HostListener('window:keypress')
+  resetInactivityTimer() {
+    if (this.isAuthenticated) {
+      clearTimeout(this.inactivityTimer);
+      this.inactivityTimer = setTimeout(() => {
+        this.logout('Sessione scaduta per inattività.');
+      }, this.INACTIVITY_LIMIT);
+    }
+  }
+
+  loginAndFetch() {
     this.errorMessage = '';
 
-    if (!this.password) {
+    // Security: Trim degli spazi
+    const cleanPass = this.password.trim();
+
+    if (!cleanPass) {
       this.errorMessage = 'Inserisci la password.';
       return;
     }
 
+    if (this.isLocked) return; // Impedisce click multipli durante il blocco
+
     this.isLoading = true;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = { admin_password: cleanPass };
 
-    // --- MODIFICA: Rimossi i controlli sul token ---
-
-    // Prepariamo solo il Content-Type, niente Authorization
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-
-    // Body della richiesta con la password admin
-    const body = {
-      admin_password: this.password,
-    };
-
-    // Chiamata HTTP
-    this.http.post<AdminResponse>(this.apiUrl, body, { headers }).subscribe({
+    this.http.post<any>(this.apiUrl, body, { headers }).subscribe({
       next: (res) => {
         this.isLoading = false;
         if (res.response === 'ok' && res.users) {
           this.users = res.users;
           this.todayCount = res.count || 0;
-          this.showResults = true; // Mostra la tabella
+          this.isAuthenticated = true;
+          this.resetInactivityTimer(); // Avvia timer sicurezza
         } else {
-          this.errorMessage = res.einfo || 'Errore sconosciuto.';
+          this.handleLoginError(res.einfo || 'Errore sconosciuto.');
         }
       },
       error: (error: HttpErrorResponse) => {
         this.isLoading = false;
-        console.error('Admin Error:', error);
-
         if (error.status === 403) {
-          // 403 ora indica solo che la password admin è sbagliata
-          this.errorMessage = 'Password errata.';
+          this.handleLoginError('Password errata.');
         } else {
-          this.errorMessage = 'Errore del server. Riprova più tardi.';
+          this.errorMessage = 'Errore server. Riprova più tardi.';
         }
       },
     });
   }
 
-  resetView() {
-    // Torna alla schermata di inserimento password
-    this.showResults = false;
+  // Gestione errore con "Cooldown" per evitare Brute Force
+  private handleLoginError(msg: string) {
+    this.errorMessage = msg;
+    this.isLocked = true; // Blocca input
+    setTimeout(() => {
+      this.isLocked = false; // Sblocca dopo 2 secondi
+    }, 2000);
+  }
+
+  refreshUsers() {
+    if (this.isAuthenticated) this.loginAndFetch();
+  }
+
+  switchTab(tab: 'users' | 'qrcode') {
+    this.activeTab = tab;
+    this.isSidebarOpen = false;
+  }
+
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  logout(reason: string = '') {
+    this.isAuthenticated = false;
     this.users = [];
     this.password = '';
+    this.activeTab = 'users';
+    this.isSidebarOpen = false;
+    this.errorMessage = reason; // Mostra eventuale messaggio di timeout
+    clearTimeout(this.inactivityTimer);
   }
 }

@@ -86,9 +86,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         switchMap((user) =>
           this.loginService.loginWithGoogle(user).pipe(
             catchError((err: any) => {
-              if (err && (err.status === 404 || err.status === 400)) {
-                return this.loginService.signUpWithGoogle(user);
-              }
               return throwError(() => err);
             })
           )

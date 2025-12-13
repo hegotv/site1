@@ -1,0 +1,140 @@
+<div class="qr-container">
+  <!-- CONTROLS -->
+  <div class="card controls-card">
+    <div class="card-header">
+      <h3>QR Studio</h3>
+    </div>
+
+    <div class="card-body">
+      <!-- Input URL -->
+      <div class="form-group">
+        <label>Contenuto</label>
+        <input
+          type="text"
+          [(ngModel)]="qrData"
+          class="form-control"
+          placeholder="https://..."
+        />
+      </div>
+
+      <!-- Colors -->
+      <div class="row-group">
+        <div class="form-group half">
+          <label>Colore</label>
+          <div class="color-wrapper">
+            <input type="color" [(ngModel)]="colorDark" />
+            <div class="color-preview" [style.background]="colorDark"></div>
+          </div>
+        </div>
+        <div class="form-group half">
+          <label>Sfondo</label>
+          <div class="color-wrapper">
+            <input type="color" [(ngModel)]="colorLight" />
+            <div class="color-preview" [style.background]="colorLight"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Size QR -->
+      <div class="form-group">
+        <div class="flex-label">
+          <label>Dimensione QR</label>
+          <span>{{ size }}px</span>
+        </div>
+        <input
+          type="range"
+          min="200"
+          max="500"
+          [(ngModel)]="size"
+          class="range-slider"
+        />
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Logo Section -->
+      <div class="form-group">
+        <label>Logo Personalizzato</label>
+        <label class="file-upload-btn">
+          <input
+            type="file"
+            (change)="onFileSelected($event)"
+            accept="image/*"
+          />
+          <span>{{ logoImage ? "Cambia Immagine" : "Carica Immagine" }}</span>
+        </label>
+      </div>
+
+      <!-- Logo Controls (Solo se c'è un logo) -->
+      <div *ngIf="logoImage" class="logo-settings fade-in">
+        <div class="form-group">
+          <div class="flex-label">
+            <label>Grandezza Logo (Max 30%)</label>
+            <span>{{ logoScale }}%</span>
+          </div>
+          <!-- MODIFICA: Max ridotto a 30. Sopra il 30% il QR livello H si rompe spesso -->
+          <input
+            type="range"
+            min="10"
+            max="30"
+            [(ngModel)]="logoScale"
+            class="range-slider"
+          />
+        </div>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="bgCheck" [(ngModel)]="logoBackground" />
+          <label for="bgCheck">Sfondo solido (Consigliato)</label>
+        </div>
+
+        <button
+          (click)="logoImage = undefined; logoObj = undefined"
+          class="btn-text-danger"
+        >
+          Rimuovi Logo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW AREA -->
+  <div class="card preview-card">
+    <div class="preview-wrapper">
+      <div
+        class="qr-composite"
+        [style.width.px]="size"
+        [style.height.px]="size"
+      >
+        <!-- MODIFICA: Error Correction Level FISSO su 'H' (High) -->
+        <!-- 'M' recupera 15%, 'H' recupera 30%. Con i loghi serve H. -->
+        <qrcode
+          [qrdata]="qrData"
+          [width]="size"
+          [colorDark]="colorDark"
+          [colorLight]="colorLight"
+          [errorCorrectionLevel]="'H'"
+        >
+        </qrcode>
+
+        <!-- L'overlay visivo (CSS) deve matchare la logica del canvas -->
+        <div
+          *ngIf="logoImage"
+          class="logo-overlay"
+          [style.width.%]="logoScale"
+          [style.height.%]="logoScale"
+          [class.with-bg]="logoBackground"
+          [style.backgroundColor]="logoBackground ? colorLight : 'transparent'"
+        >
+          <img [src]="logoImage" alt="Logo" />
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-actions">
+      <button (click)="downloadQrCode()" class="btn-download">
+        Scarica PNG
+      </button>
+      <p class="info-text">Formato .PNG alta qualità</p>
+    </div>
+  </div>
+</div>

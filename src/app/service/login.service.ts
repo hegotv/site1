@@ -62,23 +62,26 @@ export class LoginService {
   }
 
   loginWithGoogle(user: SocialUser): Observable<UserProfile> {
+    const origin = this.isBrowser
+      ? window.location.origin
+      : 'https://www.hegotv.com';
+
     return this.http
       .post<LoginResponse>(`${this.apiUrl}/google/`, {
-        access_token: user.idToken,
-        id_token: user.idToken,
+        access_token: user.idToken, // GoogleSigninButton restituisce spesso l'idToken
+        id_token: user.idToken, // Inviamolo in entrambi i campi per sicurezza
+
+        // --- QUESTA È LA MODIFICA FONDAMENTALE ---
+        // Dice al backend quale URI usare per validare il token
+        callback_url: origin,
       })
       .pipe(
         tap((response) =>
-          // Assicurati che anche la view GoogleLogin restituisca "token" e "user"
-          // Se usi dj_rest_auth standard, di solito restituisce "key".
-          // Controlla cosa restituisce la tua view GoogleLogin.
-          // Se restituisce "key", qui dovrai usare `response.key || response.token`
           this.handleSuccessfulLogin(response.user, response.token)
         ),
         map((response) => response.user)
       );
   }
-
   signUp(
     email: string,
     username: string,
@@ -93,26 +96,6 @@ export class LoginService {
       first_name: name ?? '',
       last_name: surname ?? '',
     });
-  }
-
-  /**
-   * Tentativo di registrazione tramite Google. Il backend dovrebbe
-   * esporre una view che accetta id_token/access_token e crea l'utente.
-   * Se il tuo backend usa lo stesso endpoint di `/google/` per login e
-   * registro, puoi adattare l'URL di conseguenza.
-   */
-  signUpWithGoogle(user: SocialUser): Observable<UserProfile> {
-    return this.http
-      .post<LoginResponse>(`${this.apiUrl}/google-register/`, {
-        access_token: user.idToken,
-        id_token: user.idToken,
-      })
-      .pipe(
-        tap((response) =>
-          this.handleSuccessfulLogin(response.user, response.token)
-        ),
-        map((response) => response.user)
-      );
   }
 
   logout(): Observable<any> {

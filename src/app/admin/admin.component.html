@@ -1,72 +1,215 @@
-<div class="admin-container">
-  <!-- SEZIONE 1: LOGIN (Visibile se non ci sono ancora risultati) -->
-  <div *ngIf="!showResults" class="login-card">
-    <h2>Admin Access</h2>
-    <p>Visualizza gli utenti iscritti in giornata.</p>
+<div class="app-container">
+  <!-- SCENARIO 1: NON AUTENTICATO (LOGIN) -->
+  <div *ngIf="!isAuthenticated" class="login-wrapper">
+    <div class="login-background-glow"></div>
+    <div class="login-card glass-panel">
+      <div class="login-header">
+        <div class="logo-circle">H</div>
+        <h2>Admin Portal</h2>
+        <p>Accesso riservato allo staff.</p>
+      </div>
 
-    <div class="form-group">
-      <label for="adminPass">Password Admin</label>
-      <input
-        type="password"
-        id="adminPass"
-        [(ngModel)]="password"
-        (keyup.enter)="getDailyUsers()"
-        placeholder="Inserisci password segreta"
-        class="form-control"
-      />
+      <div class="form-group">
+        <label for="adminPass">Password</label>
+        <div class="input-wrapper">
+          <input
+            type="password"
+            id="adminPass"
+            [(ngModel)]="password"
+            (keyup.enter)="loginAndFetch()"
+            [disabled]="isLocked"
+            placeholder="Inserisci la chiave d'accesso"
+            class="form-control"
+          />
+          <!-- ICONA: Lucchetto -->
+          <i class="input-icon fa-solid fa-lock"></i>
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert-error fade-in">
+        <!-- ICONA: Triangolo Attenzione -->
+        <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
+      </div>
+
+      <button
+        (click)="loginAndFetch()"
+        [disabled]="isLoading || isLocked"
+        class="btn-primary full-width hover-effect"
+        [class.locked]="isLocked"
+      >
+        <span *ngIf="isLoading" class="spinner"></span>
+        <span *ngIf="!isLoading">
+          {{ isLocked ? "Attendi..." : "Accedi alla Dashboard" }}
+        </span>
+      </button>
     </div>
-
-    <!-- Messaggio di errore -->
-    <div *ngIf="errorMessage" class="alert-error">
-      {{ errorMessage }}
-    </div>
-
-    <button
-      (click)="getDailyUsers()"
-      [disabled]="isLoading"
-      class="btn-primary"
-    >
-      <span *ngIf="isLoading">Caricamento...</span>
-      <span *ngIf="!isLoading">Accedi</span>
-    </button>
   </div>
 
-  <!-- SEZIONE 2: RISULTATI (Visibile dopo il successo) -->
-  <div *ngIf="showResults" class="results-card">
-    <div class="header-results">
-      <h2>Utenti iscritti oggi</h2>
-      <span class="badge">Totale: {{ todayCount }}</span>
-    </div>
+  <!-- SCENARIO 2: AUTENTICATO (DASHBOARD) -->
+  <div *ngIf="isAuthenticated" class="dashboard-layout">
+    <header class="mobile-header">
+      <div class="brand">Hego Admin</div>
+      <button class="menu-toggle" (click)="toggleSidebar()">
+        <!-- ICONA: Hamburger Menu -->
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </header>
 
-    <div class="table-responsive">
-      <table class="users-table" *ngIf="users.length > 0; else noUsers">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Nome Completo</th>
-            <th>Ora Iscrizione</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users">
-            <td>{{ user.id }}</td>
-            <td>
-              <strong>{{ user.username }}</strong>
-            </td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.first_name }} {{ user.last_name }}</td>
-            <td>{{ user.joined_at }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <div
+      class="sidebar-overlay"
+      [class.show]="isSidebarOpen"
+      (click)="toggleSidebar()"
+    ></div>
 
-    <ng-template #noUsers>
-      <p class="no-data">Nessun utente si è iscritto oggi.</p>
-    </ng-template>
+    <aside class="sidebar" [class.open]="isSidebarOpen">
+      <div class="sidebar-header">
+        <div class="brand-logo">HEGO</div>
+        <button class="close-sidebar-mobile" (click)="toggleSidebar()">
+          <!-- ICONA: X chiusura -->
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
 
-    <button (click)="resetView()" class="btn-secondary">Nuova Ricerca</button>
+      <nav class="sidebar-nav">
+        <button
+          class="nav-item"
+          [class.active]="activeTab === 'users'"
+          (click)="switchTab('users')"
+        >
+          <!-- ICONA: Utenti -->
+          <i class="icon fa-solid fa-users"></i>
+          <span>Utenti Oggi</span>
+        </button>
+        <button
+          class="nav-item"
+          [class.active]="activeTab === 'qrcode'"
+          (click)="switchTab('qrcode')"
+        >
+          <!-- ICONA: QR Code -->
+          <i class="icon fa-solid fa-qrcode"></i>
+          <span>Generatore QR</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini-profile">
+          <div class="avatar">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div class="info">
+            <span class="name">Admin</span>
+            <span class="role">Super User</span>
+          </div>
+        </div>
+        <button (click)="logout()" class="nav-item logout" title="Logout">
+          <!-- ICONA: Porta uscita -->
+          <span class="name">Logout</span>
+          <i class="icon fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <!-- TAB UTENTI -->
+      <div *ngIf="activeTab === 'users'" class="content-fade-in">
+        <header class="page-header">
+          <div class="header-text">
+            <h1>Utenti Iscritti Oggi</h1>
+            <p class="subtitle">Monitoraggio in tempo reale.</p>
+          </div>
+          <div class="stats-card">
+            <span class="stats-label">Totale Iscritti</span>
+            <div class="stats-value-row">
+              <span class="value">{{ todayCount }}</span>
+              <span class="trend up">
+                <i class="fa-solid fa-arrow-trend-up"></i> Oggi
+              </span>
+            </div>
+          </div>
+        </header>
+
+        <div class="card table-card">
+          <div class="card-header-actions">
+            <h3>Lista Registrazioni</h3>
+            <button
+              (click)="refreshUsers()"
+              class="btn-secondary"
+              title="Aggiorna Dati"
+            >
+              <!-- ICONA: Refresh -->
+              <i class="fa-solid fa-rotate-right"></i>
+              <span class="btn-text">Aggiorna</span>
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="premium-table" *ngIf="users.length > 0; else noUsers">
+              <thead>
+                <tr>
+                  <th width="80">ID</th>
+                  <th>Utente</th>
+                  <th>Email</th>
+                  <th>Nome Completo</th>
+                  <th width="100">Orario</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users">
+                  <td data-label="ID">
+                    <span class="id-badge">#{{ user.id }}</span>
+                  </td>
+                  <td data-label="Utente">
+                    <div class="user-cell">
+                      <div class="user-avatar">
+                        {{
+                          (user.username || user.email).charAt(0) | uppercase
+                        }}
+                      </div>
+                      <div class="user-info-col">
+                        <strong>{{ user.username || user.email }}</strong>
+                        <!-- Opzionale: se stiamo mostrando l'email sopra perché manca l'username,
+           possiamo nascondere questo span o lasciarlo per chiarezza -->
+                      </div>
+                    </div>
+                  </td>
+                  <td data-label="Nome">
+                    {{ user.first_name }} {{ user.last_name }}
+                  </td>
+                  <td data-label="Orario">
+                    <span class="time-pill">
+                      <i class="fa-regular fa-clock"></i>
+                      <!-- Prende i primi 5 caratteri della stringa: "16:03:42" diventa "16:03" -->
+                      {{ user.joined_at.slice(0, 5) }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ng-template #noUsers>
+            <div class="empty-state">
+              <!-- ICONA: Inbox vuota -->
+              <div class="empty-icon"><i class="fa-solid fa-inbox"></i></div>
+              <h3>Nessun dato</h3>
+              <p>Non ci sono ancora iscrizioni registrate oggi.</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- TAB QR CODE -->
+      <div *ngIf="activeTab === 'qrcode'" class="content-fade-in">
+        <header class="page-header">
+          <div class="header-text">
+            <h1>QR Code Studio</h1>
+            <p class="subtitle">Crea codici QR personalizzati.</p>
+          </div>
+        </header>
+        <div class="qr-container-wrapper">
+          <app-qr-code></app-qr-code>
+        </div>
+      </div>
+    </main>
   </div>
 </div>

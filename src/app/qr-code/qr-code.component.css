@@ -1,0 +1,277 @@
+/* Layout Generale */
+.qr-container {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: "Inter", sans-serif;
+}
+
+/* Cards */
+.card {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+  background: #252525;
+}
+.card-header h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Inputs & Form */
+.form-group label {
+  display: block;
+  color: #aaa;
+  margin-bottom: 5px;
+  font-size: 0.85rem;
+}
+.form-control {
+  width: 100%;
+  padding: 10px;
+  background: #111;
+  border: 1px solid #444;
+  color: white;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.form-control:focus {
+  outline: none;
+  border-color: #39b09d;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #333;
+  margin: 10px 0;
+}
+
+/* Color Pickers Custom */
+.row-group {
+  display: flex;
+  gap: 15px;
+}
+.half {
+  flex: 1;
+}
+.color-wrapper {
+  position: relative;
+  height: 36px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.color-wrapper input {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 200%;
+  height: 200%;
+  opacity: 0;
+  cursor: pointer;
+}
+.color-preview {
+  width: 100%;
+  height: 100%;
+}
+
+/* Sliders */
+.flex-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 5px;
+}
+.range-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  background: #333;
+  height: 4px;
+  border-radius: 2px;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #39b09d;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* File Upload */
+.file-upload-btn {
+  display: block;
+  padding: 10px;
+  border: 1px dashed #555;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ccc;
+  transition: 0.2s;
+}
+.file-upload-btn:hover {
+  border-color: #39b09d;
+  color: #fff;
+  background: rgba(57, 176, 157, 0.1);
+}
+.file-upload-btn input {
+  display: none;
+}
+
+/* Logo Settings */
+.logo-settings {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.checkbox-group input {
+  margin: 0;
+  accent-color: #39b09d;
+}
+.btn-text-danger {
+  background: none;
+  border: none;
+  color: #ff5555;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  align-self: flex-start;
+  padding: 0;
+}
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* PREVIEW SECTION */
+.preview-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #151515; /* Sfondo leggermente diverso per contrasto */
+}
+
+.preview-wrapper {
+  padding: 30px;
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  margin-bottom: 20px;
+}
+
+/* === IL CUORE DEL SISTEMA === */
+.qr-composite {
+  position: relative; /* Necessario per posizionare il logo sopra */
+}
+
+/* Stile per il componente qrcode Angular */
+.qr-composite qrcode {
+  display: block;
+}
+
+/* L'Overlay del Logo */
+.logo-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centra perfettamente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none; /* Lascia che si possa fare right-click sul QR se serve */
+}
+
+/* Se l'utente vuole lo sfondo dietro il logo */
+.logo-overlay.with-bg {
+  box-shadow: 0 0 0 5px var(--bg-color, #ffffff); /* Crea un padding solido simulato usando lo stesso colore di sfondo */
+  border-radius: 4px; /* Un po' di radius allo sfondo */
+}
+
+/* L'immagine dentro l'overlay */
+.logo-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* MAGIC: Mantiene le proporzioni (niente squish) */
+}
+
+/* Actions */
+.preview-actions {
+  text-align: center;
+}
+.btn-download {
+  background: #39b09d;
+  color: #111;
+  border: none;
+  padding: 12px 30px;
+  font-weight: 700;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 15px rgba(57, 176, 157, 0.4);
+}
+.btn-download:hover {
+  transform: translateY(-2px);
+  background: #2a8f80;
+}
+.info-text {
+  color: #555;
+  font-size: 0.8rem;
+  margin-top: 10px;
+}
+.logo-overlay:not(.with-bg) {
+  background-color: var(--qr-bg-color, #ffffff); /* Fallback bianco */
+  /* Nota: per farlo perfetto servirebbe passare la variabile colore dinamica, 
+       ma nel 99% dei casi basta che l'immagine copra i puntini. */
+}
+
+.logo-overlay.with-bg {
+  box-shadow: 0 0 0 4px var(--bg-color, #ffffff);
+  border-radius: 4px;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+  .qr-container {
+    grid-template-columns: 1fr;
+  }
+}
