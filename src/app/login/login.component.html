@@ -82,22 +82,19 @@
           Non hai un account? <a routerLink="/register">Crealo ora</a>
         </p>
       </div>
-      <hr />
-      <p class="or">o</p>
+      <!-- <hr />
+      <p class="or">o</p>-->
 
       <p class="register" *ngIf="isMobile">
         Non hai un account? <br /><a routerLink="/register">Crealo ora</a>
       </p>
     </form>
-    <div class="google-final-stack">
-      <!-- LIVELLO 1: Il pulsante Google VERO (Invisibile ma presente) -->
+    <!-- <div class="google-final-stack">
       <div class="google-layer-real">
         <asl-google-signin-button type="standard" size="large" [width]="350">
-          <!-- Larghezza uguale al CSS -->
         </asl-google-signin-button>
       </div>
 
-      <!-- LIVELLO 2: La tua Grafica (Solo estetica) -->
       <div class="custom-graphics-layer">
         <img
           src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
@@ -106,7 +103,7 @@
         <span>Continua con Google</span>
       </div>
     </div>
-    <!-- Messaggio di Errore Generale per il Login -->
+     Messaggio di Errore Generale per il Login -->
     <div
       *ngIf="loginErrorMessage"
       class="error-message"
