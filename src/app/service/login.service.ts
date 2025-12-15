@@ -6,15 +6,14 @@ import { tap, catchError, map } from 'rxjs/operators';
 import { SocialUser } from '@abacritt/angularx-social-login';
 import { UserProfile } from '../shared/interfaces';
 
-// --- CORREZIONE INTERFACCIA ---
 interface LoginResponse {
-  token: string; // <-- Il backend invia "token", NON "key"
-  user: UserProfile; // Ora il backend invia questo oggetto
-  response?: string; // "ok" o "error"
+  token: string;
+  user: UserProfile;
+  response?: string;
 }
 
 interface SignUpResponse {
-  token: string; // Uniformiamo anche qui se necessario
+  token: string;
   detail?: string;
 }
 
@@ -22,8 +21,7 @@ interface SignUpResponse {
   providedIn: 'root',
 })
 export class LoginService {
-  // Assicurati che questo URL sia quello del tuo custom domain se l'hai configurato,
-  // altrimenti usa railway, ma ricorda che i cookie non andranno (il token sì).
+  // Assicurati che punti al tuo backend Railway
   private readonly apiUrl = 'https://hegobck-production.up.railway.app/auth';
   private readonly isBrowser: boolean;
   private readonly AUTH_TOKEN_KEY = 'authToken';
@@ -46,6 +44,7 @@ export class LoginService {
     return localStorage.getItem(this.AUTH_TOKEN_KEY);
   }
 
+  // --- LOGIN CLASSICO ---
   login(email: string, password: string): Observable<UserProfile> {
     return this.http
       .post<LoginResponse>(`${this.apiUrl}/login/`, {
@@ -54,25 +53,23 @@ export class LoginService {
       })
       .pipe(
         tap((response) => {
-          // --- CORREZIONE: Usiamo response.token ---
           this.handleSuccessfulLogin(response.user, response.token);
         }),
         map((response) => response.user)
       );
   }
 
+  // --- GOOGLE LOGIN ---
   loginWithGoogle(user: SocialUser): Observable<UserProfile> {
+    // Definiamo il callback url (deve coincidere con il dominio attuale o quello settato in Django)
     const origin = this.isBrowser
       ? window.location.origin
       : 'https://www.hegotv.com';
 
     return this.http
       .post<LoginResponse>(`${this.apiUrl}/google/`, {
-        access_token: user.idToken, // GoogleSigninButton restituisce spesso l'idToken
-        id_token: user.idToken, // Inviamolo in entrambi i campi per sicurezza
-
-        // --- QUESTA È LA MODIFICA FONDAMENTALE ---
-        // Dice al backend quale URI usare per validare il token
+        access_token: user.idToken,
+        id_token: user.idToken,
         callback_url: origin,
       })
       .pipe(
@@ -82,6 +79,39 @@ export class LoginService {
         map((response) => response.user)
       );
   }
+
+  // --- APPLE LOGIN (NUOVO) ---
+  loginWithApple(appleResponse: any): Observable<UserProfile> {
+    // Apple restituisce un oggetto 'authorization' contenente id_token e code.
+    const idToken = appleResponse.authorization.id_token;
+    const code = appleResponse.authorization.code;
+
+    // Per SPAs, a volte serve inviare anche l'utente (nome/cognome) se è il primo login
+    // Apple lo invia SOLO la prima volta nell'oggetto 'user'.
+    const userData = appleResponse.user
+      ? JSON.stringify(appleResponse.user)
+      : null;
+
+    const payload: any = {
+      access_token: idToken, // Usiamo idToken come access_token per soddisfare il serializer
+      id_token: idToken,
+      code: code, // Opzionale a seconda della config backend, ma utile inviarlo
+    };
+
+    if (userData) {
+      // Se vuoi gestire nome/cognome lato backend custom
+      payload.user_json = userData;
+    }
+
+    return this.http.post<LoginResponse>(`${this.apiUrl}/apple/`, payload).pipe(
+      tap((response) =>
+        this.handleSuccessfulLogin(response.user, response.token)
+      ),
+      map((response) => response.user)
+    );
+  }
+
+  // --- REGISTRAZIONE ---
   signUp(
     email: string,
     username: string,
@@ -98,6 +128,7 @@ export class LoginService {
     });
   }
 
+  // --- LOGOUT ---
   logout(): Observable<any> {
     return this.http.post(`${this.apiUrl}/logout/`, {}).pipe(
       tap(() => this.clearSessionData()),
@@ -120,9 +151,7 @@ export class LoginService {
 
   private handleSuccessfulLogin(profile: UserProfile, token: string): void {
     if (!token) {
-      console.error(
-        'ERRORE GRAVE: Tentativo di salvare un token undefined o vuoto!'
-      );
+      console.error('ERRORE: Token undefined o vuoto!');
       return;
     }
 
@@ -156,8 +185,6 @@ export class LoginService {
     if (token && userProfileRaw) {
       try {
         const userProfile = JSON.parse(userProfileRaw);
-        // Invece di richiamare handleSuccessfulLogin che riscriverebbe lo storage,
-        // aggiorniamo solo lo stato in memoria.
         this.updateAuthState(userProfile);
       } catch (e) {
         this.clearSessionData();

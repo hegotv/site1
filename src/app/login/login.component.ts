@@ -1,5 +1,12 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common'; // Import isPlatformBrowser
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,13 +18,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { LoginService } from '../service/login.service';
 import { UserProfile } from '../shared/interfaces';
-import { filter, Subscription, switchMap, finalize, tap } from 'rxjs';
+import { filter, Subscription, switchMap, finalize } from 'rxjs';
 import {
   SocialAuthService,
   SocialUser,
   GoogleSigninButtonModule,
 } from '@abacritt/angularx-social-login';
 import { HttpErrorResponse } from '@angular/common/http';
+
+// Dichiariamo la variabile globale AppleID per TypeScript
+declare var AppleID: any;
 
 @Component({
   selector: 'app-login',
@@ -34,37 +44,47 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  // --- MIGLIORAMENTO: `isMobile` è ora dinamico ---
-  isMobile: boolean = window.innerWidth < 768;
+  isMobile: boolean = false; // Inizializzato dopo
+  isBrowser: boolean;
 
   loginForm!: FormGroup;
   loginErrorMessage: string | null = null;
   registrationSuccessMessage: string | null = null;
   hidePassword = true;
-  isLoading = false; // --- MIGLIORAMENTO: Aggiunto stato di caricamento ---
+  isLoading = false;
   private authSubscription!: Subscription;
 
-  // --- MIGLIORAMENTO: HostListener per un responsive design corretto ---
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
-    this.isMobile = (event.target as Window).innerWidth < 768;
+    if (this.isBrowser) {
+      this.isMobile = window.innerWidth < 768;
+    }
   }
 
   constructor(
     private loginService: LoginService,
     private router: Router,
     private socialAuthService: SocialAuthService,
-    private route: ActivatedRoute // Aggiunto per leggere i query params
-  ) {}
+    private route: ActivatedRoute,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    if (this.isBrowser) {
+      this.isMobile = window.innerWidth < 768;
+    }
+  }
 
   ngOnInit(): void {
-    // Se l'utente è già loggato, reindirizzalo subito alla home.
     if (this.loginService.isLoggedIn$.value) {
       this.router.navigate(['/']);
-      return; // Interrompi l'esecuzione di ngOnInit
+      return;
     }
 
-    // --- MIGLIORAMENTO: Controlla se l'utente arriva dalla pagina di registrazione ---
+    // Carica lo script Apple SOLO se siamo nel browser
+    if (this.isBrowser) {
+      this.loadAppleScript();
+    }
+
     this.route.queryParams.subscribe((params) => {
       if (params['registered'] === 'success') {
         this.registrationSuccessMessage =
@@ -75,14 +95,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
-      // NOTA: Il campo 'rememberMe' è stato rimosso dal form.
-      // La gestione della durata della sessione è ora responsabilità del backend.
     });
 
+    // Sottoscrizione a Google
     this.authSubscription = this.socialAuthService.authState
       .pipe(
         filter((user): user is SocialUser => !!user),
-
         switchMap((user) => this.loginService.loginWithGoogle(user))
       )
       .subscribe({
@@ -95,24 +113,75 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
   }
 
+  // --- LOGICA APPLE ---
+
+  loadAppleScript(): void {
+    // Evitiamo di ricaricare se esiste già
+    if (document.getElementById('apple-sdk')) return;
+
+    const script = document.createElement('script');
+    script.src =
+      'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
+    script.id = 'apple-sdk';
+    script.onload = () => {
+      // Inizializza Apple SDK una volta caricato
+      AppleID.auth.init({
+        clientId: 'com.hegotv.login', // IL TUO SERVICE ID
+        scope: 'name email',
+        // Deve corrispondere a quello inserito in Apple Developer -> Service ID -> Return URLs
+        redirectURI: 'https://www.hegotv.com/accounts/apple/login/callback/',
+        state: 'origin:web',
+        usePopup: true, // Importante per SPA
+      });
+    };
+    document.head.appendChild(script);
+  }
+
+  async signInWithApple(): Promise<void> {
+    if (!this.isBrowser || typeof AppleID === 'undefined') {
+      console.error('Apple SDK non caricato');
+      return;
+    }
+
+    this.isLoading = true;
+    try {
+      // Apre il popup nativo Apple
+      const response = await AppleID.auth.signIn();
+
+      // Se il login ha successo, invia i dati al backend
+      this.loginService.loginWithApple(response).subscribe({
+        next: (profile) => {
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          this.handleLoginError(err);
+          this.isLoading = false;
+        },
+      });
+    } catch (error) {
+      console.error('Apple Sign In Error', error);
+      this.loginErrorMessage = 'Login con Apple annullato o fallito.';
+      this.isLoading = false;
+    }
+  }
+
+  // --- FINE LOGICA APPLE ---
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
-    this.isLoading = true; // Avvia il caricamento
+    this.isLoading = true;
     this.loginErrorMessage = null;
-    this.registrationSuccessMessage = null; // Nascondi il messaggio di successo
+    this.registrationSuccessMessage = null;
 
     const { email, password } = this.loginForm.value;
 
     this.loginService
       .login(email, password)
-      .pipe(
-        // --- MIGLIORAMENTO: `finalize` assicura che `isLoading` venga resettato ---
-        finalize(() => (this.isLoading = false))
-      )
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (profile: UserProfile) => {
           this.router.navigate(['/']);
@@ -123,28 +192,22 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * --- MIGLIORAMENTO: Gestione degli errori più specifica per Django REST Framework ---
-   */
   private handleLoginError(err: any): void {
-    console.error('Errore durante il processo di login:', err);
+    console.error('Errore durante il login:', err);
     if (err instanceof HttpErrorResponse) {
       if (err.status === 0) {
         this.loginErrorMessage =
           'Errore di rete. Controlla la tua connessione e riprova.';
       } else if (err.status === 400 || err.status === 401) {
-        // DRF/dj-rest-auth usa status 400 per credenziali errate.
-        // Cerca un messaggio specifico, altrimenti mostra un errore generico.
         const errorDetail = err.error?.non_field_errors;
         this.loginErrorMessage = Array.isArray(errorDetail)
           ? errorDetail[0]
-          : 'Email o password non corretti. Riprova.';
+          : 'Credenziali non valide o errore provider.';
       } else {
-        this.loginErrorMessage = `Si è verificato un errore (${err.status}). Riprova più tardi.`;
+        this.loginErrorMessage = `Errore (${err.status}). Riprova più tardi.`;
       }
     } else {
-      this.loginErrorMessage =
-        'Si è verificato un errore inaspettato. Riprova.';
+      this.loginErrorMessage = 'Errore inaspettato.';
     }
   }
 

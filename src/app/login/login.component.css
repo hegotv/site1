@@ -261,3 +261,79 @@ hr {
     right: auto;
   }
 }
+/* Stile base pulsante Apple */
+.apple-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* O larghezza fissa come google es: 350px */
+  max-width: 350px;
+  height: 44px; /* Altezza standard Apple */
+  margin: 10px auto;
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+  border-radius: 4px; /* O il raggio che usi nel sito */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.apple-btn img,
+.apple-btn mat-icon {
+  margin-right: 10px;
+  height: 20px;
+  width: auto;
+}
+
+/* Hover e Active */
+.apple-btn:hover {
+  opacity: 0.9;
+}
+
+.apple-btn:active {
+  opacity: 0.8;
+}
+
+/* Stato disabilitato (durante il caricamento) */
+.apple-btn:disabled {
+  background-color: #333;
+  color: #888;
+  cursor: not-allowed;
+  border-color: #333;
+}
+
+/* Contenitore Social per centrarli */
+.social-buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* Spazio tra Apple e Google */
+  margin-top: 15px;
+}
+
+/* Per l'errore globale */
+.global-error {
+  color: #ff4444;
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.divider-container {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.or {
+  background: white; /* O il colore del tuo sfondo login-box */
+  padding: 0 10px;
+  display: inline-block;
+  position: relative;
+  top: -22px; /* Aggiusta in base all'altezza dell'hr */
+  color: #666;
+}

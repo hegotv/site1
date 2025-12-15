@@ -2,8 +2,10 @@
   <section class="login-box">
     <h1>EFFETTUA IL LOGIN</h1>
     <p class="subtitle">Riprendi da dove hai lasciato.</p>
+
+    <!-- Form Login Classico -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <!-- Campo Email con Messaggi di Errore Specifici -->
+      <!-- Campo Email -->
       <div class="form-field">
         <input
           type="email"
@@ -28,7 +30,7 @@
         </div>
       </div>
 
-      <!-- Contenitore per Password + Icona con Messaggi di Errore -->
+      <!-- Campo Password -->
       <div class="form-field">
         <div class="password-container">
           <input
@@ -66,51 +68,96 @@
         </div>
       </div>
 
+      <!-- Pulsanti Azione -->
       <div class="flex">
         <button
           type="submit"
           class="sign-in"
-          [disabled]="!loginForm.valid"
+          [disabled]="!loginForm.valid || isLoading"
           [ngClass]="{
-            active_btn: loginForm.valid,
-            disabled_btn: !loginForm.valid
+            active_btn: loginForm.valid && !isLoading,
+            disabled_btn: !loginForm.valid || isLoading
           }"
         >
-          ENTRA
+          <span *ngIf="!isLoading">ENTRA</span>
+          <span *ngIf="isLoading">ATTENDI...</span>
         </button>
+
+        <!-- Link Desktop -->
         <p class="register" *ngIf="!isMobile">
           Non hai un account? <a routerLink="/register">Crealo ora</a>
         </p>
       </div>
-      <!-- <hr />
-      <p class="or">o</p>-->
 
+      <!-- Link Mobile -->
       <p class="register" *ngIf="isMobile">
         Non hai un account? <br /><a routerLink="/register">Crealo ora</a>
       </p>
     </form>
-    <!-- <div class="google-final-stack">
-      <div class="google-layer-real">
-        <asl-google-signin-button type="standard" size="large" [width]="350">
-        </asl-google-signin-button>
-      </div>
 
-      <div class="custom-graphics-layer">
+    <!-- Divisore -->
+    <div class="divider-container">
+      <hr />
+      <p class="or">o</p>
+    </div>
+
+    <!-- Pulsanti Social -->
+    <div class="social-buttons-container">
+      <!-- APPLE BUTTON -->
+      <!-- Usa button type="button" per gestire disabled e click correttamente -->
+      <button
+        type="button"
+        class="apple-btn"
+        (click)="signInWithApple()"
+        [disabled]="isLoading"
+      >
+        <!-- Assicurati di avere il logo in assets, altrimenti usa un'icona mat o svg inline -->
         <img
-          src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
-          alt="G"
+          src="assets/apple-logo.svg"
+          alt="Apple Logo"
+          onerror="this.style.display='none'"
         />
-        <span>Continua con Google</span>
+        <!-- Fallback icona se l'immagine manca -->
+        <mat-icon
+          *ngIf="!isLoading"
+          style="font-size: 20px; height: 20px; width: 20px; margin-right: 8px"
+          >apple</mat-icon
+        >
+
+        <span>Continua con Apple</span>
+      </button>
+
+      <!-- GOOGLE BUTTON (Stack personalizzato) -->
+      <div class="google-final-stack">
+        <!-- Layer reale invisibile (click intercettato da libreria) -->
+        <div class="google-layer-real">
+          <asl-google-signin-button
+            type="standard"
+            size="large"
+            [width]="350"
+          ></asl-google-signin-button>
+        </div>
+
+        <!-- Layer grafico personalizzato -->
+        <div class="custom-graphics-layer">
+          <img
+            src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
+            alt="G"
+          />
+          <span>Continua con Google</span>
+        </div>
       </div>
     </div>
-     Messaggio di Errore Generale per il Login -->
-    <div
-      *ngIf="loginErrorMessage"
-      class="error-message"
-      style="color: red; margin-top: 15px"
-    >
+
+    <!-- Messaggi di Errore Generali -->
+    <div *ngIf="loginErrorMessage" class="error-message global-error">
       {{ loginErrorMessage }}
     </div>
+
+    <div *ngIf="registrationSuccessMessage" class="success-message">
+      {{ registrationSuccessMessage }}
+    </div>
   </section>
+
   <img src="../../assets/BG.png" alt="" class="bg" />
 </main>

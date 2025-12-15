@@ -6,7 +6,7 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root',
 })
 export class testGuard implements CanActivate {
-  private static readonly PROTECTION_ENABLED = false;
+  private static readonly PROTECTION_ENABLED = true;
   public static readonly PASSWORD = 'HegoWork';
 
   constructor(
