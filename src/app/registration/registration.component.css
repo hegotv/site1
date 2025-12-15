@@ -1,6 +1,13 @@
+/* --- LAYOUT GENERALE --- */
 body {
   background: none;
 }
+
+.register-container {
+  display: flex;
+  min-height: 100vh;
+}
+
 .register-form {
   flex: 1;
   padding: 4rem 3rem;
@@ -20,6 +27,7 @@ body {
   color: #aaa;
 }
 
+/* --- GRIGLIA FORM --- */
 .form-row {
   display: flex;
   gap: 1rem;
@@ -41,7 +49,7 @@ select {
   border-radius: 8px;
   color: #fff;
   font-size: 1rem;
-  transition: border-color 0.2s ease; /* Transizione per il cambio di colore del bordo */
+  transition: border-color 0.2s ease;
 }
 
 input::placeholder,
@@ -49,26 +57,29 @@ select {
   color: #777;
 }
 
-/* <<<<<<<<<<<<<<< NUOVE REGOLE PER LA VALIDAZIONE >>>>>>>>>>>>>>> */
-
-/* Stile per evidenziare i campi non validi dopo l'interazione dell'utente */
+/* --- VALIDAZIONE --- */
 input.ng-invalid.ng-touched,
 select.ng-invalid.ng-touched {
-  border-color: #e53935; /* Rosso per l'errore */
+  border-color: #e53935; /* Rosso errore */
 }
 
-/* Stile per i messaggi di errore sotto ogni campo */
 .error-message {
-  color: #e53935; /* Stesso rosso dell'errore */
+  color: #e53935;
   font-size: 0.8rem;
   padding-top: 4px;
-  min-height: 1.2em; /* Riserva lo spazio per evitare salti nel layout */
+  min-height: 1.2em;
   text-align: left;
 }
 
-/* <<<<<<<<<<<<<<< FINE NUOVE REGOLE >>>>>>>>>>>>>>> */
+/* Errore globale sotto tutto */
+.global-error {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+  color: #ff4444;
+}
 
-/* Stili per checkbox */
+/* --- CHECKBOX E LABEL --- */
 input[type="checkbox"] {
   margin-right: 0.5rem;
   border: none;
@@ -80,6 +91,7 @@ label {
   color: #aaa;
 }
 
+/* --- PULSANTI AZIONE --- */
 .flex {
   display: flex;
   align-items: center;
@@ -97,13 +109,25 @@ label {
   font-weight: bold;
   margin-bottom: 1rem;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-.register-btn:hover {
+/* Stato Attivo (Valid) */
+.active_btn:hover {
   background: #39b09d;
   color: #111;
 }
 
+/* Stato Disabilitato (Invalid o Loading) */
+.disabled_btn {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #777;
+  background-color: #5555558a;
+  color: #ffffff99;
+}
+
+/* --- LINK LOGIN --- */
 .login-link {
   margin-top: 1rem;
   text-align: center;
@@ -112,91 +136,126 @@ label {
 
 .login-link a {
   color: #39b09d;
+  text-decoration: none;
 }
 
-.divider {
+/* --- DIVISORE --- */
+.divider-container {
   text-align: center;
-  margin: 1rem 0;
-  color: #aaa;
+  margin: 20px 0;
   position: relative;
 }
 
-.divider span {
-  background-color: #111;
-  padding: 0 1rem;
+.or {
+  background: #111; /* Deve matchare lo sfondo del form se diverso da body */
+  padding: 0 10px;
+  display: inline-block;
   position: relative;
-  z-index: 1;
+  top: -10px; /* Aggiusta in base all'altezza dell'hr */
+  color: #666;
+  font-size: 0.9rem;
 }
 
-.divider::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
+hr {
+  border: 0;
   height: 1px;
-  width: 100%;
-  background-color: #333;
-  z-index: 0;
+  background: #333;
 }
 
-/* CONTENITORE PRINCIPALE */
+/* --- CONTENITORE SOCIAL BUTTONS --- */
+.social-buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* --- APPLE BUTTON (Nuovo) --- */
+.apple-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 350px; /* Stessa larghezza del bottone Google */
+  height: 50px; /* Stessa altezza del bottone Google */
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px; /* Stesso radius del Google custom layer */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.apple-btn img,
+.apple-btn mat-icon {
+  margin-right: 12px;
+  height: 20px;
+  width: auto;
+}
+
+.apple-btn:hover {
+  opacity: 0.9;
+  border-color: #555;
+}
+
+.apple-btn:disabled {
+  background-color: #222;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* --- GOOGLE STACK (Tuo codice originale ottimizzato) --- */
 .google-final-stack {
-  position: relative; /* Crea il contesto per sovrapporre i figli */
+  position: relative;
   width: 100%;
-  max-width: 350px; /* Larghezza desiderata */
-  height: 50px; /* Altezza fissa */
-  margin: 1rem auto;
-  cursor: pointer; /* Forza la manina */
+  max-width: 350px;
+  height: 50px;
+  margin: 0 auto; /* Centrato orizzontalmente */
+  cursor: pointer;
 }
 
-/* --- LIVELLO GOOGLE (Quello che clicchi) --- */
 .google-layer-real {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 20; /* Z-INDEX ALTO: Deve stare sopra a tutto! */
-
-  /* TRUCCO VISIBILITÀ: */
-  /* Parti con 0.5 per vedere se si sovrappone bene. 
-     Quando funziona, metti 0.01 (NON 0). */
+  z-index: 20;
   opacity: 0.01;
-
-  overflow: hidden; /* Taglia l'iframe se esce dai bordi */
+  overflow: hidden;
 }
 
-/* Forziamo l'iframe interno a riempire tutto lo spazio */
 ::ng-deep .google-layer-real iframe {
-  width: 360px !important; /* Leggermente più largo del container */
-  height: 60px !important; /* Leggermente più alto */
-  margin-top: -5px; /* Centraggio grezzo */
-  margin-left: -5px; /* Centraggio grezzo */
+  width: 360px !important;
+  height: 60px !important;
+  margin-top: -5px;
+  margin-left: -5px;
 }
 
-/* --- LIVELLO GRAFICA (Quello che vedi) --- */
 .custom-graphics-layer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1; /* Sta sotto al pulsante Google */
-
-  /* IL SEGRETO: Rende questo livello "fantasma" per il mouse.
-     I click passeranno attraverso questo div e colpiranno quello di Google. */
+  z-index: 1;
   pointer-events: none;
-
-  /* Il tuo stile grafico */
   background-color: transparent;
   border: 1px solid #666;
-  border-radius: 8px; /* O quello che preferisci */
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   color: #fff;
   font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .custom-graphics-layer img {
@@ -204,20 +263,12 @@ label {
   height: 20px;
 }
 
-/* Effetto Hover: quando passi sul container, illumina la grafica sotto */
 .google-final-stack:hover .custom-graphics-layer {
   border-color: #39b09d;
   background-color: rgba(255, 255, 255, 0.05);
 }
-.bg {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  z-index: -1;
-}
 
+/* --- PASSWORD TOGGLE --- */
 .password-container {
   position: relative;
   width: 100%;
@@ -237,8 +288,21 @@ label {
   color: #888;
   background: none;
   border: none;
+  cursor: pointer;
 }
 
+/* --- SFONDO IMMAGINE --- */
+.bg {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  z-index: -1;
+  object-fit: cover;
+}
+
+/* --- RESPONSIVE MEDIA QUERIES --- */
 @media (max-width: 768px) {
   .register-form {
     max-width: 100vw;
@@ -247,24 +311,27 @@ label {
 
   .register-form h2 {
     font-size: 2.5rem;
-    font-weight: 1600;
+    font-weight: 600; /* Corretto da 1600 */
   }
 
   input:not([type="checkbox"]),
   select {
     padding: 0.6rem 1rem;
   }
+
+  /* Impila i campi su mobile, tranne data/sesso */
   .form-row {
     flex-direction: column;
-    gap: 0; /* Il gap è gestito dal margin-bottom del .form-field */
-  }
-  .form-row.two {
-    flex-direction: row;
-    gap: 1rem; /* Manteniamo il gap per la riga sesso/data */
+    gap: 0;
   }
 
-  .register-btn,
-  .google-btn {
+  /* Mantieni data e sesso affiancati se c'è spazio, altrimenti impila */
+  .form-row.two {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .register-btn {
     padding: 0.6rem;
     width: 100%;
     font-size: 0.9rem;
@@ -276,12 +343,10 @@ label {
   }
 
   .bg {
-    width: 200%;
+    width: 100%; /* Larghezza piena su mobile */
     height: 100%;
     top: 0;
-    opacity: 0.5;
-    left: -50%;
-    bottom: auto;
-    right: auto;
+    left: 0;
+    opacity: 0.2; /* Meno opaco per leggere il testo */
   }
 }

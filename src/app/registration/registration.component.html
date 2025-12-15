@@ -4,7 +4,7 @@
     <p>Senza censura, senza paura.</p>
 
     <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
-      <!-- Nome e Cognome con messaggi di errore -->
+      <!-- RIGA 1: Nome e Cognome -->
       <div class="form-row">
         <div class="form-field">
           <input
@@ -24,8 +24,12 @@
             <small *ngIf="registrationForm.get('nome')?.errors?.['required']"
               >Il nome è richiesto.</small
             >
+            <small *ngIf="registrationForm.get('nome')?.errors?.['minlength']"
+              >Minimo 2 caratteri.</small
+            >
           </div>
         </div>
+
         <div class="form-field">
           <input
             type="text"
@@ -44,11 +48,15 @@
             <small *ngIf="registrationForm.get('cognome')?.errors?.['required']"
               >Il cognome è richiesto.</small
             >
+            <small
+              *ngIf="registrationForm.get('cognome')?.errors?.['minlength']"
+              >Minimo 2 caratteri.</small
+            >
           </div>
         </div>
       </div>
 
-      <!-- Data di nascita e Sesso con messaggi di errore -->
+      <!-- RIGA 2: Data di nascita e Sesso -->
       <div class="form-row two">
         <div class="form-field">
           <input
@@ -70,6 +78,7 @@
             >
           </div>
         </div>
+
         <div class="form-field">
           <select formControlName="sesso">
             <option disabled value="">Sesso</option>
@@ -92,9 +101,14 @@
         </div>
       </div>
 
-      <!-- Email con messaggi di errore -->
+      <!-- Email -->
       <div class="form-field">
-        <input type="email" placeholder="Email" formControlName="email" />
+        <input
+          type="email"
+          placeholder="Email"
+          formControlName="email"
+          autocomplete="email"
+        />
         <div
           *ngIf="
             registrationForm.get('email')?.invalid &&
@@ -112,7 +126,7 @@
         </div>
       </div>
 
-      <!-- Password con messaggi di errore -->
+      <!-- Password -->
       <div class="form-field">
         <div class="password-container">
           <input
@@ -147,52 +161,98 @@
           <small *ngIf="registrationForm.get('password')?.errors?.['required']"
             >La password è richiesta.</small
           >
+          <small *ngIf="registrationForm.get('password')?.errors?.['minlength']"
+            >Minimo 8 caratteri.</small
+          >
         </div>
       </div>
 
+      <!-- Pulsante Submit e Link Login -->
       <div class="flex">
         <button
           class="register-btn"
           type="submit"
-          [disabled]="registrationForm.invalid"
+          [disabled]="registrationForm.invalid || isLoading"
+          [ngClass]="{
+            active_btn: registrationForm.valid && !isLoading,
+            disabled_btn: registrationForm.invalid || isLoading
+          }"
         >
-          REGISTRATI ORA
+          <span *ngIf="!isLoading">REGISTRATI ORA</span>
+          <span *ngIf="isLoading">ATTENDI...</span>
         </button>
+
         <p class="login-link" *ngIf="!isMobile">
           Hai già un account? <a routerLink="/login">Effettua il login</a>
         </p>
       </div>
 
-      <!-- <div class="divider"><span>o</span></div>
-
-      <div class="google-final-stack">
-         LIVELLO 1: Il pulsante Google VERO (Invisibile ma presente) 
-        <div class="google-layer-real">
-          <asl-google-signin-button type="standard" size="large" [width]="350">
-             Larghezza uguale al CSS 
-          </asl-google-signin-button>
-        </div>
-
-         LIVELLO 2: La tua Grafica (Solo estetica) 
-        <div class="custom-graphics-layer">
-          <img
-            src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
-            alt="G"
-          />
-          <span>Continua con Google</span>
-        </div>
-      </div>
-    -->
       <p class="login-link" *ngIf="isMobile">
         Hai già un account? <a routerLink="/login">Effettua il login</a>
       </p>
     </form>
 
-    Messaggio di errore generale per la registrazione -->
+    <!-- DIVISORE SOCIAL -->
+    <div class="divider-container">
+      <hr />
+      <p class="or">o</p>
+    </div>
+
+    <!-- SEZIONE SOCIAL LOGIN -->
+    <div class="social-buttons-container">
+      <!-- APPLE -->
+      <button
+        type="button"
+        class="apple-btn"
+        (click)="signInWithApple()"
+        [disabled]="isLoading"
+      >
+        <img
+          src="assets/apple-logo.svg"
+          alt="Apple Logo"
+          onerror="this.style.display='none'"
+        />
+        <!-- Icona fallback se img non carica -->
+        <mat-icon
+          *ngIf="!isLoading"
+          style="font-size: 20px; height: 20px; width: 20px; margin-right: 8px"
+          >apple</mat-icon
+        >
+        <span>Registrati con Apple</span>
+      </button>
+
+      <!-- GOOGLE -->
+      <div class="google-final-stack">
+        <!-- Layer invisibile funzionale -->
+        <div class="google-layer-real">
+          <asl-google-signin-button
+            type="standard"
+            size="large"
+            [width]="350"
+          ></asl-google-signin-button>
+        </div>
+
+        <!-- Layer grafico personalizzato -->
+        <div class="custom-graphics-layer">
+          <img
+            src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
+            alt="G"
+          />
+          <span>Registrati con Google</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messaggio di errore generale -->
     <div
-      class="error-message"
+      class="error-message global-error"
       *ngIf="registrationErrorMessage"
-      style="color: red; margin-top: 15px"
+      style="
+        color: #ff4444;
+        margin-top: 15px;
+        text-align: center;
+        font-weight: bold;
+      "
     >
       {{ registrationErrorMessage }}
     </div>

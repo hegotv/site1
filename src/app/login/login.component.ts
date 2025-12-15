@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common'; // Import isPlatformBrowser
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   Component,
   OnDestroy,
@@ -26,7 +26,7 @@ import {
 } from '@abacritt/angularx-social-login';
 import { HttpErrorResponse } from '@angular/common/http';
 
-// Dichiariamo la variabile globale AppleID per TypeScript
+// Dichiarazione globale per Apple
 declare var AppleID: any;
 
 @Component({
@@ -44,7 +44,7 @@ declare var AppleID: any;
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  isMobile: boolean = false; // Inizializzato dopo
+  isMobile: boolean = false;
   isBrowser: boolean;
 
   loginForm!: FormGroup;
@@ -75,16 +75,24 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // 1. Redirect se già loggato
     if (this.loginService.isLoggedIn$.value) {
       this.router.navigate(['/']);
       return;
     }
 
-    // Carica lo script Apple SOLO se siamo nel browser
+    // 2. Setup ambiente Browser
     if (this.isBrowser) {
+      // FIX GOOGLE: Logout preventivo per evitare "token already used"
+      this.socialAuthService.signOut().catch(() => {
+        // Ignora errori se non c'era sessione
+      });
+
+      // Carica script Apple
       this.loadAppleScript();
     }
 
+    // 3. Messaggi da redirect
     this.route.queryParams.subscribe((params) => {
       if (params['registered'] === 'success') {
         this.registrationSuccessMessage =
@@ -92,16 +100,22 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
     });
 
+    // 4. Form Init
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
     });
 
-    // Sottoscrizione a Google
+    // 5. Google Login Subscription
     this.authSubscription = this.socialAuthService.authState
       .pipe(
         filter((user): user is SocialUser => !!user),
-        switchMap((user) => this.loginService.loginWithGoogle(user))
+        switchMap((user) => {
+          this.isLoading = true;
+          this.loginErrorMessage = null;
+          return this.loginService.loginWithGoogle(user);
+        }),
+        finalize(() => (this.isLoading = false))
       )
       .subscribe({
         next: (profile: UserProfile) => {
@@ -113,10 +127,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
   }
 
-  // --- LOGICA APPLE ---
-
+  // --- APPLE LOGIC ---
   loadAppleScript(): void {
-    // Evitiamo di ricaricare se esiste già
     if (document.getElementById('apple-sdk')) return;
 
     const script = document.createElement('script');
@@ -124,14 +136,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
     script.id = 'apple-sdk';
     script.onload = () => {
-      // Inizializza Apple SDK una volta caricato
       AppleID.auth.init({
-        clientId: 'com.hegotv.login', // IL TUO SERVICE ID
+        clientId: 'com.hegotv.service', // Assicurati sia il Service ID corretto
         scope: 'name email',
-        // Deve corrispondere a quello inserito in Apple Developer -> Service ID -> Return URLs
         redirectURI: 'https://www.hegotv.com/accounts/apple/login/callback/',
         state: 'origin:web',
-        usePopup: true, // Importante per SPA
+        usePopup: true,
       });
     };
     document.head.appendChild(script);
@@ -139,20 +149,17 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   async signInWithApple(): Promise<void> {
     if (!this.isBrowser || typeof AppleID === 'undefined') {
-      console.error('Apple SDK non caricato');
+      console.error('Apple SDK non pronto');
       return;
     }
 
     this.isLoading = true;
-    try {
-      // Apre il popup nativo Apple
-      const response = await AppleID.auth.signIn();
+    this.loginErrorMessage = null;
 
-      // Se il login ha successo, invia i dati al backend
+    try {
+      const response = await AppleID.auth.signIn();
       this.loginService.loginWithApple(response).subscribe({
-        next: (profile) => {
-          this.router.navigate(['/']);
-        },
+        next: () => this.router.navigate(['/']),
         error: (err) => {
           this.handleLoginError(err);
           this.isLoading = false;
@@ -160,13 +167,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
     } catch (error) {
       console.error('Apple Sign In Error', error);
-      this.loginErrorMessage = 'Login con Apple annullato o fallito.';
       this.isLoading = false;
     }
   }
 
-  // --- FINE LOGICA APPLE ---
-
+  // --- FORM SUBMIT ---
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -183,28 +188,23 @@ export class LoginComponent implements OnInit, OnDestroy {
       .login(email, password)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (profile: UserProfile) => {
-          this.router.navigate(['/']);
-        },
-        error: (err) => {
-          this.handleLoginError(err);
-        },
+        next: () => this.router.navigate(['/']),
+        error: (err) => this.handleLoginError(err),
       });
   }
 
   private handleLoginError(err: any): void {
-    console.error('Errore durante il login:', err);
+    console.error('Login error:', err);
     if (err instanceof HttpErrorResponse) {
       if (err.status === 0) {
-        this.loginErrorMessage =
-          'Errore di rete. Controlla la tua connessione e riprova.';
+        this.loginErrorMessage = 'Errore di rete. Controlla la connessione.';
       } else if (err.status === 400 || err.status === 401) {
-        const errorDetail = err.error?.non_field_errors;
-        this.loginErrorMessage = Array.isArray(errorDetail)
-          ? errorDetail[0]
-          : 'Credenziali non valide o errore provider.';
+        const detail = err.error?.non_field_errors || err.error?.einfo;
+        this.loginErrorMessage = Array.isArray(detail)
+          ? detail[0]
+          : detail || 'Credenziali non valide.';
       } else {
-        this.loginErrorMessage = `Errore (${err.status}). Riprova più tardi.`;
+        this.loginErrorMessage = `Errore del server (${err.status}).`;
       }
     } else {
       this.loginErrorMessage = 'Errore inaspettato.';

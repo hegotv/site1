@@ -1,220 +1,95 @@
+/* --- LAYOUT GENERALE --- */
 main {
   display: flex;
-  flex: 1;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden; /* Evita scroll orizzontale su mobile */
 }
+
 .login-box {
   flex: 1;
   padding: 4rem 3rem;
   max-width: 50vw;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra verticalmente se il contenuto è poco */
 }
-.login-box h1 {
+
+h1 {
   font-size: 40px;
   font-weight: bold;
-  color: #39b09d;
+  color: #39b09d; /* Teal Brand Color */
   margin-bottom: 0.5rem;
 }
-.login-box .subtitle {
-  color: #aaa;
+
+.subtitle {
   margin-bottom: 2rem;
+  color: #aaa;
 }
 
-/* Contenitore per i campi del form per una corretta spaziatura */
+/* --- CAMPI FORM --- */
 .form-field {
   margin-bottom: 1.5rem;
-  position: relative; /* Utile se l'errore dovesse essere posizionato in modo assoluto */
+  width: 100%;
 }
 
-/* Stili unificati per tutti gli input di testo */
-.login-box form input[type="email"],
-.password-input {
+/* Stili Input */
+input {
   width: 100%;
   padding: 0.8rem 1rem;
   background: #111;
   border: 1px solid #444;
   border-radius: 8px;
   color: #fff;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Aggiunta transizione */
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box; /* Importante per padding */
 }
 
-/* Rimuoviamo il margine specifico dall'input email, ora è gestito da .form-field */
-.login-box form input[type="email"] {
-  margin-bottom: 0;
+input::placeholder {
+  color: #777;
 }
 
-.login-box form input[type="email"]:focus,
-.password-input:focus {
+input:focus {
   outline: none;
   border-color: #39b09d;
-  box-shadow: 0 0 5px rgba(57, 176, 157, 0.5);
-}
-.login-box form input[type="email"]::placeholder,
-.password-input::placeholder {
-  color: #888;
-}
-.login-box form input[type="email"]:focus::placeholder,
-.password-input:focus::placeholder {
-  color: #aaa;
 }
 
-/* <<<<<<<<<<<<<<< NUOVE REGOLE PER LA VALIDAZIONE >>>>>>>>>>>>>>> */
-
-/* Stile per evidenziare i campi non validi dopo l'interazione dell'utente */
-.login-box form input.ng-invalid.ng-touched,
-.password-input.ng-invalid.ng-touched {
-  border-color: #e53935; /* Rosso per l'errore */
+/* --- VALIDAZIONE --- */
+input.ng-invalid.ng-touched {
+  border-color: #e53935;
 }
 
-/* Stile per i messaggi di errore sotto ogni campo */
 .error-message {
-  color: #e53935; /* Stesso rosso dell'errore */
+  color: #e53935;
   font-size: 0.8rem;
   padding-top: 4px;
-  min-height: 1.2em; /* Riserva lo spazio per evitare salti nel layout */
-  text-align: left;
+  min-height: 1.2em;
 }
 
-/* <<<<<<<<<<<<<<< FINE NUOVE REGOLE >>>>>>>>>>>>>>> */
-
-input[type="checkbox"] {
-  margin-right: 0.5rem;
-  border: none;
-  background-color: transparent;
-}
-
-p,
-label {
-  color: #aaa;
-}
-.flex {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.login-box form label.remember-me-label {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  color: #aaa;
-}
-
-.sign-in {
-  padding: 0.8rem 2rem;
-  background: transparent;
-  border: 1px solid #39b09d;
-  color: #39b09d;
-  border-radius: 30px;
-  margin-bottom: 1rem;
-  transition: all 0.3s ease;
-}
-.sign-in:hover {
-  background: #39b09d;
-  color: #111;
-}
-.register {
-  margin-bottom: 1rem;
-}
-.register a {
-  color: #39b09d;
-}
-hr {
-  border: 0;
-  height: 1px;
-  background: #333;
-  margin: 1rem 0;
-}
-.or {
+.global-error {
   text-align: center;
-  margin-bottom: 1rem;
-}
-.bg {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  z-index: -1;
-}
-/* CONTENITORE PRINCIPALE */
-.google-final-stack {
-  position: relative; /* Crea il contesto per sovrapporre i figli */
-  width: 100%;
-  max-width: 350px; /* Larghezza desiderata */
-  height: 50px; /* Altezza fissa */
-  margin: 1rem auto;
-  cursor: pointer; /* Forza la manina */
+  font-weight: bold;
+  margin-top: 15px;
+  color: #ff4444;
 }
 
-/* --- LIVELLO GOOGLE (Quello che clicchi) --- */
-.google-layer-real {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 20; /* Z-INDEX ALTO: Deve stare sopra a tutto! */
-
-  /* TRUCCO VISIBILITÀ: */
-  /* Parti con 0.5 per vedere se si sovrappone bene. 
-     Quando funziona, metti 0.01 (NON 0). */
-  opacity: 0.01;
-
-  overflow: hidden; /* Taglia l'iframe se esce dai bordi */
+.success-message {
+  color: #39b09d;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
 }
 
-/* Forziamo l'iframe interno a riempire tutto lo spazio */
-::ng-deep .google-layer-real iframe {
-  width: 360px !important; /* Leggermente più largo del container */
-  height: 60px !important; /* Leggermente più alto */
-  margin-top: -5px; /* Centraggio grezzo */
-  margin-left: -5px; /* Centraggio grezzo */
-}
-
-/* --- LIVELLO GRAFICA (Quello che vedi) --- */
-.custom-graphics-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1; /* Sta sotto al pulsante Google */
-
-  /* IL SEGRETO: Rende questo livello "fantasma" per il mouse.
-     I click passeranno attraverso questo div e colpiranno quello di Google. */
-  pointer-events: none;
-
-  /* Il tuo stile grafico */
-  background-color: transparent;
-  border: 1px solid #666;
-  border-radius: 8px; /* O quello che preferisci */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: #fff;
-  font-family: inherit;
-}
-
-.custom-graphics-layer img {
-  width: 20px;
-  height: 20px;
-}
-
-/* Effetto Hover: quando passi sul container, illumina la grafica sotto */
-.google-final-stack:hover .custom-graphics-layer {
-  border-color: #39b09d;
-  background-color: rgba(255, 255, 255, 0.05);
-}
+/* --- PASSWORD TOGGLE --- */
 .password-container {
   position: relative;
   width: 100%;
 }
 
 .password-container input {
-  padding-right: 40px;
-  width: 100%;
-  box-sizing: border-box;
+  padding-right: 45px; /* Spazio per l'occhio */
 }
 
 .password-toggle {
@@ -225,115 +100,239 @@ hr {
   color: #888;
   background: none;
   border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@media (max-width: 768px) {
-  .login-box {
-    max-width: 100vw;
-    padding: 2rem 1rem;
-  }
-  .login-box h1 {
-    font-size: 2.5rem;
-    font-weight: 1600;
-  }
-  .login-box form input[type="email"],
-  .password-input {
-    padding: 0.6rem 1rem; /* Aumentato leggermente per coerenza con la registrazione */
-  }
-  .sign-in,
-  .google-btn {
-    /* Unificato selettore */
-    padding: 0.6rem;
-    width: 100%;
-    font-size: 0.9rem;
-  }
-  .register {
-    text-align: center;
-    margin-top: 1rem;
-  }
-  .bg {
-    width: 200%;
-    height: 100%;
-    top: 0;
-    opacity: 0.5;
-    left: -50%;
-    bottom: auto;
-    right: auto;
-  }
+/* --- PULSANTI E LINK --- */
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Separa bottone e link */
+  margin-top: 1rem;
+  gap: 1rem;
 }
-/* Stile base pulsante Apple */
+
+.sign-in {
+  width: 40%; /* Larghezza fissa come nel register */
+  min-width: 120px;
+  padding: 0.8rem 2rem;
+  background: transparent;
+  border: 1px solid #39b09d;
+  color: #39b09d;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+/* Stati del bottone */
+.active_btn:hover {
+  background: #39b09d;
+  color: #111;
+}
+
+.disabled_btn {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #777;
+  background-color: #5555558a;
+  color: #ffffff99;
+}
+
+.register {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.register a {
+  color: #39b09d;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* --- DIVISORE --- */
+.divider-container {
+  text-align: center;
+  margin: 30px 0;
+  position: relative;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #333;
+  width: 100%;
+  margin: 0;
+}
+
+.or {
+  background: #000; /* Assicurati che combaci con il background del body/main */
+  padding: 0 10px;
+  display: inline-block;
+  position: relative;
+  top: -10px; /* Sposta la 'o' sopra la linea */
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* --- SOCIAL BUTTONS CONTAINER --- */
+.social-buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* --- APPLE BUTTON --- */
 .apple-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%; /* O larghezza fissa come google es: 350px */
+  width: 100%;
   max-width: 350px;
-  height: 44px; /* Altezza standard Apple */
-  margin: 10px auto;
+  height: 50px;
   background-color: #000;
   color: #fff;
-  border: 1px solid #000;
-  border-radius: 4px; /* O il raggio che usi nel sito */
+  border: 1px solid #333;
+  border-radius: 8px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: opacity 0.2s;
+  margin: 0 auto;
 }
 
 .apple-btn img,
 .apple-btn mat-icon {
-  margin-right: 10px;
+  margin-right: 12px;
   height: 20px;
   width: auto;
 }
 
-/* Hover e Active */
 .apple-btn:hover {
   opacity: 0.9;
+  border-color: #555;
 }
 
-.apple-btn:active {
-  opacity: 0.8;
-}
-
-/* Stato disabilitato (durante il caricamento) */
 .apple-btn:disabled {
-  background-color: #333;
-  color: #888;
-  cursor: not-allowed;
-  border-color: #333;
-}
-
-/* Contenitore Social per centrarli */
-.social-buttons-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px; /* Spazio tra Apple e Google */
-  margin-top: 15px;
-}
-
-/* Per l'errore globale */
-.global-error {
-  color: #ff4444;
-  margin-top: 15px;
-  text-align: center;
-  font-weight: bold;
-}
-
-.divider-container {
-  text-align: center;
-  margin: 20px 0;
-  position: relative;
-}
-
-.or {
-  background: white; /* O il colore del tuo sfondo login-box */
-  padding: 0 10px;
-  display: inline-block;
-  position: relative;
-  top: -22px; /* Aggiusta in base all'altezza dell'hr */
+  background-color: #222;
   color: #666;
+  cursor: not-allowed;
+}
+
+/* --- GOOGLE STACK --- */
+.google-final-stack {
+  position: relative;
+  width: 100%;
+  max-width: 350px;
+  height: 50px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.google-layer-real {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  opacity: 0.01; /* Invisibile ma cliccabile */
+  overflow: hidden;
+}
+
+/* Forza iframe Google a riempire */
+::ng-deep .google-layer-real iframe {
+  width: 360px !important;
+  height: 60px !important;
+  margin-top: -5px;
+  margin-left: -5px;
+}
+
+.custom-graphics-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none; /* Click passano attraverso */
+  background-color: transparent;
+  border: 1px solid #666;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.custom-graphics-layer img {
+  width: 20px;
+  height: 20px;
+}
+
+.google-final-stack:hover .custom-graphics-layer {
+  border-color: #39b09d;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* --- SFONDO IMMAGINE --- */
+.bg {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  z-index: -1;
+  object-fit: cover;
+}
+
+/* --- RESPONSIVE MEDIA QUERIES --- */
+@media (max-width: 768px) {
+  .login-box {
+    max-width: 100vw;
+    padding: 2rem 1.5rem;
+    background: rgba(0, 0, 0, 0.7); /* Sfondo scuro per leggere sopra l'img */
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  /* Riorganizza pulsante e link su mobile */
+  .flex {
+    flex-direction: column;
+    align-items: stretch; /* Pulsante full width */
+    gap: 1.5rem;
+  }
+
+  .sign-in {
+    width: 100%;
+  }
+
+  .register {
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  /* Immagine di sfondo full screen su mobile */
+  .bg {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0.4; /* Sbiadita per leggere il testo */
+  }
 }
