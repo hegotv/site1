@@ -141,7 +141,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       AppleID.auth.init({
         clientId: 'com.hegotv.login', // Controlla il Service ID
         scope: 'name email',
-        redirectURI: 'https://www.hegotv.com/registration/',
+        redirectURI: 'https://www.hegotv.com/register',
         state: 'origin:web',
         usePopup: true,
       });
