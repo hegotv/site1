@@ -188,9 +188,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: () => {
-          this.router.navigate(['/login'], {
-            queryParams: { registered: 'success' },
-          });
+          this.router.navigate(['/']);
         },
         error: (err) => {
           this.handleRegistrationError(err);

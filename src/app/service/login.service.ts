@@ -14,6 +14,8 @@ interface LoginResponse {
 
 interface SignUpResponse {
   token: string;
+  user: UserProfile;
+  response?: string;
   detail?: string;
 }
 
@@ -111,7 +113,6 @@ export class LoginService {
     );
   }
 
-  // --- REGISTRAZIONE ---
   signUp(
     email: string,
     username: string,
@@ -119,13 +120,22 @@ export class LoginService {
     name?: string,
     surname?: string
   ): Observable<SignUpResponse> {
-    return this.http.post<SignUpResponse>(`${this.apiUrl}/register/`, {
-      email,
-      password,
-      username,
-      first_name: name ?? '',
-      last_name: surname ?? '',
-    });
+    return this.http
+      .post<SignUpResponse>(`${this.apiUrl}/register/`, {
+        email,
+        password,
+        username,
+        first_name: name ?? '',
+        last_name: surname ?? '',
+      })
+      .pipe(
+        tap((response) => {
+          if (response.token && response.user) {
+            // Salviamo token e utente nel localStorage/Session
+            this.handleSuccessfulLogin(response.user, response.token);
+          }
+        })
+      );
   }
 
   // --- LOGOUT ---
