@@ -32,7 +32,6 @@ import {
   Macro,
   HomeApiCategory,
 } from '../shared/interfaces';
-import { ChristmasSnowComponent } from '../christmas-snow/christmas-snow.component';
 
 @Component({
   selector: 'app-home',
@@ -43,7 +42,6 @@ import { ChristmasSnowComponent } from '../christmas-snow/christmas-snow.compone
     FormatDurationPipe,
     ViewsFormatPipe,
     FooterComponent,
-    ChristmasSnowComponent,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
