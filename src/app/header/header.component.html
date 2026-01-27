@@ -50,6 +50,14 @@
             >SERIE</a
           >
         </li>
+        <li>
+          <a
+            routerLink="/docufilm"
+            routerLinkActive="active"
+            (click)="closeSidenav()"
+            >DOCUFILM</a
+          >
+        </li>
       </ul>
       <ng-container *ngIf="isMobile">
         <hr class="sidenav-divider" />
@@ -117,6 +125,14 @@
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
               >SERIE</a
+            >
+          </li>
+          <li>
+            <a
+              routerLink="/docufilm"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >DOCUFILM</a
             >
           </li>
         </ul>

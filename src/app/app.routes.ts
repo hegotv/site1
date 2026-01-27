@@ -59,6 +59,13 @@ export const routes: Routes = [
         resolve: { category: seasonResolver },
       },
       {
+        path: 'docufilm',
+        loadComponent: () =>
+          import('./docufilm/docufilm.component').then(
+            (m) => m.DocufilmComponent
+          ),
+      },
+      {
         path: 'login',
         loadComponent: () =>
           import('./login/login.component').then((m) => m.LoginComponent),
