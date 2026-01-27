@@ -3,80 +3,73 @@
   <!-- SKELETON LOADING (VISIBILE DURANTE IL CARICAMENTO)                -->
   <!-- ================================================================= -->
   @if (isLoading) {
-  <div class="skeleton-container fade-out">
-    <!-- Skeleton Section 1 (Simula una riga di podcast) -->
-    <div class="skeleton-section">
-      <div class="skeleton-title skeleton-box"></div>
-      <div class="skeleton-row">
-        <div class="skeleton-card skeleton-box"></div>
-        <div class="skeleton-card skeleton-box"></div>
-        <div class="skeleton-card skeleton-box"></div>
-        <div class="skeleton-card skeleton-box mobile-hidden"></div>
+    <div class="skeleton-container fade-out">
+      <!-- Intestazione Finta -->
+      <div class="all-shows-header">
+        <div class="skeleton-title skeleton-box"></div>
       </div>
-    </div>
 
-    <!-- Skeleton Section 2 -->
-    <div class="skeleton-section">
-      <div class="skeleton-title skeleton-box"></div>
-      <div class="skeleton-row">
+      <!-- Griglia Skeleton (Speculare alla griglia reale) -->
+      <div class="category-grid skeleton-grid-override">
         <div class="skeleton-card skeleton-box"></div>
         <div class="skeleton-card skeleton-box"></div>
         <div class="skeleton-card skeleton-box"></div>
-        <div class="skeleton-card skeleton-box mobile-hidden"></div>
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box"></div>
+        <div class="skeleton-card skeleton-box"></div>
       </div>
     </div>
-  </div>
   } @else {
+    <!-- ================================================================= -->
+    <!-- CONTENUTO PRINCIPALE (VISIBILE DOPO IL CARICAMENTO)               -->
+    <!-- ================================================================= -->
+    <div class="fade-in all-shows-container">
+      <!-- Iteriamo sulle sezioni (es. "Ultime Uscite", "Popolari") -->
+      @for (section of podcastSections; track section.id) {
+        <section class="podcast-section-wrapper">
+          <!-- Intestazione Sezione -->
+          <div class="all-shows-header">
+            <h1 class="section-title">{{ section.title }}</h1>
+          </div>
 
-  <!-- ================================================================= -->
-  <!-- CONTENUTO PRINCIPALE (VISIBILE DOPO IL CARICAMENTO)               -->
-  <!-- ================================================================= -->
-  <div class="fade-in">
-    <!-- Ciclo principale sulle SEZIONI -->
-    @for (section of podcastSections; track section.id) {
-    <app-slider
-      [sectionTitle]="section.title"
-      [items]="section.seasons"
-      [itemTemplate]="seasonCardTemplate"
-      (slideClick)="handleSeasonClick($event)"
-    ></app-slider>
-    } @empty {
-    <p class="no-content-message">Nessun contenuto disponibile.</p>
-    }
-  </div>
+          <!-- Griglia (Sostituisce lo slider) -->
+          <div class="category-grid">
+            @for (season of section.seasons; track season.id) {
+              <div
+                class="category-grid-item"
+                (click)="handleSeasonClick(season)"
+                [attr.aria-label]="'Vedi ' + season.title"
+              >
+                <!-- Immagine a tutto schermo -->
+                @if (season.artwork_image) {
+                  <img [src]="season.artwork_image" [alt]="season.title" />
+                } @else {
+                  <!-- Placeholder se manca l'immagine -->
+                  <div class="placeholder-img">
+                    <i class="fas fa-podcast"></i>
+                  </div>
+                }
+
+                <!-- Contenuto in Overlay (Stile All Shows) -->
+                <div class="category-grid-item-content">
+                  <h3>{{ season.title }}</h3>
+                  <p class="season-author">
+                    {{ season.episodes?.[0]?.speaker || "Autore Sconosciuto" }}
+                  </p>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      } @empty {
+        <div class="no-content-message">
+          <p>Nessun podcast disponibile al momento.</p>
+        </div>
+      }
+    </div>
   }
 </main>
-
-<!-- Template Card (INVARIATO) -->
-<ng-template #seasonCardTemplate let-season>
-  <div
-    class="season-card"
-    [class.clickable]="season.episodes && season.episodes.length > 0"
-    [attr.aria-label]="'Vedi tutti gli episodi di ' + season.title"
-  >
-    <div class="season-thumbnail-container">
-      @if (season.episodes && season.episodes.length > 0) {
-      <img
-        [src]="season.artwork_image"
-        alt="Copertina di {{ season.title }}"
-        class="season-thumbnail"
-      />
-      } @else {
-      <div class="thumbnail-placeholder">
-        <i class="fas fa-podcast"></i>
-      </div>
-      }
-      <div class="play-overlay">
-        <i class="fas fa-play"></i>
-      </div>
-    </div>
-    <div class="season-info">
-      <h4 class="season-title">{{ season.title }}</h4>
-      @if (season.episodes && season.episodes.length > 0) {
-      <p class="season-author">{{ season.episodes[0].speaker }}</p>
-      }
-    </div>
-  </div>
-</ng-template>
 
 <app-footer *ngIf="!isLoading"></app-footer>

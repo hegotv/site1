@@ -1,28 +1,55 @@
 <section class="slider-section" *ngIf="items.length > 0">
-  <div class="slider-header">
+  <div class="slider-header" *ngIf="sectionTitle">
     <h2 class="section-title">{{ sectionTitle }}</h2>
+    <!-- Opzionale: indicatore numerico o "Vedi tutti" -->
   </div>
 
-  <div class="slider-container">
-    <!-- Rimosso l'evento (scroll) da qui, lo gestiamo nel .ts -->
+  <div class="slider-wrapper">
+    <!-- Pulsante Navigazione Sinistra -->
+    <button
+      class="nav-btn prev"
+      [class.hidden]="!showPrevButton"
+      (click)="scrollLeft()"
+      aria-label="Scorri a sinistra"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
     <div #sliderContent class="slider-content">
-      <!--
-        Loop sull'array generico 'items'. Il click emette un evento.
-      -->
       <div
-        *ngFor="let item of items; trackBy: trackByItem"
+        *ngFor="let item of items; let i = index; trackBy: trackByFn"
         class="slide"
         (click)="onClickSlide(item)"
+        (keydown.enter)="onClickSlide(item)"
+        tabindex="0"
+        role="button"
       >
-        <!--
-          ***** MODIFICA CHIAVE QUI *****
-          Qui viene proiettato il template fornito dal componente genitore.
-          Il contesto '$implicit' passa l'oggetto 'item' al template.
-        -->
         <ng-container
           *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"
         ></ng-container>
       </div>
     </div>
+
+    <!-- Pulsante Navigazione Destra -->
+    <button
+      class="nav-btn next"
+      [class.hidden]="!showNextButton"
+      (click)="scrollRight()"
+      aria-label="Scorri a destra"
+    >
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <!-- Dot Index (Opzionale) -->
+  <div class="slider-dots" *ngIf="showDots && items.length > 1 && isMobile">
+    <div
+      *ngFor="let item of items; let i = index; trackBy: trackByFn"
+      class="dot"
+      [class.active]="i === currentSlideIndex"
+      (click)="scrollToSlide(i)"
+      role="button"
+      [attr.aria-label]="'Vai alla slide ' + (i + 1)"
+    ></div>
   </div>
 </section>

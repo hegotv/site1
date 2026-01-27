@@ -45,7 +45,9 @@ main.all-podcasts-container {
   border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   border: 1px solid transparent;
 }
 

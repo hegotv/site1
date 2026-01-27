@@ -6,10 +6,11 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
-  HostListener,
+  OnDestroy,
   ChangeDetectorRef,
   TemplateRef,
-  ViewEncapsulation, // 1. Importa TemplateRef
+  ViewEncapsulation,
+  NgZone,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,62 +22,148 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [CommonModule, MatIconModule, MatButtonModule],
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.css'],
+  // Disabilita l'incapsulamento se vuoi che gli stili delle card (definiti qui) si applichino al template proiettato,
+  // ALTRIMENTI sposta gli stili .slide-image ecc. nel componente genitore o nel css globale.
   encapsulation: ViewEncapsulation.None,
 })
-export class SliderComponent implements AfterViewInit {
-  // 2. Input generici: accetta qualsiasi array e un template
+export class SliderComponent implements AfterViewInit, OnDestroy {
   @Input() items: any[] = [];
   @Input() itemTemplate!: TemplateRef<any>;
   @Input() sectionTitle: string = '';
 
-  // 3. Output per gestire il click dall'esterno
+  // Opzionale: permette di nascondere i dots se non desiderati
+  @Input() showDots: boolean = true;
+
   @Output() slideClick = new EventEmitter<any>();
 
   @ViewChild('sliderContent') sliderContentRef!: ElementRef<HTMLElement>;
 
-  isScrollable = false;
-  isBackDisabled = true;
-  isNextDisabled = false;
+  showPrevButton = false;
+  showNextButton = true;
+  currentSlideIndex = 0;
+  isMobile: boolean = window.innerWidth <= 600;
+  private resizeObserver: ResizeObserver | null = null;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
+  ) {}
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.updateScrollState(), 100);
+    // Eseguiamo fuori da Angular zone per performance nello scroll, rientriamo solo per aggiornare la UI
+    this.ngZone.runOutsideAngular(() => {
+      this.initResizeObserver();
+      this.addScrollListener();
+    });
+
+    // Check iniziale stato pulsanti
+    setTimeout(() => this.updateNavigationState(), 100);
   }
 
-  @HostListener('window:resize')
-  onResize(): void {
-    this.updateScrollState();
+  ngOnDestroy(): void {
+    this.removeScrollListener();
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
   }
 
-  updateScrollState(): void {
+  /** Performance: TrackBy function per ngFor */
+  trackByFn(index: number, item: any): any {
+    return item.id || index; // Usa un ID univoco se disponibile, altrimenti index
+  }
+
+  private addScrollListener(): void {
+    if (this.sliderContentRef) {
+      this.sliderContentRef.nativeElement.addEventListener(
+        'scroll',
+        () => {
+          // Debounce visivo semplice o esecuzione diretta
+          this.onScroll();
+        },
+        { passive: true },
+      );
+    }
+  }
+
+  private removeScrollListener(): void {
+    if (this.sliderContentRef) {
+      // Nota: rimuovere listener anonimi è difficile, qui ci affidiamo al garbage collector
+      // distruggendo il riferimento se necessario, ma Angular pulisce i nodi DOM.
+    }
+  }
+
+  private initResizeObserver(): void {
+    this.resizeObserver = new ResizeObserver(() => {
+      this.ngZone.run(() => {
+        this.updateNavigationState();
+      });
+    });
+    if (this.sliderContentRef) {
+      this.resizeObserver.observe(this.sliderContentRef.nativeElement);
+    }
+  }
+
+  private onScroll(): void {
+    // Calcoli leggeri
+    const el = this.sliderContentRef.nativeElement;
+
+    // Aggiorna logica pulsanti e indice
+    // Usiamo requestAnimationFrame per non bloccare il thread principale
+    window.requestAnimationFrame(() => {
+      this.ngZone.run(() => {
+        this.updateNavigationState();
+        this.updateCurrentIndex(el);
+      });
+    });
+  }
+
+  private updateNavigationState(): void {
     if (!this.sliderContentRef) return;
     const el = this.sliderContentRef.nativeElement;
-    this.isScrollable = el.scrollWidth > el.clientWidth;
-    this.isBackDisabled = el.scrollLeft < 1;
-    this.isNextDisabled = el.scrollLeft >= el.scrollWidth - el.clientWidth - 1;
-    this.cdr.detectChanges();
+
+    // Tolleranza di 5px per differenze di rendering sub-pixel
+    this.showPrevButton = el.scrollLeft > 5;
+    this.showNextButton = el.scrollLeft < el.scrollWidth - el.clientWidth - 5;
+
+    this.cdr.markForCheck();
   }
 
-  nextScroll(): void {
-    if (this.isNextDisabled) return;
+  private updateCurrentIndex(el: HTMLElement): void {
+    if (this.items.length === 0) return;
+
+    // Calcoliamo l'indice basandoci sulla larghezza della prima card
+    const firstCard = el.firstElementChild as HTMLElement;
+    if (!firstCard) return;
+
+    const itemWidth = firstCard.offsetWidth + 24; // 24 è il gap (1.5rem) approssimativo
+    this.currentSlideIndex = Math.round(el.scrollLeft / itemWidth);
+  }
+
+  scrollLeft(): void {
     const el = this.sliderContentRef.nativeElement;
-    el.scrollBy({ left: el.clientWidth, behavior: 'smooth' });
+    const scrollAmount = el.clientWidth * 0.8; // Scorre l'80% della vista
+    el.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
   }
 
-  backScroll(): void {
-    if (this.isBackDisabled) return;
+  scrollRight(): void {
     const el = this.sliderContentRef.nativeElement;
-    el.scrollBy({ left: -el.clientWidth, behavior: 'smooth' });
+    const scrollAmount = el.clientWidth * 0.8;
+    el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   }
 
-  // 4. Emette l'evento con l'item cliccato
+  scrollToSlide(index: number): void {
+    if (!this.sliderContentRef) return;
+    const el = this.sliderContentRef.nativeElement;
+    const firstCard = el.firstElementChild as HTMLElement;
+
+    if (firstCard) {
+      // 1.5rem gap = 24px
+      const itemWidth = firstCard.offsetWidth + 24;
+      el.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
+    }
+  }
+
   onClickSlide(item: any): void {
     this.slideClick.emit(item);
-  }
-
-  // 5. Metodo trackBy generico (opzionale ma consigliato)
-  trackByItem(index: number, item: any): any {
-    return item.id || item.slug || index;
   }
 }

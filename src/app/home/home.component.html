@@ -27,74 +27,77 @@
   </div>
 </div>
 <div *ngIf="!isLoading" class="fade-in">
-  @if(!isMobile){
-  <section *ngIf="heroVideos.length > 0" class="hero-section">
-    <div class="hero-slides-wrapper">
-      <ng-container *ngFor="let video of heroVideos; let i = index">
-        <div class="hero-slide" [class.active]="i === currentHeroIndex">
-          <img
-            [src]="video.thumbnail"
-            [alt]="video.title"
-            class="hero-background-image"
-          />
-          <div class="hero-content">
-            <h1>{{ video.title }}</h1>
-            <div class="hero-metadata">
-              <span>{{ video.duration | formatDuration }}</span>
-              <span class="separator">•</span>
-              <span>FULL HD</span>
-              <span class="separator">•</span>
-              <span class="views">
-                <i class="fa-solid fa-eye"></i>
-                {{ video.visuals | viewsFormat }}
-              </span>
-            </div>
-            <p class="hero-description">{{ video.description }}</p>
-            <div class="hero-controls">
-              <button class="control-btn" (click)="goToVideo(video.id)">
-                <i class="fas fa-play"></i>
-              </button>
+  @if (!isMobile) {
+    <section *ngIf="heroVideos.length > 0" class="hero-section">
+      <div class="hero-slides-wrapper">
+        <ng-container *ngFor="let video of heroVideos; let i = index">
+          <div class="hero-slide" [class.active]="i === currentHeroIndex">
+            <img
+              [src]="video.thumbnail"
+              [alt]="video.title"
+              class="hero-background-image"
+            />
+            <div class="hero-content">
+              <h1>{{ video.title }}</h1>
+              <div class="hero-metadata">
+                <span>{{ video.duration | formatDuration }}</span>
+                <span class="separator">•</span>
+                <span>FULL HD</span>
+                <span class="separator">•</span>
+                <span class="views">
+                  <i class="fa-solid fa-eye"></i>
+                  {{ video.visuals | viewsFormat }}
+                </span>
+              </div>
+              <p class="hero-description">{{ video.description }}</p>
+              <div class="hero-controls">
+                <button class="control-btn" (click)="goToVideo(video.id)">
+                  <i class="fas fa-play"></i>
+                </button>
+              </div>
             </div>
           </div>
+        </ng-container>
+      </div>
+      <div class="hero-pagination">
+        <div
+          *ngFor="let video of heroVideos; let i = index"
+          class="progress-bar-container"
+          (click)="selectHeroSlide(i)"
+        >
+          <div
+            class="progress-bar"
+            [class.active]="i === currentHeroIndex"
+          ></div>
         </div>
-      </ng-container>
-    </div>
-    <div class="hero-pagination">
-      <div
-        *ngFor="let video of heroVideos; let i = index"
-        class="progress-bar-container"
-        (click)="selectHeroSlide(i)"
-      >
-        <div class="progress-bar" [class.active]="i === currentHeroIndex"></div>
       </div>
-    </div>
-  </section>
+    </section>
   } @else {
-  <!-- Hero Section per Mobile -->
-  <section *ngIf="allShowsCategories.length > 0" class="hero-section">
-    <div class="hero-mobile">
-      <img
-        src="{{ baseUrl }}{{ allShowsCategories[random].CatimageVert }}"
-        [alt]="allShowsCategories[random].title"
-      />
-      <div class="hero-content">
-        <button
-          *ngIf="allShowsCategories[random]?.videos?.[0]?.id"
-          (click)="goToVideo(allShowsCategories[random].videos[0].id)"
-          class="control-btn"
-        >
-          Guarda Ora
-        </button>
-        <button
-          *ngIf="allShowsCategories[random]?.slug"
-          (click)="goToSeason(allShowsCategories[random].slug)"
-          class="control-btn second"
-        >
-          Sfoglia Tutto
-        </button>
+    <!-- Hero Section per Mobile -->
+    <section *ngIf="allShowsCategories.length > 0" class="hero-section">
+      <div class="hero-mobile">
+        <img
+          src="{{ baseUrl }}{{ allShowsCategories[random].CatimageVert }}"
+          [alt]="allShowsCategories[random].title"
+        />
+        <div class="hero-content">
+          <button
+            *ngIf="allShowsCategories[random]?.videos?.[0]?.id"
+            (click)="goToVideo(allShowsCategories[random].videos[0].id)"
+            class="control-btn"
+          >
+            Guarda Ora
+          </button>
+          <button
+            *ngIf="allShowsCategories[random]?.slug"
+            (click)="goToSeason(allShowsCategories[random].slug)"
+            class="control-btn second"
+          >
+            Sfoglia Tutto
+          </button>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
   }
 
   <!-- ======================================================== -->
@@ -111,34 +114,43 @@
     ></app-slider>
 
     <!-- ======================================================== -->
-    <!-- Sezione: Trending Releases (RIPRISTINATA GRIGLIA) -->
+    <!-- Sezione: Trending Releases -->
     <!-- ======================================================== -->
     <section *ngIf="trendingMainVideos.length > 0" class="custom-grid-section">
-      <h2 class="section-title trending">Popolari</h2>
-      <div class="trending-releases-grid">
-        <!-- Itera sui video per creare le card della griglia -->
-        <div
-          *ngFor="let video of trendingMainVideos"
-          class="trending-card"
-          (click)="handleVideoClick(video)"
-        >
-          <img
-            [src]="video.thumbnail"
-            [alt]="video.title"
-            class="card-background"
-          />
-          <div class="card-overlay"></div>
-          <div class="trending-card-content">
-            <div class="card-header">
-              <span class="card-duration">{{
-                video.duration | formatDuration
-              }}</span>
-              <span class="card-title">{{ video.title }}</span>
+      <h2 class="section-title trending" *ngIf="!isMobile">Popolari</h2>
+      @if (isMobile) {
+        <app-slider
+          [sectionTitle]="'Popolari'"
+          [items]="trendingMainVideos"
+          [itemTemplate]="videoCardTemplate"
+          (slideClick)="handleVideoClick($event)"
+        ></app-slider>
+      } @else {
+        <div class="trending-releases-grid">
+          <!-- Itera sui video per creare le card della griglia -->
+          <div
+            *ngFor="let video of trendingMainVideos"
+            class="trending-card"
+            (click)="handleVideoClick(video)"
+          >
+            <img
+              [src]="video.thumbnail"
+              [alt]="video.title"
+              class="card-background"
+            />
+            <div class="card-overlay"></div>
+            <div class="trending-card-content">
+              <div class="card-header">
+                <span class="card-duration">{{
+                  video.duration | formatDuration
+                }}</span>
+                <span class="card-title">{{ video.title }}</span>
+              </div>
+              <button class="watch-btn">PLAY</button>
             </div>
-            <button class="watch-btn">PLAY</button>
           </div>
         </div>
-      </div>
+      }
     </section>
 
     <!-- Sezione: All Shows (Mantiene lo SLIDER) -->
@@ -162,24 +174,32 @@
     </section>
 
     <!-- ======================================================== -->
-    <!-- Sezione: Browse By Category (RIPRISTINATA GRIGLIA) -->
+    <!-- Sezione: Browse By Category (GRIGLIA SU DESKTOP, SLIDER SU MOBILE) -->
     <!-- ======================================================== -->
     <section *ngIf="macrosForDisplay.length > 0" class="custom-grid-section">
       <h2 class="section-title">Sfoglia per Categoria</h2>
-      <div class="browse-category-grid">
-        <div
-          *ngFor="let macro of macrosForDisplay"
-          class="browse-category-card"
-          (click)="handleMacroClick(macro)"
-        >
-          <img
-            [src]="baseUrl + macro.img"
-            [alt]="macro.title"
-            class="browse-category-image"
-          />
-          <div class="card-overlay"></div>
+      @if (isMobile) {
+        <app-slider
+          [items]="macrosForDisplay"
+          [itemTemplate]="browseByCategoryTemplate"
+          (slideClick)="handleMacroClick($event)"
+        ></app-slider>
+      } @else {
+        <div class="browse-category-grid">
+          <div
+            *ngFor="let macro of macrosForDisplay"
+            class="browse-category-card"
+            (click)="handleMacroClick(macro)"
+          >
+            <img
+              [src]="baseUrl + macro.img"
+              [alt]="macro.title"
+              class="browse-category-image"
+            />
+            <div class="card-overlay"></div>
+          </div>
         </div>
-      </div>
+      }
     </section>
   </main>
 
@@ -238,6 +258,13 @@
       [alt]="category.title"
       class="slide-image"
     />
+    <div class="card-overlay"></div>
+  </div>
+</ng-template>
+
+<ng-template #browseByCategoryTemplate let-macro>
+  <div class="browse-category-slide-wrapper">
+    <img [src]="baseUrl + macro.img" [alt]="macro.title" class="slide-image" />
     <div class="card-overlay"></div>
   </div>
 </ng-template>

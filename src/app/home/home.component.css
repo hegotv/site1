@@ -11,8 +11,8 @@
 }
 
 .section-title {
-  font-size: 1.3rem;
-  font-weight: 500;
+  font-size: 1.4rem;
+  font-weight: 700;
   color: #fff;
   margin: 3rem 0 1.5rem 0;
 }
@@ -355,7 +355,8 @@
 /* --- Stili per le card dentro gli SLIDER --- */
 /* (Questi stili si applicano a "Continue Watching" e "All Shows") */
 .slide-content-wrapper,
-.all-shows-card-wrapper {
+.all-shows-card-wrapper,
+.browse-category-slide-wrapper {
   width: 100%;
   height: 100%;
   position: relative;
@@ -401,7 +402,6 @@
   font-weight: 700;
   color: #fff;
   margin-bottom: 0.5rem;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -595,6 +595,9 @@
    MEDIA QUERIES PER SKELETON
    ================================================================= */
 @media (max-width: 768px) {
+  .slide-hover-meta {
+    opacity: 1;
+  }
   .skeleton-hero {
     height: 50vh; /* Hero più bassa su mobile */
   }
@@ -620,6 +623,10 @@
 
   .skeleton-grid {
     grid-template-columns: 1fr; /* Una colonna */
+  }
+  .slide-info {
+    bottom: 12px;
+    opacity: 1;
   }
 }
 
@@ -692,6 +699,6 @@
     height: 40vh; /* Riduciamo l'altezza su mobile */
   }
   .browse-category-grid {
-    grid-template-columns: 1fr; /* Una colonna per le categorie */
+    display: none; /* Nascondiamo la griglia su mobile, usiamo lo slider */
   }
 }

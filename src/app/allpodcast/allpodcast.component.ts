@@ -60,11 +60,11 @@ export class AllpodcastComponent implements OnInit, OnDestroy {
               console.error('Errore nel caricamento della stagione:', err);
               this.router.navigate(['/podcast']);
               return EMPTY;
-            })
+            }),
           );
         }),
         finalize(() => (this.isLoading = false)),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe((seasonData) => {
         // Ora salviamo solo l'oggetto 'season', che contiene già la lista di episodi

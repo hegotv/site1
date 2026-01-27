@@ -183,8 +183,9 @@ hr {
   color: #fff;
   border: 1px solid #333;
   border-radius: 8px; /* Stesso radius del Google custom layer */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -310,7 +311,7 @@ hr {
   }
 
   .register-form h2 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 600; /* Corretto da 1600 */
   }
 
