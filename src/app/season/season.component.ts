@@ -63,7 +63,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
     private loginService: LoginService,
     private cdr: ChangeDetectorRef, // Inietta per aggiornamenti UI
     @Inject(PLATFORM_ID) private platformId: Object,
-    private viewportScroller: ViewportScroller
+    private viewportScroller: ViewportScroller,
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -81,7 +81,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
         } else {
           this.favoriteCategorySlugs.clear(); // Pulisci i preferiti se l'utente fa logout
         }
-      })
+      }),
     );
 
     // Dati pre-caricati dal resolver
@@ -92,7 +92,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
         }
 
         this.isLoading = false; // Il caricamento iniziale è terminato (con o senza dati)
-      })
+      }),
     );
   }
 
@@ -107,9 +107,9 @@ export class SeasonComponent implements OnInit, OnDestroy {
         .getFavoriteCategories()
         .subscribe((savedCategories: SavedCategory[]) => {
           this.favoriteCategorySlugs = new Set(
-            (savedCategories || []).map((cat) => cat.slug)
+            (savedCategories || []).map((cat) => cat.slug),
           );
-        })
+        }),
     );
   }
 
@@ -117,7 +117,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
     this.selectedCategory = category;
 
     const episodesWithSeason = this.selectedCategory.videos.filter(
-      (v) => typeof v.season === 'number'
+      (v) => typeof v.season === 'number',
     );
 
     // Estrai e ordina le stagioni uniche
@@ -156,7 +156,7 @@ export class SeasonComponent implements OnInit, OnDestroy {
           finalize(() => {
             this.isTogglingFavorite = false;
             this.cdr.detectChanges(); // Assicura che il pulsante si riattivi
-          })
+          }),
         )
         .subscribe(() => {
           // Aggiorna lo stato locale in modo ottimistico
@@ -165,44 +165,45 @@ export class SeasonComponent implements OnInit, OnDestroy {
           } else {
             this.favoriteCategorySlugs.add(slug);
           }
-        })
+        }),
     );
   }
 
   filterEpisodesBySeason(): void {
-    // 3. Salviamo la posizione attuale dello scroll (asse Y)
-    const currentScrollPosition = this.viewportScroller.getScrollPosition();
-
+    // 1. DATA LOGIC (Runs on Server AND Browser)
     if (this.selectedSeason === null || !this.selectedCategory) {
       this.filteredEpisodes = [];
       return;
     }
 
     this.filteredEpisodes = this.selectedCategory.videos.filter(
-      (episode) => episode.season === this.selectedSeason
+      (episode) => episode.season === this.selectedSeason,
     );
 
-    // 4. Forziamo il rilevamento dei cambiamenti per aggiornare il DOM
-    this.cdr.detectChanges();
+    // 2. UI/SCROLL LOGIC (Browser ONLY)
+    if (this.isBrowser) {
+      // Capture scroll position before changes
+      const currentScrollPosition = this.viewportScroller.getScrollPosition();
 
-    // 5. Ripristiniamo la posizione dello scroll.
-    // Se il sito ha `scroll-behavior: smooth` impostato via CSS, la chiamata
-    // a `scrollToPosition` verrà animata — per evitare l'animazione forziamo
-    // temporaneamente `scroll-behavior: auto` nel browser e poi lo ripristiniamo.
-    requestAnimationFrame(() => {
-      if (this.isBrowser) {
+      // Force DOM update
+      this.cdr.detectChanges();
+
+      // Safe to use requestAnimationFrame here because we are inside isBrowser
+      requestAnimationFrame(() => {
         const docEl = document.documentElement as HTMLElement;
         const prev = docEl.style.scrollBehavior;
+
+        // Disable smooth scroll temporarily to snap to position
         docEl.style.scrollBehavior = 'auto';
+
         this.viewportScroller.scrollToPosition(currentScrollPosition);
-        // Ripristina lo style dopo il prossimo frame per non alterare il comportamento globale
+
+        // Restore scroll behavior in the next frame
         requestAnimationFrame(() => {
           docEl.style.scrollBehavior = prev || '';
         });
-      } else {
-        this.viewportScroller.scrollToPosition(currentScrollPosition);
-      }
-    });
+      });
+    }
   }
 
   onEpisodeHover(episode: Video): void {
