@@ -74,30 +74,56 @@
     </section>
   } @else {
     <!-- Hero Section per Mobile -->
-    <section *ngIf="allShowsCategories.length > 0" class="hero-section">
-      <div class="hero-mobile">
-        <img
-          src="{{ baseUrl }}{{ allShowsCategories[random].CatimageVert }}"
-          [alt]="allShowsCategories[random].title"
-        />
-        <div class="hero-content">
-          <button
-            *ngIf="allShowsCategories[random]?.videos?.[0]?.id"
-            (click)="goToVideo(allShowsCategories[random].videos[0].id)"
-            class="control-btn"
-          >
-            Guarda Ora
-          </button>
-          <button
-            *ngIf="allShowsCategories[random]?.slug"
-            (click)="goToSeason(allShowsCategories[random].slug)"
-            class="control-btn second"
-          >
-            Sfoglia Tutto
-          </button>
+    <ng-container *ngIf="isMobile">
+      <section class="hero-section">
+        <!-- CASO 1: Banner promozionale attivo dal backend -->
+        <div
+          class="hero-mobile banner-active"
+          *ngIf="activeBanner; else defaultMobileHero"
+        >
+          <img
+            [src]="baseUrl + activeBanner.image"
+            [alt]="activeBanner.title"
+          />
+          <div class="hero-content">
+            <button
+              (click)="goToVideo(activeBanner.video_id)"
+              class="control-btn"
+            >
+              Guarda Ora
+            </button>
+            <!-- Nel banner promozionale di solito non mettiamo "Sfoglia tutto" 
+             perché punta a un episodio specifico, ma puoi aggiungerlo se vuoi -->
+          </div>
         </div>
-      </div>
-    </section>
+
+        <!-- CASO 2: Nessun banner attivo, usa la logica random delle categorie -->
+        <ng-template #defaultMobileHero>
+          <div class="hero-mobile" *ngIf="allShowsCategories.length > 0">
+            <img
+              src="{{ baseUrl }}{{ allShowsCategories[random].CatimageVert }}"
+              [alt]="allShowsCategories[random].title"
+            />
+            <div class="hero-content">
+              <button
+                *ngIf="allShowsCategories[random]?.videos?.[0]?.id"
+                (click)="goToVideo(allShowsCategories[random].videos[0].id)"
+                class="control-btn"
+              >
+                Guarda Ora
+              </button>
+              <button
+                *ngIf="allShowsCategories[random]?.slug"
+                (click)="goToSeason(allShowsCategories[random].slug)"
+                class="control-btn second"
+              >
+                Sfoglia Tutto
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </section>
+    </ng-container>
   }
 
   <!-- ======================================================== -->

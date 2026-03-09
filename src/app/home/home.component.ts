@@ -64,6 +64,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // --- Proprietà UI ---
   currentHeroIndex = 0;
   continueWatchingTitle = 'Continua a Guardare'; // <-- RIPRISTINATA per il template
+  activeBanner: any = null;
   public readonly baseUrl = 'https://hegobck-production.up.railway.app'; // <-- RIPRISTINATA per il template
   private heroInterval: any;
   private subscriptions = new Subscription();
@@ -79,7 +80,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private videoService: VideoService,
     private homeDataService: HomeDataService,
     private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) platformId: Object
+    @Inject(PLATFORM_ID) platformId: Object,
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
     if (this.isBrowser) {
@@ -96,7 +97,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         } else {
           this.continueWatchingVideos = [];
         }
-      })
+      }),
     );
 
     this.subscriptions.add(
@@ -108,11 +109,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         .subscribe(([homeData, macros]) => {
           this.processApiData(
             homeData as ApiDataResponse,
-            (macros as Macro[]) || []
+            (macros as Macro[]) || [],
           );
           this.isLoading = false;
           this.cdr.detectChanges();
-        })
+        }),
     );
   }
 
@@ -124,6 +125,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private processApiData(homeData: ApiDataResponse, macros: Macro[]): void {
     this.heroVideos = homeData.hero_videos || [];
     this.trendingMainVideos = homeData.trending_main_videos || [];
+    this.activeBanner = (homeData as any).banner || null;
     this.populateSliders(homeData, macros);
     this.startHeroAutoPlay();
   }
@@ -134,7 +136,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         next: (videos) => {
           this.continueWatchingVideos = videos || [];
         },
-      })
+      }),
     );
   }
 

@@ -101,6 +101,12 @@ export interface ApiDataResponse {
       categories: HomeApiCategory[];
     };
   };
+  banner?: {
+    // <--- Aggiungi questo
+    image: string;
+    video_id: string;
+    title: string;
+  };
 }
 
 /**
@@ -121,7 +127,7 @@ export interface ApiSearchResponse {
  * Converte una stringa di durata (es. "01:30:00") in secondi.
  */
 export function durationToSeconds(
-  duration: string | number | undefined
+  duration: string | number | undefined,
 ): number {
   if (typeof duration === 'number') return duration;
   if (!duration) return 0;
