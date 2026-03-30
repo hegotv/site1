@@ -20,7 +20,10 @@ export class CategoryService {
   private readonly apiUrl = 'https://hegobck-production.up.railway.app/video';
   private allCategories$: Observable<Category[]> | null = null;
 
-  constructor(private http: HttpClient, private videoService: VideoService) {}
+  constructor(
+    private http: HttpClient,
+    private videoService: VideoService,
+  ) {}
 
   // ===================================================================
   // GESTIONE CATEGORIE PREFERITE
@@ -33,7 +36,7 @@ export class CategoryService {
       })
       .pipe(
         map((res) => res.list || []),
-        catchError(() => of([]))
+        catchError(() => of([])),
       );
   }
 
@@ -43,7 +46,7 @@ export class CategoryService {
       { slug },
       {
         withCredentials: true,
-      }
+      },
     );
   }
 
@@ -53,7 +56,7 @@ export class CategoryService {
       { slug },
       {
         withCredentials: true,
-      }
+      },
     );
   }
 
@@ -76,45 +79,46 @@ export class CategoryService {
       this.allCategories$ = this.videoService.getHomeData().pipe(
         map((apiResponse: ApiDataResponse) => {
           const categoriesByMacro = apiResponse.categories_by_macro;
-          const flattenedCategories: Category[] = [];
+
+          // Usiamo una Map per ELIMINARE I DUPLICATI usando lo slug come chiave
+          const uniqueCategoriesMap = new Map<string, Category>();
 
           if (!categoriesByMacro) return [];
 
-          // Itera sulle chiavi delle macro (es. "In Evidenza")
           for (const macroKey in categoriesByMacro) {
             const macroData = categoriesByMacro[macroKey];
-            // Accedi all'array 'categories' dentro l'oggetto della macro
             if (macroData?.categories) {
-              // Ora 'categoryData' è correttamente tipizzato come HomeApiCategory
               for (const categoryData of macroData.categories) {
-                if (categoryData.videos?.length > 0) {
-                  flattenedCategories.push({
-                    // Mappa i campi da HomeApiCategory a Category
+                // RIMOSSO l'if (categoryData.videos?.length > 0)
+                // Le vecchie stagioni potrebbero non avere video nell'API della Home, ma DEVONO essere contate!
+                if (!uniqueCategoriesMap.has(categoryData.slug)) {
+                  uniqueCategoriesMap.set(categoryData.slug, {
                     id: categoryData.id,
                     title: categoryData.title,
                     slug: categoryData.slug,
                     CatimageOrizz: this.processImageUrl(
-                      categoryData.CatimageOrizz
+                      categoryData.CatimageOrizz,
                     ),
                     CatimageVert: this.processImageUrl(
-                      categoryData.CatimageVert
+                      categoryData.CatimageVert,
                     ),
-                    description: categoryData.desc, // Mappa 'desc' a 'description'
-                    videos: categoryData.videos,
+                    description: categoryData.desc,
+                    videos: categoryData.videos || [], // Mettiamo array vuoto se mancano i video
                     macro: macroKey,
                   });
                 }
               }
             }
           }
-          return flattenedCategories;
+          // Trasforma la mappa in un array
+          return Array.from(uniqueCategoriesMap.values());
         }),
         catchError((error) => {
           console.error('Errore durante il recupero delle categorie:', error);
           this.allCategories$ = null;
           return of([]);
         }),
-        shareReplay(1)
+        shareReplay(1),
       );
     }
     return this.allCategories$;
@@ -131,9 +135,9 @@ export class CategoryService {
     return this.getAllCategories().pipe(
       map((categories) =>
         categories.filter((cat) =>
-          cat.title.toLowerCase().includes(query.toLowerCase())
-        )
-      )
+          cat.title.toLowerCase().includes(query.toLowerCase()),
+        ),
+      ),
     );
   }
 

@@ -31,7 +31,7 @@ export class AllComponent implements OnInit {
   constructor(
     private router: Router,
     private categoryService: CategoryService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +54,7 @@ export class AllComponent implements OnInit {
 
           if (macro) {
             categoriesToProcess = allCategories.filter(
-              (cat) => cat.macro === macro
+              (cat) => cat.macro === macro,
             );
           } else {
             categoriesToProcess = allCategories;
@@ -65,7 +65,7 @@ export class AllComponent implements OnInit {
         error: (err) => {
           console.error(
             'Errore nel caricamento delle categorie nel componente',
-            err
+            err,
           );
           this.displayShows = [];
         },
@@ -76,7 +76,10 @@ export class AllComponent implements OnInit {
     const showsMap = new Map<string, Category[]>();
 
     categories.forEach((cat) => {
-      const baseTitle = cat.title.split(/ - S\d*| S\d*/)[0].trim();
+      // REGEX POTENZIATA: Cattura " - S1", " S1", " - Stagione 1", " Stagione 1" (ignorando maiuscole/minuscole)
+      const baseTitle = cat.title
+        .split(/ - S\d+| S\d+| - Stagione \d+| Stagione \d+/i)[0]
+        .trim();
       if (!showsMap.has(baseTitle)) {
         showsMap.set(baseTitle, []);
       }
@@ -84,42 +87,44 @@ export class AllComponent implements OnInit {
     });
 
     this.displayShows = Array.from(showsMap.entries())
-      .map(([baseTitle, seasons]) => {
-        const sortedSeasons = [...seasons].sort((a, b) =>
-          a.title.localeCompare(b.title)
+      .map(([baseTitle, seasonsGrouped]) => {
+        const sortedSeasons = [...seasonsGrouped].sort((a, b) =>
+          a.title.localeCompare(b.title),
         );
         const mainSeason = sortedSeasons[0];
 
-        // ===================================================================
-        // <<<<<<<<<<<<<<<<<<<<<<< INIZIO DELLA CORREZIONE >>>>>>>>>>>>>>>>>>>
-        // ===================================================================
+        const allVideosForFormat = seasonsGrouped.flatMap((cat) => cat.videos);
 
-        // 1. Raccogliamo TUTTI i video da tutte le categorie che compongono questo format
-        //    (es. da "HeTalk" e "HeTalk 2" se esistono entrambe).
-        const allVideosForFormat = seasons.flatMap((cat) => cat.videos);
+        // 1. Contiamo le stagioni in base al campo "season" dentro i video (Come prima)
+        const episodesWithSeason = allVideosForFormat.filter(
+          (v) => typeof v.season === 'number',
+        );
+        const uniqueSeasons = new Set(
+          episodesWithSeason.map((ep) => ep.season),
+        );
+        const detectedSeasonCount = uniqueSeasons.size;
 
-        // 2. Estraiamo i numeri di stagione da ogni video.
-        const seasonNumbers = allVideosForFormat.map((video) => video.season);
+        // 2. Contiamo quanti oggetti "Categoria" il backend ci ha restituito per questo Show
+        // Se il backend ci manda 6 categorie (es. S1, S2... S6), sappiamo di avere ALMENO 6 stagioni.
+        const groupedCategoriesCount = seasonsGrouped.length;
 
-        // 3. Usiamo un Set per ottenere solo i numeri di stagione UNICI e contiamo quanti sono.
-        //    Questo è il numero reale di stagioni per il format.
-        const seasonCount = new Set(seasonNumbers).size;
+        // IL TRUCCO MAGICO: Prendiamo il numero più alto!
+        // Risolve il problema se nei vecchi video manca la proprietà "season: number"
+        let seasonCount = Math.max(detectedSeasonCount, groupedCategoriesCount);
+
+        // Fallback di sicurezza
+        if (seasonCount === 0) seasonCount = 1;
 
         const show: DisplayShow = {
           title: baseTitle,
           slug: mainSeason.slug,
           CatimageVert: mainSeason.CatimageVert,
-          seasonCount: seasonCount, // Usiamo il conteggio corretto
+          seasonCount,
         };
 
-        // 4. Se il numero di stagioni uniche è 1, allora mostriamo il conteggio totale degli episodi.
         if (seasonCount === 1) {
-          show.episodeCount = allVideosForFormat.length; // Usiamo la lunghezza totale dei video
+          show.episodeCount = allVideosForFormat.length;
         }
-
-        // ===================================================================
-        // <<<<<<<<<<<<<<<<<<<<<<<< FINE DELLA CORREZIONE >>>>>>>>>>>>>>>>>>>>
-        // ===================================================================
 
         return show;
       })

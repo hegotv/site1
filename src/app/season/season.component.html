@@ -145,7 +145,7 @@
           class="season-selector"
         >
           <option *ngFor="let season of availableSeasons" [ngValue]="season">
-            SEASON {{ season }}
+            STAGIONE {{ season }}
           </option>
         </select>
         <i class="fa-solid fa-chevron-down season-arrow-icon"></i>
@@ -175,7 +175,8 @@
             <div class="episode-details">
               <p class="episode-number">
                 <span
-                  >S{{ episode.season }} EPISODIO {{ i + 1 }} -
+                  >S{{ episode.season }} EPISODIO
+                  {{ filteredEpisodes.length - i }} -
                   {{ episode.duration | formatDuration }} -
                   {{ episode.visuals | viewsFormat }}</span
                 >

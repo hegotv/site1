@@ -27,7 +27,8 @@
 <div class="all-shows-container fade-in" *ngIf="!isLoading">
   <section class="all-shows-section">
     <div class="all-shows-header">
-      <h1 class="section-title">{{ this.pageTitle }}</h1>
+      <!-- Rimosso "this.", nel template non è necessario -->
+      <h1 class="section-title">{{ pageTitle }}</h1>
     </div>
 
     <div class="category-grid" *ngIf="displayShows.length > 0; else noAllShows">
@@ -40,6 +41,8 @@
         <img [src]="show.CatimageVert" [alt]="show.title" />
         <div class="category-grid-item-content">
           <h3>{{ show.title }}</h3>
+
+          <!-- La logica qui gestisce perfettamente le modifiche del TS -->
           <p *ngIf="show.seasonCount > 1">{{ show.seasonCount }} stagioni</p>
           <p *ngIf="show.seasonCount === 1">
             {{ show.episodeCount }}
