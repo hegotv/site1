@@ -54,7 +54,7 @@ export interface Category {
   CatimageOrizz: string | null;
   CatimageVert: string | null;
   description: string | null;
-  video_ordering: string;
+  video_ordering?: 'asc' | 'desc'; // Nuovo campo per l'ordinamento dei video
   videos: Video[];
   macro?: string;
 }
