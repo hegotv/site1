@@ -54,6 +54,7 @@ export interface Category {
   CatimageOrizz: string | null;
   CatimageVert: string | null;
   description: string | null;
+  video_ordering: string;
   videos: Video[];
   macro?: string;
 }

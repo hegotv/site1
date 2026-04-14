@@ -174,12 +174,17 @@
             </div>
             <div class="episode-details">
               <p class="episode-number">
-                <span
-                  >S{{ episode.season }} EPISODIO
-                  {{ filteredEpisodes.length - i }} -
-                  {{ episode.duration | formatDuration }} -
-                  {{ episode.visuals | viewsFormat }}</span
-                >
+                <span>
+                  S{{ episode.season }} EPISODIO
+                  <!-- Logica Dinamica per il numero episodio -->
+                  {{
+                    selectedCategory.video_ordering === "desc"
+                      ? filteredEpisodes.length - i
+                      : i + 1
+                  }}
+                  - {{ episode.duration | formatDuration }} -
+                  {{ episode.visuals | viewsFormat }}
+                </span>
                 <i class="fa-solid fa-eye"></i>
               </p>
               <h3 class="episode-title">{{ episode.title | uppercase }}</h3>
