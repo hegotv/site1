@@ -118,7 +118,9 @@ export class LoginService {
     username: string,
     password: string,
     name?: string,
-    surname?: string
+    surname?: string,
+    dateOfBirth?: string,
+    gender?: string
   ): Observable<SignUpResponse> {
     return this.http
       .post<SignUpResponse>(`${this.apiUrl}/register/`, {
@@ -127,6 +129,8 @@ export class LoginService {
         username,
         first_name: name ?? '',
         last_name: surname ?? '',
+        date_of_birth: dateOfBirth ?? '',
+        gender: gender ?? '',
       })
       .pipe(
         tap((response) => {

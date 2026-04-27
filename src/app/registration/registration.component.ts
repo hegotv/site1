@@ -179,12 +179,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.registrationErrorMessage = null;
 
-    const { email, password, nome, cognome } = this.registrationForm.value;
+    const { email, password, nome, cognome, dataDiNascita, sesso } = this.registrationForm.value;
 
-    // Chiamata esplicita per la registrazione classica via Email/Password
-    // Passiamo 'email' anche come username per mantenere coerenza col backend
     this.loginService
-      .signUp(email, email, password, nome, cognome)
+      .signUp(email, email, password, nome, cognome, dataDiNascita, sesso)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: () => {
