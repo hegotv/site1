@@ -91,10 +91,75 @@ export interface HomeApiCategory {
 }
 
 /**
+ * Tipo di destinazione a cui punta un banner o una tile del carousel home:
+ * un singolo video, una stagione di una Category, oppure una Category intera (serie).
+ */
+export type HomeLinkType = 'video' | 'season' | 'series';
+
+export interface HomeBannerVideoLink {
+  link_type: 'video';
+  image: string;
+  title: string;
+  video_id: string;
+}
+
+export interface HomeBannerSeriesLink {
+  link_type: 'series';
+  image: string;
+  title: string;
+  category_id: number;
+  category_slug: string;
+}
+
+export interface HomeBannerSeasonLink {
+  link_type: 'season';
+  image: string;
+  title: string;
+  category_id: number;
+  category_slug: string;
+  season: number;
+}
+
+/** Payload dell'HomeBanner: può puntare a un video, una stagione o una serie. */
+export type HomeBanner =
+  | HomeBannerVideoLink
+  | HomeBannerSeriesLink
+  | HomeBannerSeasonLink;
+
+export interface HomeCarouselVideoItem extends Video {
+  link_type: 'video';
+}
+
+export interface HomeCarouselSeriesItem {
+  link_type: 'series';
+  title: string;
+  category: string;
+  category_id: number;
+  category_slug: string;
+  thumbnail: string;
+}
+
+export interface HomeCarouselSeasonItem {
+  link_type: 'season';
+  title: string;
+  category: string;
+  category_id: number;
+  category_slug: string;
+  thumbnail: string;
+  season: number;
+}
+
+/** Item dell'HomeSectionVideo (carousel `hero_videos`): video, stagione o serie. */
+export type HomeCarouselItem =
+  | HomeCarouselVideoItem
+  | HomeCarouselSeriesItem
+  | HomeCarouselSeasonItem;
+
+/**
  * Rappresenta la struttura completa della risposta dell'endpoint `/getHomeData`.
  */
 export interface ApiDataResponse {
-  hero_videos: Video[];
+  hero_videos: HomeCarouselItem[];
   trending_main_videos: Video[];
   recently_added_videos: Video[];
   categories_by_macro: {
@@ -102,12 +167,7 @@ export interface ApiDataResponse {
       categories: HomeApiCategory[];
     };
   };
-  banner?: {
-    // <--- Aggiungi questo
-    image: string;
-    video_id: string;
-    title: string;
-  };
+  banner?: HomeBanner;
 }
 
 /**

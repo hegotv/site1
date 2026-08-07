@@ -30,28 +30,30 @@
   @if (!isMobile) {
     <section *ngIf="heroVideos.length > 0" class="hero-section">
       <div class="hero-slides-wrapper">
-        <ng-container *ngFor="let video of heroVideos; let i = index">
+        <ng-container *ngFor="let item of heroVideos; let i = index">
           <div class="hero-slide" [class.active]="i === currentHeroIndex">
             <img
-              [src]="video.thumbnail"
-              [alt]="video.title"
+              [src]="getHeroImageUrl(item)"
+              [alt]="item.title"
               class="hero-background-image"
             />
             <div class="hero-content">
-              <h1>{{ video.title }}</h1>
-              <div class="hero-metadata">
-                <span>{{ video.duration | formatDuration }}</span>
+              <h1>{{ item.title }}</h1>
+              <div class="hero-metadata" *ngIf="item.link_type === 'video'">
+                <span>{{ item.duration | formatDuration }}</span>
                 <span class="separator">•</span>
                 <span>FULL HD</span>
                 <span class="separator">•</span>
                 <span class="views">
                   <i class="fa-solid fa-eye"></i>
-                  {{ video.visuals | viewsFormat }}
+                  {{ item.visuals | viewsFormat }}
                 </span>
               </div>
-              <p class="hero-description">{{ video.description }}</p>
+              <p class="hero-description" *ngIf="item.link_type === 'video'">
+                {{ item.description }}
+              </p>
               <div class="hero-controls">
-                <button class="control-btn" (click)="goToVideo(video.id)">
+                <button class="control-btn" (click)="handleHeroClick(item)">
                   <i class="fas fa-play"></i>
                 </button>
               </div>
@@ -61,7 +63,7 @@
       </div>
       <div class="hero-pagination">
         <div
-          *ngFor="let video of heroVideos; let i = index"
+          *ngFor="let item of heroVideos; let i = index"
           class="progress-bar-container"
           (click)="selectHeroSlide(i)"
         >
@@ -86,10 +88,7 @@
             [alt]="activeBanner.title"
           />
           <div class="hero-content">
-            <button
-              (click)="goToVideo(activeBanner.video_id)"
-              class="control-btn"
-            >
+            <button (click)="handleBannerClick()" class="control-btn">
               Guarda Ora
             </button>
             <!-- Nel banner promozionale di solito non mettiamo "Sfoglia tutto" 

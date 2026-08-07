@@ -125,9 +125,17 @@ export class SeasonComponent implements OnInit, OnDestroy {
       ...new Set(episodesWithSeason.map((ep) => ep.season)),
     ].sort((a, b) => a - b);
 
-    // Seleziona la prima stagione disponibile o imposta null se non ce ne sono
+    // Se si arriva da un link di tipo "season" (banner/carousel home), preseleziona
+    // quella stagione tramite query param; altrimenti seleziona la prima disponibile.
+    const requestedSeason = Number(
+      this.activatedRoute.snapshot.queryParamMap.get('season'),
+    );
     this.selectedSeason =
-      this.availableSeasons.length > 0 ? this.availableSeasons[0] : null;
+      requestedSeason && this.availableSeasons.includes(requestedSeason)
+        ? requestedSeason
+        : this.availableSeasons.length > 0
+          ? this.availableSeasons[0]
+          : null;
     this.filterEpisodesBySeason();
   }
 

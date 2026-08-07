@@ -31,6 +31,8 @@ import {
   durationToSeconds,
   Macro,
   HomeApiCategory,
+  HomeBanner,
+  HomeCarouselItem,
 } from '../shared/interfaces';
 
 @Component({
@@ -55,7 +57,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   random = 0; // <-- RIPRISTINATA per il template
 
   // --- Proprietà Dati per il Template ---
-  heroVideos: Video[] = [];
+  heroVideos: HomeCarouselItem[] = [];
   trendingMainVideos: Video[] = [];
   continueWatchingVideos: Video[] = [];
   macrosForDisplay: Macro[] = [];
@@ -64,7 +66,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // --- Proprietà UI ---
   currentHeroIndex = 0;
   continueWatchingTitle = 'Continua a Guardare'; // <-- RIPRISTINATA per il template
-  activeBanner: any = null;
+  activeBanner: HomeBanner | null = null;
   public readonly baseUrl = 'https://hegobck-production.up.railway.app'; // <-- RIPRISTINATA per il template
   private heroInterval: any;
   private subscriptions = new Subscription();
@@ -125,7 +127,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private processApiData(homeData: ApiDataResponse, macros: Macro[]): void {
     this.heroVideos = homeData.hero_videos || [];
     this.trendingMainVideos = homeData.trending_main_videos || [];
-    this.activeBanner = (homeData as any).banner || null;
+    this.activeBanner = homeData.banner || null;
     this.populateSliders(homeData, macros);
     this.startHeroAutoPlay();
   }
@@ -214,10 +216,48 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.goToAllShows(macro.title);
   }
 
+  /** Click su un item del carousel hero (HomeSectionVideo): naviga in base a link_type. */
+  handleHeroClick(item: HomeCarouselItem): void {
+    this.navigateByLinkType(item);
+  }
+
+  /** Click sul banner promozionale (HomeBanner): naviga in base a link_type. */
+  handleBannerClick(): void {
+    if (this.activeBanner) this.navigateByLinkType(this.activeBanner);
+  }
+
+  /** Url dell'immagine di una tile del carousel hero: i thumbnail dei video sono già assoluti, quelli di categoria/stagione sono path relativi da prefissare con baseUrl. */
+  getHeroImageUrl(item: HomeCarouselItem): string {
+    return item.link_type === 'video'
+      ? item.thumbnail
+      : this.baseUrl + item.thumbnail;
+  }
+
+  private navigateByLinkType(link: HomeBanner | HomeCarouselItem): void {
+    switch (link.link_type) {
+      case 'series':
+        this.goToSeason(link.category_slug);
+        break;
+      case 'season':
+        this.goToSeason(link.category_slug, link.season);
+        break;
+      case 'video':
+      default: {
+        const videoId = 'video_id' in link ? link.video_id : link.id;
+        this.goToVideo(videoId);
+        break;
+      }
+    }
+  }
+
   // --- Metodi di Navigazione ---
 
-  goToSeason(slug: string): void {
-    if (slug) this.router.navigate(['/season', slug]);
+  goToSeason(slug: string, season?: number): void {
+    if (!slug) return;
+    this.router.navigate(
+      ['/season', slug],
+      season != null ? { queryParams: { season } } : {},
+    );
   }
 
   goToVideo(videoId: string, startTime?: number): void {
